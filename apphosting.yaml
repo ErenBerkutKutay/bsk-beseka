@@ -1,0 +1,39 @@
+# Firebase App Hosting — Beseka Next.js
+# https://firebase.google.com/docs/app-hosting/configure
+#
+# Secret'ları Firebase Console veya CLI ile oluşturun:
+#   firebase apphosting:secrets:set DATABASE_URL
+#   firebase apphosting:secrets:set AUTH_SECRET
+# Console: Hosting & Serverless > App Hosting > Backend > Settings > Environment
+
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  - variable: DATABASE_URL
+    secret: DATABASE_URL
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: AUTH_SECRET
+    secret: AUTH_SECRET
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: AUTH_URL
+    secret: AUTH_URL
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_SITE_URL
+    secret: NEXT_PUBLIC_SITE_URL
+    availability:
+      - BUILD
+      - RUNTIME

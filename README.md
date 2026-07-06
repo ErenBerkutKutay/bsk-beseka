@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Beseka Otomotiv Web Platformu
 
-## Getting Started
+Next.js tabanlı otomotiv yedek parça katalog platformu. Scrolly telling ana sayfa, YTT benzeri katalog/OEM arama, admin panel ve B2B giriş içerir.
 
-First, run the development server:
+## Özellikler
+
+- **Scrolly telling ana sayfa** — GSAP ScrollTrigger + Lenis smooth scroll
+- **Katalog & OEM arama** — tire, boşluk, nokta fark etmeksizin kod eşleştirme
+- **Yeni ürünler** — admin panelden işaretlenebilir
+- **Admin panel** — ürün, OEM/cross kod, araç uyumluluk, blog, sayfa yönetimi
+- **B2B giriş** — placeholder dashboard
+- **Çok dilli** — TR, EN, DE, AR, ES, IT (next-intl)
+
+## Medya (beseka.com)
+
+Logo, hero slaytları, ürün görselleri ve blog kapakları [beseka.com](https://www.beseka.com) adresinden indirilip `public/beseka/` altına kaydedilmiştir. Güncellemek için:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Görselleri yeniden indir (scripts/download-beseka-assets.sh)
+bash scripts/download-beseka-assets.sh
+npm run db:sync-beseka
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Bağımlılıklar
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# PostgreSQL (Docker)
+docker compose up -d
 
-## Learn More
+# .env dosyasını oluştur
+cp .env.example .env
 
-To learn more about Next.js, take a look at the following resources:
+# Veritabanı migration ve seed
+npm run db:migrate
+npm run db:seed
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Geliştirme sunucusu
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Site: http://localhost:8008/tr
 
-## Deploy on Vercel
+## Admin Panel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Adres | http://localhost:8008/tr/admin/giris |
+|-------|--------------------------------------|
+| E-posta | `admin@beseka.com` |
+| Şifre | `admin123` |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Giriş yaptıktan sonra **Ürünler** bölümünden SKU, OEM kodları, görseller ve araç uyumluluğunu düzenleyebilirsiniz.
+
+```bash
+# Veritabanı ve admin hesabı yoksa:
+npm run db:setup
+```
+
+
+## OEM Arama
+
+Kodlar kayıt ve arama sırasında normalize edilir:
+
+```
+"12 34-56.78" → "12345678"
+"12345678"    → eşleşir ✓
+```
+
+Admin panelde OEM kodları satır satır veya virgülle girilebilir.
+
+## Araç Uyumluluk Import
+
+CSV formatı (noktalı virgülle ayrılmış):
+
+```
+Renault;Clio;IV;2012;2019;1.5 dCi
+Fiat;Egea;1.3 D;2015;2024;1.3 D
+```
+
+## Proje Yapısı
+
+```
+src/
+├── app/[locale]/(public)/   # Ana site
+├── app/[locale]/admin/      # Admin panel
+├── app/api/                 # API routes
+├── components/              # UI bileşenleri
+├── lib/oem/normalize.ts     # OEM normalizasyon
+└── messages/                # i18n çevirileri
+```
+
+## Cloudflare ile Canlıya Alma
+
+Bu proje SSR + PostgreSQL kullandığı için **Cloudflare Workers (OpenNext)** ile dağıtılır. Pages Direct Upload (klasör yükleme) **kullanılmamalı** — 1000 dosya limitine takılır.
+
+Detaylı adımlar: [DEPLOY-CLOUDFLARE.md](./DEPLOY-CLOUDFLARE.md)
+
+Alternatif: [DEPLOY-FIREBASE.md](./DEPLOY-FIREBASE.md) (Firebase App Hosting)
+
+```bash
+firebase login
+firebase apphosting:backends:create --project YOUR_PROJECT_ID
+firebase apphosting:secrets:set DATABASE_URL
+# GitHub main branch push → otomatik deploy
+```

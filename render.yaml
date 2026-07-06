@@ -1,0 +1,29 @@
+# Render Free — kalıcı demo URL (Mac kapalıyken de çalışır)
+# Dashboard: New → Blueprint → GitHub repo bağla
+
+services:
+  - type: web
+    name: bsk-beseka
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /tr
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: AUTH_URL
+        fromService:
+          type: web
+          name: bsk-beseka
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: NEXT_PUBLIC_SITE_URL
+        fromService:
+          type: web
+          name: bsk-beseka
+          envVarKey: RENDER_EXTERNAL_URL

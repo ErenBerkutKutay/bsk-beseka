@@ -1,0 +1,79 @@
+{
+  "common": {
+    "search": "Search",
+    "clearFilters": "Clear Filters",
+    "new": "New",
+    "quickView": "Quick View",
+    "readMore": "Read More",
+    "contact": "Contact",
+    "login": "Login",
+    "logout": "Logout",
+    "all": "All",
+    "products": "Products",
+    "categories": "Categories"
+  },
+  "nav": {
+    "corporate": "Corporate",
+    "products": "Products",
+    "blog": "Blog",
+    "production": "Production",
+    "rd": "R&D & Technology",
+    "contact": "Contact",
+    "b2b": "B2B Login",
+    "newProducts": "New Products",
+    "catalog": "Product Catalog"
+  },
+  "home": {
+    "heroTitle": "Strong, Young and Innovative Team",
+    "heroSubtitle": "Engineering and quality in automotive spare parts manufacturing",
+    "searchTitle": "Search Products",
+    "productsTitle": "Our Products",
+    "journeyTitle": "Our Journey",
+    "goalsTitle": "Our Goals",
+    "newsTitle": "News From Us",
+    "newsletterTitle": "Subscribe to Newsletter",
+    "newsletterDesc": "Stay informed about events and campaigns."
+  },
+  "catalog": {
+    "title": "Products & Catalog",
+    "skuSearch": "Search by Beseka SKU",
+    "oemSearch": "OEM & Cross Codes",
+    "manufacturer": "Manufacturers",
+    "model": "Models",
+    "subModel": "Sub Models",
+    "productGroup": "Product Groups",
+    "selectManufacturer": "Select manufacturer first",
+    "selectModel": "Select model first",
+    "noResults": "No products matched your search.",
+    "matchedOem": "Matched OEM"
+  },
+  "product": {
+    "oemCodes": "OEM Codes",
+    "crossCodes": "Cross Codes",
+    "compatibleVehicles": "Compatible Vehicles",
+    "make": "Make",
+    "model": "Model",
+    "subModel": "Sub Model",
+    "year": "Year",
+    "engine": "Engine"
+  },
+  "b2b": {
+    "title": "B2B Login",
+    "dashboard": "B2B Dashboard",
+    "orders": "My Orders",
+    "creditNotes": "Credit Notes",
+    "address": "My Address",
+    "profile": "Profile",
+    "placeholder": "Order integration will be available soon."
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "products": "Products",
+    "categories": "Categories",
+    "blog": "Blog",
+    "pages": "Pages",
+    "users": "Users",
+    "media": "Media",
+    "login": "Admin Login"
+  }
+}

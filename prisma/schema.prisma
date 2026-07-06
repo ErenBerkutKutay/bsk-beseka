@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  B2B
+}
+
+enum PageType {
+  CORPORATE
+  PRODUCTION
+  RD
+  LEGAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  company      String?
+  role         Role     @default(B2B)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  name      Json
+  image     String?
+  parentId  String?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryTree")
+  sortOrder Int        @default(0)
+  isActive  Boolean    @default(true)
+  products  Product[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Product {
+  id          String           @id @default(cuid())
+  sku         String           @unique
+  slug        String           @unique
+  name        Json
+  description Json?
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id])
+  images      String[]
+  isNew       Boolean          @default(false)
+  newUntil    DateTime?
+  isFeatured  Boolean          @default(false)
+  isActive    Boolean          @default(true)
+  oemCodes    OEMCode[]
+  crossCodes  CrossCode[]
+  fitments    VehicleFitment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([categoryId])
+  @@index([isNew, isActive])
+}
+
+model OEMCode {
+  id             String  @id @default(cuid())
+  productId      String
+  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  code           String
+  codeNormalized String
+
+  @@index([codeNormalized])
+  @@index([productId])
+}
+
+model CrossCode {
+  id             String  @id @default(cuid())
+  productId      String
+  product        Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  code           String
+  codeNormalized String
+  brand          String?
+
+  @@index([codeNormalized])
+  @@index([productId])
+}
+
+model VehicleMake {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  sortOrder Int            @default(0)
+  models    VehicleModel[]
+  createdAt DateTime       @default(now())
+}
+
+model VehicleModel {
+  id        String            @id @default(cuid())
+  makeId    String
+  make      VehicleMake       @relation(fields: [makeId], references: [id], onDelete: Cascade)
+  name      String
+  subModels VehicleSubModel[]
+
+  @@unique([makeId, name])
+  @@index([makeId])
+}
+
+model VehicleSubModel {
+  id      String       @id @default(cuid())
+  modelId String
+  model   VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  name    String
+
+  @@unique([modelId, name])
+  @@index([modelId])
+}
+
+model VehicleFitment {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  make      String
+  model     String
+  subModel  String?
+  yearFrom  Int?
+  yearTo    Int?
+  engine    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@index([make, model])
+}
+
+model FitmentImportLog {
+  id           String   @id @default(cuid())
+  fileName     String
+  rowCount     Int
+  successCount Int
+  errorCount   Int
+  errors       Json?
+  importedBy   String?
+  createdAt    DateTime @default(now())
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       Json
+  excerpt     Json?
+  content     Json
+  coverImage  String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  type      PageType @default(CORPORATE)
+  title     Json
+  content   Json
+  heroImage String?
+  images    String[]
+  metaTitle Json?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  mimeType  String
+  size      Int
+  alt       String?
+  createdAt DateTime @default(now())
+}
+
+model HomeBanner {
+  id        String   @id @default(cuid())
+  title     String?
+  image     String
+  href      String?
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

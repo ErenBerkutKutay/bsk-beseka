@@ -1,0 +1,5 @@
+NEXTJS_ENV=development
+DATABASE_URL=postgresql://user:pass@host/bsk?sslmode=require
+AUTH_SECRET=change-me-to-a-random-secret-at-least-32-chars
+AUTH_URL=http://localhost:8788
+NEXT_PUBLIC_SITE_URL=http://localhost:8788

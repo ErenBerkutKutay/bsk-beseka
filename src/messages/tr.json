@@ -1,0 +1,82 @@
+{
+  "common": {
+    "search": "Ara",
+    "clearFilters": "Filtreyi Temizle",
+    "new": "Yeni",
+    "quickView": "Hızlı Görünüm",
+    "readMore": "Devamını Oku",
+    "contact": "İletişim",
+    "login": "Giriş Yap",
+    "logout": "Çıkış Yap",
+    "all": "Tümü",
+    "products": "Ürünler",
+    "categories": "Kategoriler"
+  },
+  "nav": {
+    "corporate": "Kurumsal",
+    "products": "Ürünler",
+    "blog": "Blog",
+    "production": "Üretim",
+    "rd": "ARGE & Teknoloji",
+    "contact": "İletişim",
+    "b2b": "B2B Giriş",
+    "newProducts": "Yeni Ürünler",
+    "catalog": "Ürünler & Katalog"
+  },
+  "home": {
+    "heroTitle": "Güçlü, Genç ve Yenilikçi Ekip",
+    "heroSubtitle": "Motor takozu ve otomotiv yedek parçada 35 yılı aşkın mühendislik deneyimi. Kauçuk-metal birleşim teknolojisiyle maksimum uyum ve performans.",
+    "searchTitle": "Ürün Ara",
+    "productsTitle": "Ürünlerimiz",
+    "journeyTitle": "Yolculuğumuz",
+    "goalsTitle": "Hedeflerimiz",
+    "newsTitle": "Bizden Haberler",
+    "newsletterTitle": "E-Posta Bültenine Kaydolun",
+    "newsletterDesc": "Etkinlikler ve kampanyalardan haberdar olun."
+  },
+  "catalog": {
+    "title": "Ürünler & Katalog",
+    "skuSearch": "Beseka SKU ile ara",
+    "oemSearch": "OEM & Cross Kodlar",
+    "manufacturer": "Üreticiler",
+    "model": "Modeller",
+    "subModel": "Alt Modeller",
+    "productGroup": "Ürün Grupları",
+    "selectManufacturer": "Önce üretici seçiniz",
+    "selectModel": "Önce model seçiniz",
+    "noResults": "Aramanızla eşleşen ürün bulunamadı.",
+    "clearFilters": "Filtreyi Temizle",
+    "matchedOem": "Eşleşen OEM",
+    "landingHint": "Beseka referans kodu veya OEM kodu ile arama yapın",
+    "landingSubhint": "Yukarıdaki arama panelinden SKU, OEM/cross kod veya araç bilgisi girin."
+  },
+  "product": {
+    "oemCodes": "OEM Kodları",
+    "crossCodes": "Cross Kodları",
+    "compatibleVehicles": "Uyumlu Araçlar",
+    "make": "Marka",
+    "model": "Model",
+    "subModel": "Alt Model",
+    "year": "Yıl",
+    "engine": "Motor"
+  },
+  "b2b": {
+    "title": "B2B Giriş",
+    "dashboard": "B2B Paneli",
+    "orders": "Siparişlerim",
+    "creditNotes": "Kredi Fişlerim",
+    "address": "Adresim",
+    "profile": "Kişisel Bilgilerim",
+    "placeholder": "Sipariş entegrasyonu yakında aktif olacaktır."
+  },
+  "admin": {
+    "dashboard": "Yönetim Paneli",
+    "products": "Ürünler",
+    "categories": "Kategoriler",
+    "blog": "Blog",
+    "pages": "Sayfalar",
+    "users": "Kullanıcılar",
+    "media": "Medya",
+    "login": "Admin Girişi"
+  }
+}
