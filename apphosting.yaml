@@ -26,6 +26,12 @@ env:
       - BUILD
       - RUNTIME
 
+  # İsteğe bağlı: yerel geliştirme / özel Storage erişimi
+  - variable: FIREBASE_SERVICE_ACCOUNT_JSON
+    secret: FIREBASE_SERVICE_ACCOUNT_JSON
+    availability:
+      - RUNTIME
+
   - variable: AUTH_URL
     secret: AUTH_URL
     availability:
@@ -34,6 +40,38 @@ env:
 
   - variable: NEXT_PUBLIC_SITE_URL
     secret: NEXT_PUBLIC_SITE_URL
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Firebase Web SDK — public config (Storage / Analytics için)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSyD9DzOno1ipMTFJ8Fw1gIZyIirK9XeUQiQ"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "beseka-encom.firebaseapp.com"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "beseka-encom"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "beseka-encom.firebasestorage.app"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "943850031269"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:943850031269:web:466fb53b0642b86069654c"
     availability:
       - BUILD
       - RUNTIME

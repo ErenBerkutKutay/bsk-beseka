@@ -11,6 +11,38 @@ Bu proje **SSR Next.js + PostgreSQL + API** kullandığı için klasik (sadece s
    - [Neon](https://neon.tech) (önerilen, ücretsiz katman)
    - veya Supabase / Cloud SQL
 
+## Firebase Web SDK (client)
+
+Console'dan aldığınız web app config `src/lib/firebase.ts` içinde env değişkenleriyle kullanılır:
+
+```ts
+import { getFirebaseApp } from "@/lib/firebase";
+```
+
+Bu config **App Hosting deploy için zorunlu değildir**; ileride Storage, Analytics vb. için hazırdır.  
+Site girişi **NextAuth** ile çalışır (Firebase Authentication değil).
+
+`.env` / App Hosting ortamında `NEXT_PUBLIC_FIREBASE_*` değerleri tanımlı olmalı ( `apphosting.yaml` içinde mevcut).
+
+## Firebase Admin SDK (sunucu)
+
+Console'daki `require("firebase-admin")` + `serviceAccountKey.json` örneği yerine projede:
+
+```ts
+import { getFirebaseAdminApp } from "@/lib/firebase-admin";
+```
+
+**Yerel geliştirme:** Service account JSON indirin, repoya koymayın:
+
+```bash
+# Firebase Console → beseka-encom → Project settings → Service accounts → Generate new private key
+export FIREBASE_SERVICE_ACCOUNT_JSON='$(cat ~/Downloads/beseka-encom-*.json)'
+```
+
+**App Hosting (canlı):** Çoğu durumda ekstra key gerekmez; Cloud Run otomatik kimlik bilgisi kullanır. Storage için IAM izinlerini kontrol edin.
+
+`serviceAccountKey.json` dosyasını **asla Git'e eklemeyin**.
+
 ## 1. Veritabanını hazırlayın
 
 Neon/Supabase'te yeni DB oluşturup connection string alın:
