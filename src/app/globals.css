@@ -280,11 +280,6 @@ html.lenis body {
   background: #ffffff;
 }
 
-/* next/image fill — kenardan hafif boşluk, oran korunur */
-.product-image-frame > span {
-  position: absolute !important;
-  inset: 0.375rem !important;
-}
 
 .product-image-frame img,
 .product-image {
