@@ -277,7 +277,7 @@ html.lenis body {
 .product-image-frame {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #fff 0%, var(--brand-cream-light) 100%);
+  background: #ffffff;
 }
 
 /* next/image fill — kenardan hafif boşluk, oran korunur */
