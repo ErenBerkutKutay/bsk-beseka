@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { normalizeOEM } from "@/lib/oem/normalize";
+import { trackSearchTerm } from "@/lib/analytics";
 import type { Prisma } from "@/generated/prisma/client";
 
 const PRODUCT_TEXT_LOCALES = ["tr", "en", "de", "ar", "es", "it"] as const;
@@ -130,6 +131,11 @@ export async function searchProducts(params: ProductSearchParams) {
 
   if (q) {
     where.OR = buildUnifiedSearchConditions(q);
+    void trackSearchTerm(q);
+  }
+
+  if (sku) {
+    void trackSearchTerm(sku);
   }
 
   const codeMatchFilter = q ? buildCodeMatchFilter(q) : undefined;

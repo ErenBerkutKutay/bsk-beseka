@@ -238,6 +238,7 @@ export type ProductWhereInput = {
   oemCodes?: Prisma.OEMCodeListRelationFilter
   crossCodes?: Prisma.CrossCodeListRelationFilter
   fitments?: Prisma.VehicleFitmentListRelationFilter
+  viewStats?: Prisma.XOR<Prisma.AnalyticsProductViewNullableScalarRelationFilter, Prisma.AnalyticsProductViewWhereInput> | null
 }
 
 export type ProductOrderByWithRelationInput = {
@@ -258,6 +259,7 @@ export type ProductOrderByWithRelationInput = {
   oemCodes?: Prisma.OEMCodeOrderByRelationAggregateInput
   crossCodes?: Prisma.CrossCodeOrderByRelationAggregateInput
   fitments?: Prisma.VehicleFitmentOrderByRelationAggregateInput
+  viewStats?: Prisma.AnalyticsProductViewOrderByWithRelationInput
 }
 
 export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +283,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   oemCodes?: Prisma.OEMCodeListRelationFilter
   crossCodes?: Prisma.CrossCodeListRelationFilter
   fitments?: Prisma.VehicleFitmentListRelationFilter
+  viewStats?: Prisma.XOR<Prisma.AnalyticsProductViewNullableScalarRelationFilter, Prisma.AnalyticsProductViewWhereInput> | null
 }, "id" | "sku" | "slug">
 
 export type ProductOrderByWithAggregationInput = {
@@ -338,6 +341,7 @@ export type ProductCreateInput = {
   oemCodes?: Prisma.OEMCodeCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewCreateNestedOneWithoutProductInput
 }
 
 export type ProductUncheckedCreateInput = {
@@ -357,6 +361,7 @@ export type ProductUncheckedCreateInput = {
   oemCodes?: Prisma.OEMCodeUncheckedCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeUncheckedCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentUncheckedCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedCreateNestedOneWithoutProductInput
 }
 
 export type ProductUpdateInput = {
@@ -376,6 +381,7 @@ export type ProductUpdateInput = {
   oemCodes?: Prisma.OEMCodeUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateInput = {
@@ -395,6 +401,7 @@ export type ProductUncheckedUpdateInput = {
   oemCodes?: Prisma.OEMCodeUncheckedUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUncheckedUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedUpdateOneWithoutProductNestedInput
 }
 
 export type ProductCreateManyInput = {
@@ -606,6 +613,20 @@ export type ProductUpdateOneRequiredWithoutFitmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutFitmentsInput, Prisma.ProductUpdateWithoutFitmentsInput>, Prisma.ProductUncheckedUpdateWithoutFitmentsInput>
 }
 
+export type ProductCreateNestedOneWithoutViewStatsInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutViewStatsInput, Prisma.ProductUncheckedCreateWithoutViewStatsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutViewStatsInput
+  connect?: Prisma.ProductWhereUniqueInput
+}
+
+export type ProductUpdateOneRequiredWithoutViewStatsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductCreateWithoutViewStatsInput, Prisma.ProductUncheckedCreateWithoutViewStatsInput>
+  connectOrCreate?: Prisma.ProductCreateOrConnectWithoutViewStatsInput
+  upsert?: Prisma.ProductUpsertWithoutViewStatsInput
+  connect?: Prisma.ProductWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductUpdateToOneWithWhereWithoutViewStatsInput, Prisma.ProductUpdateWithoutViewStatsInput>, Prisma.ProductUncheckedUpdateWithoutViewStatsInput>
+}
+
 export type ProductCreateWithoutCategoryInput = {
   id?: string
   sku: string
@@ -622,6 +643,7 @@ export type ProductCreateWithoutCategoryInput = {
   oemCodes?: Prisma.OEMCodeCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewCreateNestedOneWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutCategoryInput = {
@@ -640,6 +662,7 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   oemCodes?: Prisma.OEMCodeUncheckedCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeUncheckedCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentUncheckedCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedCreateNestedOneWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutCategoryInput = {
@@ -703,6 +726,7 @@ export type ProductCreateWithoutOemCodesInput = {
   category: Prisma.CategoryCreateNestedOneWithoutProductsInput
   crossCodes?: Prisma.CrossCodeCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewCreateNestedOneWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutOemCodesInput = {
@@ -721,6 +745,7 @@ export type ProductUncheckedCreateWithoutOemCodesInput = {
   updatedAt?: Date | string
   crossCodes?: Prisma.CrossCodeUncheckedCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentUncheckedCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedCreateNestedOneWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutOemCodesInput = {
@@ -755,6 +780,7 @@ export type ProductUpdateWithoutOemCodesInput = {
   category?: Prisma.CategoryUpdateOneRequiredWithoutProductsNestedInput
   crossCodes?: Prisma.CrossCodeUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutOemCodesInput = {
@@ -773,6 +799,7 @@ export type ProductUncheckedUpdateWithoutOemCodesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   crossCodes?: Prisma.CrossCodeUncheckedUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedUpdateOneWithoutProductNestedInput
 }
 
 export type ProductCreateWithoutCrossCodesInput = {
@@ -791,6 +818,7 @@ export type ProductCreateWithoutCrossCodesInput = {
   category: Prisma.CategoryCreateNestedOneWithoutProductsInput
   oemCodes?: Prisma.OEMCodeCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewCreateNestedOneWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutCrossCodesInput = {
@@ -809,6 +837,7 @@ export type ProductUncheckedCreateWithoutCrossCodesInput = {
   updatedAt?: Date | string
   oemCodes?: Prisma.OEMCodeUncheckedCreateNestedManyWithoutProductInput
   fitments?: Prisma.VehicleFitmentUncheckedCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedCreateNestedOneWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutCrossCodesInput = {
@@ -843,6 +872,7 @@ export type ProductUpdateWithoutCrossCodesInput = {
   category?: Prisma.CategoryUpdateOneRequiredWithoutProductsNestedInput
   oemCodes?: Prisma.OEMCodeUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutCrossCodesInput = {
@@ -861,6 +891,7 @@ export type ProductUncheckedUpdateWithoutCrossCodesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   oemCodes?: Prisma.OEMCodeUncheckedUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedUpdateOneWithoutProductNestedInput
 }
 
 export type ProductCreateWithoutFitmentsInput = {
@@ -879,6 +910,7 @@ export type ProductCreateWithoutFitmentsInput = {
   category: Prisma.CategoryCreateNestedOneWithoutProductsInput
   oemCodes?: Prisma.OEMCodeCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewCreateNestedOneWithoutProductInput
 }
 
 export type ProductUncheckedCreateWithoutFitmentsInput = {
@@ -897,6 +929,7 @@ export type ProductUncheckedCreateWithoutFitmentsInput = {
   updatedAt?: Date | string
   oemCodes?: Prisma.OEMCodeUncheckedCreateNestedManyWithoutProductInput
   crossCodes?: Prisma.CrossCodeUncheckedCreateNestedManyWithoutProductInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedCreateNestedOneWithoutProductInput
 }
 
 export type ProductCreateOrConnectWithoutFitmentsInput = {
@@ -931,6 +964,7 @@ export type ProductUpdateWithoutFitmentsInput = {
   category?: Prisma.CategoryUpdateOneRequiredWithoutProductsNestedInput
   oemCodes?: Prisma.OEMCodeUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutFitmentsInput = {
@@ -949,6 +983,99 @@ export type ProductUncheckedUpdateWithoutFitmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   oemCodes?: Prisma.OEMCodeUncheckedUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUncheckedUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedUpdateOneWithoutProductNestedInput
+}
+
+export type ProductCreateWithoutViewStatsInput = {
+  id?: string
+  sku: string
+  slug: string
+  name: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  images?: Prisma.ProductCreateimagesInput | string[]
+  isNew?: boolean
+  newUntil?: Date | string | null
+  isFeatured?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.CategoryCreateNestedOneWithoutProductsInput
+  oemCodes?: Prisma.OEMCodeCreateNestedManyWithoutProductInput
+  crossCodes?: Prisma.CrossCodeCreateNestedManyWithoutProductInput
+  fitments?: Prisma.VehicleFitmentCreateNestedManyWithoutProductInput
+}
+
+export type ProductUncheckedCreateWithoutViewStatsInput = {
+  id?: string
+  sku: string
+  slug: string
+  name: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  categoryId: string
+  images?: Prisma.ProductCreateimagesInput | string[]
+  isNew?: boolean
+  newUntil?: Date | string | null
+  isFeatured?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  oemCodes?: Prisma.OEMCodeUncheckedCreateNestedManyWithoutProductInput
+  crossCodes?: Prisma.CrossCodeUncheckedCreateNestedManyWithoutProductInput
+  fitments?: Prisma.VehicleFitmentUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductCreateOrConnectWithoutViewStatsInput = {
+  where: Prisma.ProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductCreateWithoutViewStatsInput, Prisma.ProductUncheckedCreateWithoutViewStatsInput>
+}
+
+export type ProductUpsertWithoutViewStatsInput = {
+  update: Prisma.XOR<Prisma.ProductUpdateWithoutViewStatsInput, Prisma.ProductUncheckedUpdateWithoutViewStatsInput>
+  create: Prisma.XOR<Prisma.ProductCreateWithoutViewStatsInput, Prisma.ProductUncheckedCreateWithoutViewStatsInput>
+  where?: Prisma.ProductWhereInput
+}
+
+export type ProductUpdateToOneWithWhereWithoutViewStatsInput = {
+  where?: Prisma.ProductWhereInput
+  data: Prisma.XOR<Prisma.ProductUpdateWithoutViewStatsInput, Prisma.ProductUncheckedUpdateWithoutViewStatsInput>
+}
+
+export type ProductUpdateWithoutViewStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  images?: Prisma.ProductUpdateimagesInput | string[]
+  isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.CategoryUpdateOneRequiredWithoutProductsNestedInput
+  oemCodes?: Prisma.OEMCodeUpdateManyWithoutProductNestedInput
+  crossCodes?: Prisma.CrossCodeUpdateManyWithoutProductNestedInput
+  fitments?: Prisma.VehicleFitmentUpdateManyWithoutProductNestedInput
+}
+
+export type ProductUncheckedUpdateWithoutViewStatsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  sku?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.ProductUpdateimagesInput | string[]
+  isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oemCodes?: Prisma.OEMCodeUncheckedUpdateManyWithoutProductNestedInput
+  crossCodes?: Prisma.CrossCodeUncheckedUpdateManyWithoutProductNestedInput
+  fitments?: Prisma.VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductCreateManyCategoryInput = {
@@ -982,6 +1109,7 @@ export type ProductUpdateWithoutCategoryInput = {
   oemCodes?: Prisma.OEMCodeUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateWithoutCategoryInput = {
@@ -1000,6 +1128,7 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   oemCodes?: Prisma.OEMCodeUncheckedUpdateManyWithoutProductNestedInput
   crossCodes?: Prisma.CrossCodeUncheckedUpdateManyWithoutProductNestedInput
   fitments?: Prisma.VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput
+  viewStats?: Prisma.AnalyticsProductViewUncheckedUpdateOneWithoutProductNestedInput
 }
 
 export type ProductUncheckedUpdateManyWithoutCategoryInput = {
@@ -1084,6 +1213,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   oemCodes?: boolean | Prisma.Product$oemCodesArgs<ExtArgs>
   crossCodes?: boolean | Prisma.Product$crossCodesArgs<ExtArgs>
   fitments?: boolean | Prisma.Product$fitmentsArgs<ExtArgs>
+  viewStats?: boolean | Prisma.Product$viewStatsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["product"]>
 
@@ -1143,6 +1273,7 @@ export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   oemCodes?: boolean | Prisma.Product$oemCodesArgs<ExtArgs>
   crossCodes?: boolean | Prisma.Product$crossCodesArgs<ExtArgs>
   fitments?: boolean | Prisma.Product$fitmentsArgs<ExtArgs>
+  viewStats?: boolean | Prisma.Product$viewStatsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1159,6 +1290,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     oemCodes: Prisma.$OEMCodePayload<ExtArgs>[]
     crossCodes: Prisma.$CrossCodePayload<ExtArgs>[]
     fitments: Prisma.$VehicleFitmentPayload<ExtArgs>[]
+    viewStats: Prisma.$AnalyticsProductViewPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1572,6 +1704,7 @@ export interface Prisma__ProductClient<T, Null = never, ExtArgs extends runtime.
   oemCodes<T extends Prisma.Product$oemCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$oemCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OEMCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   crossCodes<T extends Prisma.Product$crossCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$crossCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CrossCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fitments<T extends Prisma.Product$fitmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$fitmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VehicleFitmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  viewStats<T extends Prisma.Product$viewStatsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Product$viewStatsArgs<ExtArgs>>): Prisma.Prisma__AnalyticsProductViewClient<runtime.Types.Result.GetResult<Prisma.$AnalyticsProductViewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2084,6 +2217,25 @@ export type Product$fitmentsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.VehicleFitmentScalarFieldEnum | Prisma.VehicleFitmentScalarFieldEnum[]
+}
+
+/**
+ * Product.viewStats
+ */
+export type Product$viewStatsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AnalyticsProductView
+   */
+  select?: Prisma.AnalyticsProductViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AnalyticsProductView
+   */
+  omit?: Prisma.AnalyticsProductViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnalyticsProductViewInclude<ExtArgs> | null
+  where?: Prisma.AnalyticsProductViewWhereInput
 }
 
 /**

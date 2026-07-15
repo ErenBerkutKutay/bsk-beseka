@@ -65,7 +65,9 @@ export const ModelName = {
   Page: 'Page',
   Media: 'Media',
   HomeBanner: 'HomeBanner',
-  HomeStat: 'HomeStat'
+  HomeStat: 'HomeStat',
+  AnalyticsSearchTerm: 'AnalyticsSearchTerm',
+  AnalyticsProductView: 'AnalyticsProductView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -285,6 +287,26 @@ export const HomeStatScalarFieldEnum = {
 } as const
 
 export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
+
+
+export const AnalyticsSearchTermScalarFieldEnum = {
+  id: 'id',
+  term: 'term',
+  count: 'count',
+  lastAt: 'lastAt'
+} as const
+
+export type AnalyticsSearchTermScalarFieldEnum = (typeof AnalyticsSearchTermScalarFieldEnum)[keyof typeof AnalyticsSearchTermScalarFieldEnum]
+
+
+export const AnalyticsProductViewScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  count: 'count',
+  lastAt: 'lastAt'
+} as const
+
+export type AnalyticsProductViewScalarFieldEnum = (typeof AnalyticsProductViewScalarFieldEnum)[keyof typeof AnalyticsProductViewScalarFieldEnum]
 
 
 export const SortOrder = {

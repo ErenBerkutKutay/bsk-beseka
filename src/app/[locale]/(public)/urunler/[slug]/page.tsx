@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getProductBySlug } from "@/lib/products/search";
+import { trackProductView } from "@/lib/analytics";
 import { Badge } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
 
@@ -15,6 +16,8 @@ export default async function ProductDetailPage({
 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+
+  void trackProductView(product.id);
 
   const name = getLocalizedText(product.name as { tr: string }, locale);
   const description = product.description

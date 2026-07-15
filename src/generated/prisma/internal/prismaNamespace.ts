@@ -398,7 +398,9 @@ export const ModelName = {
   Page: 'Page',
   Media: 'Media',
   HomeBanner: 'HomeBanner',
-  HomeStat: 'HomeStat'
+  HomeStat: 'HomeStat',
+  AnalyticsSearchTerm: 'AnalyticsSearchTerm',
+  AnalyticsProductView: 'AnalyticsProductView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat"
+    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat" | "analyticsSearchTerm" | "analyticsProductView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1530,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AnalyticsSearchTerm: {
+      payload: Prisma.$AnalyticsSearchTermPayload<ExtArgs>
+      fields: Prisma.AnalyticsSearchTermFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsSearchTermFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsSearchTermFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsSearchTermFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsSearchTermFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsSearchTermFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsSearchTermCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsSearchTermCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsSearchTermCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsSearchTermDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsSearchTermUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsSearchTermDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsSearchTermUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsSearchTermUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsSearchTermUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSearchTermPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsSearchTermAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsSearchTerm>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsSearchTermGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsSearchTermGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsSearchTermCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsSearchTermCountAggregateOutputType> | number
+        }
+      }
+    }
+    AnalyticsProductView: {
+      payload: Prisma.$AnalyticsProductViewPayload<ExtArgs>
+      fields: Prisma.AnalyticsProductViewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsProductViewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsProductViewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsProductViewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsProductViewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsProductViewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsProductViewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsProductViewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsProductViewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsProductViewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsProductViewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsProductViewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsProductViewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsProductViewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsProductViewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsProductViewPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsProductViewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsProductView>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsProductViewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsProductViewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsProductViewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsProductViewCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1768,6 +1918,26 @@ export const HomeStatScalarFieldEnum = {
 } as const
 
 export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
+
+
+export const AnalyticsSearchTermScalarFieldEnum = {
+  id: 'id',
+  term: 'term',
+  count: 'count',
+  lastAt: 'lastAt'
+} as const
+
+export type AnalyticsSearchTermScalarFieldEnum = (typeof AnalyticsSearchTermScalarFieldEnum)[keyof typeof AnalyticsSearchTermScalarFieldEnum]
+
+
+export const AnalyticsProductViewScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  count: 'count',
+  lastAt: 'lastAt'
+} as const
+
+export type AnalyticsProductViewScalarFieldEnum = (typeof AnalyticsProductViewScalarFieldEnum)[keyof typeof AnalyticsProductViewScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2053,6 +2223,8 @@ export type GlobalOmitConfig = {
   media?: Prisma.MediaOmit
   homeBanner?: Prisma.HomeBannerOmit
   homeStat?: Prisma.HomeStatOmit
+  analyticsSearchTerm?: Prisma.AnalyticsSearchTermOmit
+  analyticsProductView?: Prisma.AnalyticsProductViewOmit
 }
 
 /* Types for Logging */

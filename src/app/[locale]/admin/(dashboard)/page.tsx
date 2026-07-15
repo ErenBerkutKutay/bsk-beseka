@@ -1,7 +1,14 @@
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader } from "@/components/ui/input";
+import { AdminAnalyticsReports } from "@/components/admin/admin-analytics-reports";
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+
   const [productCount, categoryCount, blogCount, userCount] = await Promise.all([
     db.product.count(),
     db.category.count(),
@@ -17,8 +24,12 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-bold">Yönetim Paneli</h1>
+    <div className="space-y-10">
+      <div>
+        <h1 className="text-2xl font-bold text-brand-brown-dark">Yönetim Paneli</h1>
+        <p className="mt-1 text-sm text-muted">Genel özet ve site kullanım raporları</p>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label}>
@@ -31,6 +42,8 @@ export default async function AdminDashboardPage() {
           </Card>
         ))}
       </div>
+
+      <AdminAnalyticsReports locale={locale} />
     </div>
   );
 }

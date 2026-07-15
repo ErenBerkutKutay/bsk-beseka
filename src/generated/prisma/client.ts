@@ -116,3 +116,13 @@ export type HomeBanner = Prisma.HomeBannerModel
  * 
  */
 export type HomeStat = Prisma.HomeStatModel
+/**
+ * Model AnalyticsSearchTerm
+ * 
+ */
+export type AnalyticsSearchTerm = Prisma.AnalyticsSearchTermModel
+/**
+ * Model AnalyticsProductView
+ * 
+ */
+export type AnalyticsProductView = Prisma.AnalyticsProductViewModel
