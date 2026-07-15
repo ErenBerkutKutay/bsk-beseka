@@ -64,7 +64,8 @@ export const ModelName = {
   BlogPost: 'BlogPost',
   Page: 'Page',
   Media: 'Media',
-  HomeBanner: 'HomeBanner'
+  HomeBanner: 'HomeBanner',
+  HomeStat: 'HomeStat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -270,6 +271,20 @@ export const HomeBannerScalarFieldEnum = {
 } as const
 
 export type HomeBannerScalarFieldEnum = (typeof HomeBannerScalarFieldEnum)[keyof typeof HomeBannerScalarFieldEnum]
+
+
+export const HomeStatScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  label: 'label',
+  sub: 'sub',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
 
 
 export const SortOrder = {

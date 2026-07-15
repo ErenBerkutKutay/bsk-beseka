@@ -470,6 +470,22 @@ async function main() {
     }
   }
 
+  const defaultHomeStats = [
+    { value: "40+", label: "Ülke", sub: "5 Kıtada Hizmet", sortOrder: 0 },
+    { value: "5.000+", label: "SKU", sub: "En Yüksek Kalite", sortOrder: 1 },
+    { value: "100+", label: "Çalışan", sub: "Yüksek Nitelikli", sortOrder: 2 },
+    { value: "35+", label: "Yıl", sub: "Üretim Deneyimi", sortOrder: 3 },
+  ];
+
+  for (const stat of defaultHomeStats) {
+    const existing = await db.homeStat.findFirst({
+      where: { label: stat.label, value: stat.value },
+    });
+    if (!existing) {
+      await db.homeStat.create({ data: stat });
+    }
+  }
+
   console.log("Seed completed.");
   console.log("Admin: admin@beseka.com / admin123");
   console.log("B2B: b2b@beseka.com / b2b123");

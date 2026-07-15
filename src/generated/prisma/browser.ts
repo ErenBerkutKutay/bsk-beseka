@@ -87,3 +87,8 @@ export type Media = Prisma.MediaModel
  * 
  */
 export type HomeBanner = Prisma.HomeBannerModel
+/**
+ * Model HomeStat
+ * 
+ */
+export type HomeStat = Prisma.HomeStatModel

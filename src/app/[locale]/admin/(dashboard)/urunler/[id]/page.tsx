@@ -26,6 +26,7 @@ export default function ProductFormPage() {
   const [loading, setLoading] = useState(!!productId);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [skuError, setSkuError] = useState("");
   const [success, setSuccess] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [form, setForm] = useState({
@@ -99,10 +100,40 @@ export default function ProductFormPage() {
     }));
   }
 
+  async function checkSkuAvailability(nextSku: string) {
+    const sku = nextSku.trim().toUpperCase();
+    if (!sku) {
+      setSkuError("");
+      return true;
+    }
+
+    const params = new URLSearchParams({ sku });
+    if (productId) params.set("excludeId", productId);
+
+    const res = await fetch(`/api/admin/products/check-sku?${params.toString()}`);
+    if (!res.ok) return true;
+
+    const data = await res.json();
+    if (!data.available) {
+      setSkuError(`Bu SKU zaten kayıtlı: ${sku}`);
+      return false;
+    }
+
+    setSkuError("");
+    return true;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setSuccess(false);
+
+    const skuOk = await checkSkuAvailability(form.sku);
+    if (!skuOk) {
+      setError("Bu ürün kodu zaten kullanılıyor. Farklı bir SKU girin veya mevcut ürünü düzenleyin.");
+      return;
+    }
+
     setSaving(true);
 
     const payload = {
@@ -176,11 +207,18 @@ export default function ProductFormPage() {
                 <Label>SKU (Beseka Ref.)</Label>
                 <Input
                   value={form.sku}
-                  onChange={(e) => setForm({ ...form, sku: e.target.value.toUpperCase() })}
+                  onChange={(e) => {
+                    setForm({ ...form, sku: e.target.value.toUpperCase() });
+                    if (skuError) setSkuError("");
+                  }}
+                  onBlur={(e) => checkSkuAvailability(e.target.value)}
                   placeholder="B8376"
                   className="mt-1.5 font-mono"
                   required
                 />
+                {skuError && (
+                  <p className="mt-1.5 text-sm text-red-600">{skuError}</p>
+                )}
               </div>
               <div>
                 <Label>Kategori</Label>

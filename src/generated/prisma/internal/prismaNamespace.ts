@@ -397,7 +397,8 @@ export const ModelName = {
   BlogPost: 'BlogPost',
   Page: 'Page',
   Media: 'Media',
-  HomeBanner: 'HomeBanner'
+  HomeBanner: 'HomeBanner',
+  HomeStat: 'HomeStat'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner"
+    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1453,6 +1454,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HomeStat: {
+      payload: Prisma.$HomeStatPayload<ExtArgs>
+      fields: Prisma.HomeStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HomeStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HomeStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        findFirst: {
+          args: Prisma.HomeStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HomeStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        findMany: {
+          args: Prisma.HomeStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>[]
+        }
+        create: {
+          args: Prisma.HomeStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        createMany: {
+          args: Prisma.HomeStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HomeStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>[]
+        }
+        delete: {
+          args: Prisma.HomeStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        update: {
+          args: Prisma.HomeStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.HomeStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HomeStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HomeStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.HomeStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeStatPayload>
+        }
+        aggregate: {
+          args: Prisma.HomeStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHomeStat>
+        }
+        groupBy: {
+          args: Prisma.HomeStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HomeStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeStatCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1679,6 +1754,20 @@ export const HomeBannerScalarFieldEnum = {
 } as const
 
 export type HomeBannerScalarFieldEnum = (typeof HomeBannerScalarFieldEnum)[keyof typeof HomeBannerScalarFieldEnum]
+
+
+export const HomeStatScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  label: 'label',
+  sub: 'sub',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1963,6 +2052,7 @@ export type GlobalOmitConfig = {
   page?: Prisma.PageOmit
   media?: Prisma.MediaOmit
   homeBanner?: Prisma.HomeBannerOmit
+  homeStat?: Prisma.HomeStatOmit
 }
 
 /* Types for Logging */

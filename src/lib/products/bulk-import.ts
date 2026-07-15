@@ -6,6 +6,7 @@ import type { BulkImportResult, BulkProductRow } from "./bulk-import-parse";
 
 export type { BulkImportResult, BulkParseError, BulkProductRow } from "./bulk-import-parse";
 export { BULK_PRODUCT_CSV_TEMPLATE, parseBulkProductCsv } from "./bulk-import-parse";
+export { createBulkProductExcelBuffer, excelBufferToCsv } from "./bulk-import-excel";
 
 function buildSlug(sku: string, name: string) {
   return slugify(`${sku}-${name}`, { lower: true, strict: true });
@@ -50,7 +51,10 @@ export async function importBulkProducts(
       if (existing) {
         if (!updateExisting) {
           result.failed++;
-          result.errors.push({ line: row.line, message: `${row.sku}: Zaten mevcut` });
+          result.errors.push({
+            line: row.line,
+            message: `${row.sku}: Bu SKU zaten kayıtlı. Mevcut ürünü düzenleyin veya "Mevcut SKU'ları güncelle" seçeneğini işaretleyin.`,
+          });
           result.rows.push({ sku: row.sku, status: "failed", message: "SKU zaten var" });
           continue;
         }

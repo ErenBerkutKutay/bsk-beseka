@@ -197,3 +197,14 @@ model HomeBanner {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model HomeStat {
+  id        String   @id @default(cuid())
+  value     String
+  label     String
+  sub       String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

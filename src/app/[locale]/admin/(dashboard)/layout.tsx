@@ -11,6 +11,7 @@ const adminNav = [
   { href: "/admin/urunler/toplu", label: "Toplu Ürün Yükle" },
   { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/bannerlar", label: "Bannerlar" },
+  { href: "/admin/istatistikler", label: "İstatistikler" },
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/sayfalar", label: "Sayfalar" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },

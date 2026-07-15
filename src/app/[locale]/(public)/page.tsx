@@ -12,6 +12,7 @@ import { getLocalizedText } from "@/lib/utils";
 import { besekaAssets } from "@/lib/beseka/assets";
 import { fallbackHomeBanners } from "@/lib/beseka/home-banners";
 import { getActiveHomeBanners } from "@/lib/banners";
+import { getActiveHomeStats } from "@/lib/home-stats";
 import { ArrowRight } from "lucide-react";
 
 export default async function HomePage({
@@ -23,7 +24,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations("home");
 
-  const [categories, newProducts, blogPosts, homeBanners] = await Promise.all([
+  const [categories, newProducts, blogPosts, homeBanners, homeStats] = await Promise.all([
     db.category.findMany({
       orderBy: { sortOrder: "asc" },
       include: {
@@ -46,6 +47,7 @@ export default async function HomePage({
       orderBy: { publishedAt: "desc" },
     }),
     getActiveHomeBanners(),
+    getActiveHomeStats(),
   ]);
 
   const categoryItems = categories.map((cat, index) => {
@@ -134,7 +136,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <HomeStatsBar />
+      <HomeStatsBar stats={homeStats} />
 
       <HomeCatalogSearch />
 

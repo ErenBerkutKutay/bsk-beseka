@@ -19,6 +19,7 @@ import {
   type BulkImportResult,
   type BulkProductRow,
 } from "@/lib/products/bulk-import-parse";
+import { createBulkProductExcelBuffer, excelBufferToCsv } from "@/lib/products/bulk-import-excel";
 
 type PreviewData = {
   total: number;
@@ -35,7 +36,7 @@ export default function BulkProductImportPage() {
   const [result, setResult] = useState<BulkImportResult | null>(null);
   const [loading, setLoading] = useState<"preview" | "import" | null>(null);
 
-  function downloadTemplate() {
+  function downloadCsvTemplate() {
     const blob = new Blob([BULK_PRODUCT_CSV_TEMPLATE], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -45,10 +46,42 @@ export default function BulkProductImportPage() {
     URL.revokeObjectURL(url);
   }
 
+  function downloadExcelTemplate() {
+    const buffer = createBulkProductExcelBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "beseka-urun-sablonu.xlsx";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   const handleFile = useCallback((file: File) => {
     setFileName(file.name);
     setResult(null);
     setPreview(null);
+
+    const isExcel = /\.xlsx?$/i.test(file.name);
+
+    if (isExcel) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const buffer = e.target?.result as ArrayBuffer;
+          const csv = excelBufferToCsv(buffer);
+          setCsvContent(csv);
+        } catch (err) {
+          alert(err instanceof Error ? err.message : "Excel dosyası okunamadı");
+          setCsvContent("");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
@@ -107,25 +140,31 @@ export default function BulkProductImportPage() {
       </p>
 
       <div className="mt-6 flex flex-wrap gap-3">
-        <Button variant="outline" onClick={downloadTemplate} className="gap-2">
+        <Button variant="outline" onClick={downloadExcelTemplate} className="gap-2">
           <Download className="h-4 w-4" />
-          Şablon İndir (.csv)
+          Excel Şablonu (.xlsx)
+        </Button>
+        <Button variant="outline" onClick={downloadCsvTemplate} className="gap-2">
+          <Download className="h-4 w-4" />
+          CSV Şablonu (.csv)
         </Button>
       </div>
 
       <Card className="mt-6">
         <CardContent className="space-y-5 pt-6">
           <div>
-            <Label>CSV / Excel Dosyası</Label>
+            <Label>Excel / CSV Dosyası</Label>
             <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-brand-cream-light/30 px-6 py-10 transition hover:border-brand-brown hover:bg-brand-cream-light/60">
               <FileSpreadsheet className="mb-3 h-10 w-10 text-brand-brown/60" />
               <span className="font-medium text-brand-brown-dark">
                 {fileName || "Dosya seçin veya sürükleyin"}
               </span>
-              <span className="mt-1 text-xs text-muted">.csv — Excel&apos;de &quot;Farklı Kaydet → CSV&quot;</span>
+              <span className="mt-1 text-xs text-muted">
+                .xlsx veya .csv — Excel şablonunu doğrudan yükleyebilirsiniz
+              </span>
               <input
                 type="file"
-                accept=".csv,text/csv"
+                accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 className="hidden"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
@@ -141,7 +180,7 @@ export default function BulkProductImportPage() {
               checked={updateExisting}
               onChange={(e) => setUpdateExisting(e.target.checked)}
             />
-            Mevcut SKU&apos;ları güncelle (işaretli değilse atlanır)
+            Mevcut SKU&apos;ları güncelle (işaretli değilse aynı kod tekrar yüklenemez)
           </label>
 
           <div className="flex flex-wrap gap-3">

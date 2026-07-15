@@ -28,10 +28,10 @@ export function HomeCatalogSearch() {
           Online Katalog
         </p>
         <h2 className="mt-2 text-2xl font-bold text-brand-brown-dark md:text-3xl">
-          Ürün kodunu girerek arama yapabilirsiniz
+          Ürün adı, kod veya OEM ile arayın
         </h2>
         <p className="mt-2 text-sm text-muted">
-          Beseka SKU, OEM veya cross kod — tire ve boşluk fark etmez.
+          motor takozu, B8376, 1311 826 080 — açıklama, Beseka kodu ve OEM/cross kodu aynı kutuda aranır.
         </p>
 
         <form
@@ -44,7 +44,7 @@ export function HomeCatalogSearch() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Örn: B8376 veya 12 34-56.78"
+              placeholder="Örn: motor takozu, B8376, 1311 826 080"
               className="w-full rounded-lg border border-brand-cream-dark/50 bg-white py-3 pl-10 pr-4 text-sm text-brand-brown-dark shadow-md shadow-brand-cream/20 outline-none ring-brand-brown/30 focus:ring-2"
             />
           </div>

@@ -64,6 +64,17 @@ export async function PUT(
   const { id } = await params;
   const body = await request.json();
   const data = productSchema.parse(body);
+  const sku = data.sku.trim().toUpperCase();
+
+  const duplicate = await db.product.findFirst({
+    where: { sku, NOT: { id } },
+  });
+  if (duplicate) {
+    return NextResponse.json(
+      { error: `Bu SKU başka bir üründe kullanılıyor: ${sku}` },
+      { status: 409 },
+    );
+  }
 
   const name: Prisma.InputJsonValue = {
     tr: data.nameTr,
@@ -83,8 +94,8 @@ export async function PUT(
   const product = await db.product.update({
     where: { id },
     data: {
-      sku: data.sku,
-      slug: buildSlug(data.sku, data.nameTr),
+      sku,
+      slug: buildSlug(sku, data.nameTr),
       name,
       description,
       categoryId: data.categoryId,

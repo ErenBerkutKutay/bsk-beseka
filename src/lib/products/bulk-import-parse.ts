@@ -149,6 +149,7 @@ export function parseBulkProductCsv(content: string): {
 
   const rows: BulkProductRow[] = [];
   const errors: BulkParseError[] = [];
+  const seenSkus = new Map<string, number>();
 
   for (let i = 1; i < lines.length; i++) {
     const lineNum = i + 1;
@@ -177,9 +178,19 @@ export function parseBulkProductCsv(content: string): {
       continue;
     }
 
+    const skuUpper = sku.toUpperCase();
+    if (seenSkus.has(skuUpper)) {
+      errors.push({
+        line: lineNum,
+        message: `${skuUpper}: Bu SKU dosyada tekrar ediyor (ilk: satır ${seenSkus.get(skuUpper)})`,
+      });
+      continue;
+    }
+    seenSkus.set(skuUpper, lineNum);
+
     rows.push({
       line: lineNum,
-      sku: sku.toUpperCase(),
+      sku: skuUpper,
       nameTr,
       descriptionTr: get("descriptionTr") || undefined,
       categorySlug: categorySlug.toLowerCase(),

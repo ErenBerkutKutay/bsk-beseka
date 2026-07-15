@@ -50,6 +50,15 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json();
   const data = productSchema.parse(body);
+  const sku = data.sku.trim().toUpperCase();
+
+  const existing = await db.product.findUnique({ where: { sku } });
+  if (existing) {
+    return NextResponse.json(
+      { error: `Bu SKU zaten kayıtlı: ${sku}. Mevcut ürünü düzenleyin.` },
+      { status: 409 },
+    );
+  }
 
   const name: Prisma.InputJsonValue = {
     tr: data.nameTr,
@@ -65,8 +74,8 @@ export async function POST(request: NextRequest) {
 
   const product = await db.product.create({
     data: {
-      sku: data.sku,
-      slug: buildSlug(data.sku, data.nameTr),
+      sku,
+      slug: buildSlug(sku, data.nameTr),
       name,
       description,
       categoryId: data.categoryId,

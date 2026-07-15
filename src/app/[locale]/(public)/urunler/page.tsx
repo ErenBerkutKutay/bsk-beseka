@@ -7,7 +7,7 @@ import {
   CatalogCategoryTiles,
 } from "@/components/catalog/catalog-search-panel";
 import { CatalogProductList } from "@/components/catalog/product-grid";
-import { Search, Wrench, Car } from "lucide-react";
+import { Search, Wrench, AlignLeft } from "lucide-react";
 
 function hasActiveSearch(params: Record<string, string | undefined>) {
   return !!(params.q || params.sku || params.make || params.model || params.subModel || params.category);
@@ -63,6 +63,11 @@ async function CatalogLanding() {
 
   const hints = [
     {
+      icon: AlignLeft,
+      title: "Genel Arama",
+      desc: "Ürün adı, açıklama, Beseka kodu ve OEM/cross kodu tek kutuda",
+    },
+    {
       icon: Wrench,
       title: "OEM / Cross Kod",
       desc: "12 34-56.78 yazsanız da 12345678 olarak eşleşir",
@@ -70,12 +75,7 @@ async function CatalogLanding() {
     {
       icon: Search,
       title: "Beseka SKU",
-      desc: "B8376, B6850 gibi referans kodlarla doğrudan arama",
-    },
-    {
-      icon: Car,
-      title: "Araç Uyumluluğu",
-      desc: "Marka, model ve alt modele göre filtreleme",
+      desc: "B8376, B8306.T gibi referans kodlarla doğrudan arama",
     },
   ];
 

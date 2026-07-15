@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Package, Upload } from "lucide-react";
+import { Plus, Search, Package, Upload, ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge, Card, CardContent, Input } from "@/components/ui/input";
 
@@ -15,14 +15,18 @@ type Product = {
   images: string[];
   isNew: boolean;
   isActive: boolean;
+  updatedAt: string;
   _count: { oemCodes: number; crossCodes: number; fitments: number };
 };
+
+type SortOption = "sku-asc" | "sku-desc" | "name-asc" | "updated-desc";
 
 export default function AdminProductsPage() {
   const locale = useLocale();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("sku-asc");
 
   useEffect(() => {
     fetch("/api/admin/products")
@@ -37,13 +41,30 @@ export default function AdminProductsPage() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return products;
-    return products.filter(
-      (p) =>
-        p.sku.toLowerCase().includes(q) ||
-        p.name.tr?.toLowerCase().includes(q),
-    );
-  }, [products, query]);
+    let list = q
+      ? products.filter(
+          (p) =>
+            p.sku.toLowerCase().includes(q) ||
+            p.name.tr?.toLowerCase().includes(q),
+        )
+      : [...products];
+
+    list.sort((a, b) => {
+      switch (sortBy) {
+        case "sku-desc":
+          return b.sku.localeCompare(a.sku, "tr", { numeric: true, sensitivity: "base" });
+        case "name-asc":
+          return (a.name.tr || "").localeCompare(b.name.tr || "", "tr", { sensitivity: "base" });
+        case "updated-desc":
+          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        case "sku-asc":
+        default:
+          return a.sku.localeCompare(b.sku, "tr", { numeric: true, sensitivity: "base" });
+      }
+    });
+
+    return list;
+  }, [products, query, sortBy]);
 
   return (
     <div>
@@ -70,14 +91,29 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      <div className="relative mb-6 max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="SKU veya ürün adı ara..."
-          className="pl-10"
-        />
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative max-w-md flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="SKU veya ürün adı ara..."
+            className="pl-10"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="h-4 w-4 text-muted" />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortOption)}
+            className="h-10 rounded-lg border border-border bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-brown"
+          >
+            <option value="sku-asc">SKU (A → Z)</option>
+            <option value="sku-desc">SKU (Z → A)</option>
+            <option value="name-asc">Ürün adı (A → Z)</option>
+            <option value="updated-desc">Son güncellenen</option>
+          </select>
+        </div>
       </div>
 
       {loading ? (

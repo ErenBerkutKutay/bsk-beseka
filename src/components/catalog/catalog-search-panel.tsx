@@ -13,6 +13,7 @@ import {
   Sparkles,
   Wrench,
   X,
+  AlignLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,13 +32,13 @@ type VehicleMake = {
   models: { id: string; name: string; subModels: { id: string; name: string }[] }[];
 };
 
-type SearchMode = "oem" | "sku" | "vehicle";
+type SearchMode = "oem" | "sku" | "vehicle" | "text";
 
 const EXAMPLE_SEARCHES = [
+  { label: "motor takozu", type: "text" as const },
+  { label: "amortisör körüğü", type: "text" as const },
   { label: "B8376", type: "sku" as const },
-  { label: "B6850", type: "sku" as const },
   { label: "12 34-56.78", type: "oem" as const },
-  { label: "1234567890", type: "oem" as const },
 ];
 
 export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
@@ -60,7 +61,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     ? "sku"
     : searchParams.get("make") || searchParams.get("model")
       ? "vehicle"
-      : "oem";
+      : "text";
   const [mode, setMode] = useState<SearchMode>(initialMode);
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const activeFilters = useMemo(() => {
     const chips: { key: string; label: string; clear: () => void }[] = [];
     if (sku) chips.push({ key: "sku", label: `SKU: ${sku}`, clear: () => setSku("") });
-    if (q) chips.push({ key: "q", label: `OEM: ${q}`, clear: () => setQ("") });
+    if (q) chips.push({ key: "q", label: `Arama: ${q}`, clear: () => setQ("") });
     if (make) chips.push({ key: "make", label: make, clear: () => { setMake(""); setModel(""); setSubModel(""); } });
     if (model) chips.push({ key: "model", label: model, clear: () => { setModel(""); setSubModel(""); } });
     if (subModel) chips.push({ key: "subModel", label: subModel, clear: () => setSubModel("") });
@@ -164,6 +165,11 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
       setQ("");
       setMode("sku");
       pushFilters({ sku: example.label, q: "", make: "", model: "", subModel: "" });
+    } else if (example.type === "text") {
+      setQ(example.label);
+      setSku("");
+      setMode("text");
+      pushFilters({ q: example.label, sku: "", make: "", model: "", subModel: "" });
     } else {
       setQ(example.label);
       setSku("");
@@ -176,6 +182,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     "h-11 w-full rounded-lg border border-brand-brown-mid bg-brand-brown-dark/80 px-3 text-sm text-white focus:border-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-cream/30 disabled:cursor-not-allowed disabled:opacity-40";
 
   const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
+    { id: "text", label: "Genel Arama", icon: AlignLeft },
     { id: "oem", label: "OEM / Cross", icon: Wrench },
     { id: "sku", label: "Beseka SKU", icon: Hash },
     { id: "vehicle", label: "Araç ile", icon: Car },
@@ -194,8 +201,8 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           </p>
           <h1 className="text-2xl font-bold tracking-tight md:text-4xl">{t("title")}</h1>
           <p className="mt-3 text-sm leading-relaxed text-brand-cream/80 md:text-base">
-            OEM kodunu tire, boşluk veya nokta fark etmeksizin arayın. Beseka referans kodu veya
-            araç bilgisiyle de filtreleyebilirsiniz.
+            Tek kutuda ürün adı, açıklama, Beseka kodu ve OEM/cross kodu arayın. Tire, boşluk
+            veya nokta fark etmez.
           </p>
         </div>
 
@@ -230,6 +237,28 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           </div>
 
           {/* Ana arama alanı */}
+          {mode === "text" && (
+            <div className="space-y-3">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+                Genel arama
+              </label>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-cream/50" />
+                <Input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Örn: motor takozu, B8376, 1311 826 080"
+                  className="h-14 border-brand-brown-mid bg-brand-brown-dark/60 pl-12 text-base text-white placeholder:text-brand-cream/35 focus-visible:ring-brand-cream"
+                  autoFocus
+                />
+              </div>
+              <p className="text-xs text-brand-cream/60">
+                Ürün adı, açıklama, Beseka referans kodu ve kayıtlı OEM/cross kodlarında arar.
+                Kısmi eşleşmeler de listelenir.
+              </p>
+            </div>
+          )}
+
           {mode === "oem" && (
             <div className="space-y-3">
               <label className="block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">

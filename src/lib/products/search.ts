@@ -2,6 +2,88 @@ import { db } from "@/lib/db";
 import { normalizeOEM } from "@/lib/oem/normalize";
 import type { Prisma } from "@/generated/prisma/client";
 
+const PRODUCT_TEXT_LOCALES = ["tr", "en", "de", "ar", "es", "it"] as const;
+
+function buildProductTextSearchConditions(q: string): Prisma.ProductWhereInput[] {
+  return PRODUCT_TEXT_LOCALES.flatMap((locale) => [
+    { name: { path: [locale], string_contains: q, mode: "insensitive" as const } },
+    {
+      description: { path: [locale], string_contains: q, mode: "insensitive" as const },
+    },
+  ]);
+}
+
+function buildSkuSearchConditions(q: string): Prisma.ProductWhereInput[] {
+  const conditions: Prisma.ProductWhereInput[] = [
+    { sku: { contains: q, mode: "insensitive" } },
+    { sku: { equals: q, mode: "insensitive" } },
+  ];
+
+  const compact = q.replace(/\s+/g, "");
+  if (compact && compact !== q) {
+    conditions.push({ sku: { contains: compact, mode: "insensitive" } });
+  }
+
+  return conditions;
+}
+
+function buildCodeRelationFilter(
+  q: string,
+  relation: "oemCodes" | "crossCodes",
+): Prisma.ProductWhereInput[] {
+  const normalized = normalizeOEM(q);
+  if (!normalized) return [];
+
+  const conditions: Prisma.ProductWhereInput[] = [
+    { [relation]: { some: { code: { contains: q, mode: "insensitive" } } } },
+    { [relation]: { some: { codeNormalized: normalized } } },
+    { [relation]: { some: { codeNormalized: { startsWith: normalized } } } },
+  ];
+
+  if (normalized.length >= 2) {
+    conditions.push({
+      [relation]: { some: { codeNormalized: { contains: normalized } } },
+    });
+  }
+
+  const compact = q.replace(/[\s.\-/_]/g, "");
+  if (compact && compact !== q) {
+    conditions.push({
+      [relation]: { some: { code: { contains: compact, mode: "insensitive" } } },
+    });
+  }
+
+  return conditions;
+}
+
+function buildCodeMatchFilter(q: string): Prisma.OEMCodeWhereInput {
+  const normalized = normalizeOEM(q);
+  const or: Prisma.OEMCodeWhereInput[] = [
+    { code: { contains: q, mode: "insensitive" } },
+  ];
+
+  if (normalized) {
+    or.push(
+      { codeNormalized: normalized },
+      { codeNormalized: { startsWith: normalized } },
+    );
+    if (normalized.length >= 2) {
+      or.push({ codeNormalized: { contains: normalized } });
+    }
+  }
+
+  return { OR: or };
+}
+
+function buildUnifiedSearchConditions(q: string): Prisma.ProductWhereInput[] {
+  return [
+    ...buildSkuSearchConditions(q),
+    ...buildProductTextSearchConditions(q),
+    ...buildCodeRelationFilter(q, "oemCodes"),
+    ...buildCodeRelationFilter(q, "crossCodes"),
+  ];
+}
+
 export type ProductSearchParams = {
   q?: string;
   sku?: string;
@@ -47,57 +129,19 @@ export async function searchProducts(params: ProductSearchParams) {
   };
 
   if (q) {
-    const normalized = normalizeOEM(q);
-    where.OR = [
-      { sku: { contains: q, mode: "insensitive" } },
-      { oemCodes: { some: { codeNormalized: normalized } } },
-      { oemCodes: { some: { codeNormalized: { startsWith: normalized } } } },
-      { crossCodes: { some: { codeNormalized: normalized } } },
-      { crossCodes: { some: { codeNormalized: { startsWith: normalized } } } },
-    ];
-
-    if (normalized.length >= 3) {
-      where.OR.push(
-        {
-          oemCodes: {
-            some: { codeNormalized: { contains: normalized } },
-          },
-        },
-        {
-          crossCodes: {
-            some: { codeNormalized: { contains: normalized } },
-          },
-        },
-      );
-    }
+    where.OR = buildUnifiedSearchConditions(q);
   }
+
+  const codeMatchFilter = q ? buildCodeMatchFilter(q) : undefined;
 
   const [products, total] = await Promise.all([
     db.product.findMany({
       where,
       include: {
         category: true,
-        oemCodes: q
-          ? {
-              where: {
-                OR: [
-                  { codeNormalized: normalizeOEM(q) },
-                  { codeNormalized: { startsWith: normalizeOEM(q) } },
-                ],
-              },
-              take: 3,
-            }
-          : { take: 3 },
-        crossCodes: q
-          ? {
-              where: {
-                OR: [
-                  { codeNormalized: normalizeOEM(q) },
-                  { codeNormalized: { startsWith: normalizeOEM(q) } },
-                ],
-              },
-              take: 3,
-            }
+        oemCodes: codeMatchFilter ? { where: codeMatchFilter, take: 3 } : { take: 3 },
+        crossCodes: codeMatchFilter
+          ? { where: codeMatchFilter as Prisma.CrossCodeWhereInput, take: 3 }
           : { take: 3 },
       },
       orderBy: [{ isNew: "desc" }, { createdAt: "desc" }],
