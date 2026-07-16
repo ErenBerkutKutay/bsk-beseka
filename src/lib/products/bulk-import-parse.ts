@@ -142,7 +142,7 @@ export function parseBulkProductCsv(content: string): {
       rows: [],
       errors: [{
         line: 1,
-        message: "Zorunlu sütunlar eksik: sku, urun_adi (veya name), kategori (veya category)",
+        message: "Zorunlu sütunlar eksik: ref (veya sku), urun_adi (veya name), kategori (veya category)",
       }],
     };
   }
@@ -166,7 +166,7 @@ export function parseBulkProductCsv(content: string): {
     const categorySlug = get("categorySlug");
 
     if (!sku) {
-      errors.push({ line: lineNum, message: "SKU boş" });
+      errors.push({ line: lineNum, message: "Ref boş" });
       continue;
     }
     if (!nameTr) {
@@ -182,7 +182,7 @@ export function parseBulkProductCsv(content: string): {
     if (seenSkus.has(skuUpper)) {
       errors.push({
         line: lineNum,
-        message: `${skuUpper}: Bu SKU dosyada tekrar ediyor (ilk: satır ${seenSkus.get(skuUpper)})`,
+        message: `${skuUpper}: Bu Ref dosyada tekrar ediyor (ilk: satır ${seenSkus.get(skuUpper)})`,
       });
       continue;
     }
@@ -205,6 +205,6 @@ export function parseBulkProductCsv(content: string): {
   return { rows, errors };
 }
 
-export const BULK_PRODUCT_CSV_TEMPLATE = `sku;urun_adi;aciklama;kategori;oem_kodlari;cross_kodlari;gorseller;yeni;aktif
-B8376;Motor Takozu Ön;Ön motor takozu;motor-takozlari;12 34-56.78|77 888-99;CROSS1|CROSS2;/beseka/products/b8376.jpg;evet;evet
-B6850;Motor Takozu Arka;Arka motor takozu;motor-takozlari;98 76-54.32;;/beseka/products/b6850.jpg;hayir;evet`;
+export const BULK_PRODUCT_CSV_TEMPLATE = `ref;urun_adi;aciklama;kategori;oem_kodlari;cross_kodlari;yeni;aktif
+B8376;Motor Takozu Ön;Ön motor takozu;motor-takozlari;12 34-56.78|77 888-99;CROSS1|CROSS2;evet;evet
+B6850;Motor Takozu Arka;Arka motor takozu;motor-takozlari;98 76-54.32;;hayir;evet`;

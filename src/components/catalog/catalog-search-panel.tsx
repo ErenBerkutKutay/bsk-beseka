@@ -81,7 +81,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
   const activeFilters = useMemo(() => {
     const chips: { key: string; label: string; clear: () => void }[] = [];
-    if (sku) chips.push({ key: "sku", label: `SKU: ${sku}`, clear: () => setSku("") });
+    if (sku) chips.push({ key: "sku", label: `Ref: ${sku}`, clear: () => setSku("") });
     if (q) chips.push({ key: "q", label: `Arama: ${q}`, clear: () => setQ("") });
     if (make) chips.push({ key: "make", label: make, clear: () => { setMake(""); setModel(""); setSubModel(""); } });
     if (model) chips.push({ key: "model", label: model, clear: () => { setModel(""); setSubModel(""); } });
@@ -184,7 +184,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
     { id: "text", label: "Genel Arama", icon: AlignLeft },
     { id: "oem", label: "OEM / Cross", icon: Wrench },
-    { id: "sku", label: "Beseka SKU", icon: Hash },
+    { id: "sku", label: "Beseka Ref", icon: Hash },
     { id: "vehicle", label: "Araç ile", icon: Car },
   ];
 

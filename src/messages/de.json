@@ -36,7 +36,7 @@
   },
   "catalog": {
     "title": "Products & Catalog",
-    "skuSearch": "Search by Beseka SKU",
+    "skuSearch": "Search by Beseka Ref",
     "oemSearch": "OEM & Cross Codes",
     "manufacturer": "Manufacturers",
     "model": "Models",

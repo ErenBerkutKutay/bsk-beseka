@@ -74,7 +74,7 @@ async function CatalogLanding() {
     },
     {
       icon: Search,
-      title: "Beseka SKU",
+      title: "Beseka Ref",
       desc: "B8376, B8306.T gibi referans kodlarla doğrudan arama",
     },
   ];

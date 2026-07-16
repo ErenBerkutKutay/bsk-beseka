@@ -106,7 +106,7 @@ export default function AdminHomeStatsPage() {
     <div>
       <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Ana Sayfa İstatistikleri</h1>
       <p className="mb-6 text-sm text-muted">
-        Ana sayfadaki kırmızı istatistik şeridini (40+ Ülke, 5.000+ SKU vb.) buradan düzenleyin.
+        Ana sayfadaki kırmızı istatistik şeridini (40+ Ülke, 5.000+ Ref vb.) buradan düzenleyin.
       </p>
 
       {loadError && (

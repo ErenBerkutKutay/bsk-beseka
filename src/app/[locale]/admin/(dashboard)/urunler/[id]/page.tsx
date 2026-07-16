@@ -115,7 +115,7 @@ export default function ProductFormPage() {
 
     const data = await res.json();
     if (!data.available) {
-      setSkuError(`Bu SKU zaten kayıtlı: ${sku}`);
+      setSkuError(`Bu Ref zaten kayıtlı: ${sku}`);
       return false;
     }
 
@@ -130,7 +130,7 @@ export default function ProductFormPage() {
 
     const skuOk = await checkSkuAvailability(form.sku);
     if (!skuOk) {
-      setError("Bu ürün kodu zaten kullanılıyor. Farklı bir SKU girin veya mevcut ürünü düzenleyin.");
+      setError("Bu ürün kodu zaten kullanılıyor. Farklı bir Ref girin veya mevcut ürünü düzenleyin.");
       return;
     }
 
@@ -204,7 +204,7 @@ export default function ProductFormPage() {
             <h2 className="font-semibold text-brand-brown-dark">Temel Bilgiler</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <Label>SKU (Beseka Ref.)</Label>
+                <Label>Beseka Ref</Label>
                 <Input
                   value={form.sku}
                   onChange={(e) => {
@@ -314,17 +314,12 @@ export default function ProductFormPage() {
         <Card>
           <CardContent className="space-y-4 pt-6">
             <h2 className="font-semibold text-brand-brown-dark">Görseller</h2>
+            <p className="text-xs text-muted">
+              Toplu yüklemeden gelen ürünlerde görsel yoktur. Aşağıdan dosya seçerek yükleyin;
+              kaydettiğinizde sitede görünür.
+            </p>
             <div>
-              <Label>Görsel URL&apos;leri (her satıra bir tane)</Label>
-              <Textarea
-                value={form.images}
-                onChange={(e) => setForm({ ...form, images: e.target.value })}
-                rows={2}
-                className="mt-1.5 font-mono text-sm"
-              />
-            </div>
-            <div>
-              <Label>Dosya yükle</Label>
+              <Label>Görsel yükle</Label>
               <label className="mt-1.5 flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border bg-brand-cream-light/50 px-4 py-3 text-sm text-muted transition hover:border-brand-brown hover:bg-brand-cream-light">
                 <Upload className="h-4 w-4" />
                 Görsel seç...
@@ -343,6 +338,20 @@ export default function ProductFormPage() {
                 ))}
               </div>
             )}
+            <details className="text-xs text-muted">
+              <summary className="cursor-pointer font-medium text-brand-brown-dark">
+                Gelişmiş: URL ile ekle
+              </summary>
+              <div className="mt-2">
+                <Label>Görsel URL&apos;leri (her satıra bir tane)</Label>
+                <Textarea
+                  value={form.images}
+                  onChange={(e) => setForm({ ...form, images: e.target.value })}
+                  rows={2}
+                  className="mt-1.5 font-mono text-sm"
+                />
+              </div>
+            </details>
           </CardContent>
         </Card>
 

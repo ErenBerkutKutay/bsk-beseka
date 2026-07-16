@@ -72,7 +72,7 @@ export default function AdminProductsPage() {
         <div>
           <h1 className="text-2xl font-bold text-brand-brown-dark">Ürünler</h1>
           <p className="mt-1 text-sm text-muted">
-            {products.length} ürün · SKU, OEM kodları ve görselleri düzenleyin
+            {products.length} ürün · Ref, OEM kodları ve görselleri düzenleyin
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -97,7 +97,7 @@ export default function AdminProductsPage() {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="SKU veya ürün adı ara..."
+            placeholder="Ref veya ürün adı ara..."
             className="pl-10"
           />
         </div>
@@ -108,8 +108,8 @@ export default function AdminProductsPage() {
             onChange={(e) => setSortBy(e.target.value as SortOption)}
             className="h-10 rounded-lg border border-border bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-brown"
           >
-            <option value="sku-asc">SKU (A → Z)</option>
-            <option value="sku-desc">SKU (Z → A)</option>
+            <option value="sku-asc">Ref (A → Z)</option>
+            <option value="sku-desc">Ref (Z → A)</option>
             <option value="name-asc">Ürün adı (A → Z)</option>
             <option value="updated-desc">Son güncellenen</option>
           </select>
@@ -164,6 +164,11 @@ export default function AdminProductsPage() {
                     {!product.isActive && (
                       <Badge variant="outline" className="text-muted">
                         Pasif
+                      </Badge>
+                    )}
+                    {!product.images[0] && (
+                      <Badge variant="outline" className="border-amber-300 text-amber-700">
+                        Görsel yok
                       </Badge>
                     )}
                   </div>

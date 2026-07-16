@@ -71,7 +71,7 @@ export async function PUT(
   });
   if (duplicate) {
     return NextResponse.json(
-      { error: `Bu SKU başka bir üründe kullanılıyor: ${sku}` },
+      { error: `Bu Ref başka bir üründe kullanılıyor: ${sku}` },
       { status: 409 },
     );
   }

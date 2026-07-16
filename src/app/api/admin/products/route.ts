@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   const existing = await db.product.findUnique({ where: { sku } });
   if (existing) {
     return NextResponse.json(
-      { error: `Bu SKU zaten kayıtlı: ${sku}. Mevcut ürünü düzenleyin.` },
+      { error: `Bu Ref zaten kayıtlı: ${sku}. Mevcut ürünü düzenleyin.` },
       { status: 409 },
     );
   }

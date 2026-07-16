@@ -158,7 +158,7 @@ export function CatalogProductList({
         </div>
         <p className="text-lg font-semibold text-brand-brown-dark">{t("noResults")}</p>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-          Farklı bir OEM kodu formatı deneyin (ör. 12-34-56.78), Beseka SKU girin veya araç
+          Farklı bir OEM kodu formatı deneyin (ör. 12-34-56.78), Beseka Ref girin veya araç
           filtresini genişletin.
         </p>
       </div>

@@ -131,7 +131,7 @@ export async function AdminAnalyticsReports({ locale }: { locale: string }) {
                   <thead>
                     <tr className="border-b text-left text-xs uppercase tracking-wider text-muted">
                       <th className="py-2 pr-3">#</th>
-                      <th className="py-2 pr-3">SKU</th>
+                      <th className="py-2 pr-3">Ref</th>
                       <th className="py-2 pr-3">Ürün</th>
                       <th className="py-2 pr-3">Tıklama</th>
                       <th className="py-2">Son</th>

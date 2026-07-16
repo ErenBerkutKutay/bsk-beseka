@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const excludeId = request.nextUrl.searchParams.get("excludeId") || undefined;
 
   if (!sku) {
-    return NextResponse.json({ error: "SKU gerekli" }, { status: 400 });
+    return NextResponse.json({ error: "Ref gerekli" }, { status: 400 });
   }
 
   const existing = await db.product.findFirst({

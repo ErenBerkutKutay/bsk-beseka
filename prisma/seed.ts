@@ -472,7 +472,7 @@ async function main() {
 
   const defaultHomeStats = [
     { value: "40+", label: "Ülke", sub: "5 Kıtada Hizmet", sortOrder: 0 },
-    { value: "5.000+", label: "SKU", sub: "En Yüksek Kalite", sortOrder: 1 },
+    { value: "5.000+", label: "Ref", sub: "En Yüksek Kalite", sortOrder: 1 },
     { value: "100+", label: "Çalışan", sub: "Yüksek Nitelikli", sortOrder: 2 },
     { value: "35+", label: "Yıl", sub: "Üretim Deneyimi", sortOrder: 3 },
   ];

@@ -15,7 +15,6 @@ export function createBulkProductExcelBuffer(): ArrayBuffer {
     { wch: 22 },
     { wch: 28 },
     { wch: 20 },
-    { wch: 32 },
     { wch: 8 },
     { wch: 8 },
   ];

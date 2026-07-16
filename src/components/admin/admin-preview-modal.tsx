@@ -106,7 +106,7 @@ export function ProductPreview({
             <Image src={images[0]} alt="" fill className="product-image" sizes="400px" />
           ) : (
             <div className="flex h-full items-center justify-center font-mono text-2xl text-muted">
-              {sku || "SKU"}
+              {sku || "Ref"}
             </div>
           )}
         </div>

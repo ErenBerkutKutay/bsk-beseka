@@ -36,7 +36,7 @@
   },
   "catalog": {
     "title": "Ürünler & Katalog",
-    "skuSearch": "Beseka SKU ile ara",
+    "skuSearch": "Beseka Ref ile ara",
     "oemSearch": "OEM & Cross Kodlar",
     "manufacturer": "Üreticiler",
     "model": "Modeller",
@@ -48,7 +48,7 @@
     "clearFilters": "Filtreyi Temizle",
     "matchedOem": "Eşleşen OEM",
     "landingHint": "Beseka referans kodu veya OEM kodu ile arama yapın",
-    "landingSubhint": "Yukarıdaki arama panelinden SKU, OEM/cross kod veya araç bilgisi girin."
+    "landingSubhint": "Yukarıdaki arama panelinden Ref, OEM/cross kod veya araç bilgisi girin."
   },
   "product": {
     "oemCodes": "OEM Kodları",

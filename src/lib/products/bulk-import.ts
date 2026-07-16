@@ -53,9 +53,9 @@ export async function importBulkProducts(
           result.failed++;
           result.errors.push({
             line: row.line,
-            message: `${row.sku}: Bu SKU zaten kayıtlı. Mevcut ürünü düzenleyin veya "Mevcut SKU'ları güncelle" seçeneğini işaretleyin.`,
+            message: `${row.sku}: Bu Ref zaten kayıtlı. Mevcut ürünü düzenleyin veya "Mevcut Ref'leri güncelle" seçeneğini işaretleyin.`,
           });
-          result.rows.push({ sku: row.sku, status: "failed", message: "SKU zaten var" });
+          result.rows.push({ sku: row.sku, status: "failed", message: "Ref zaten var" });
           continue;
         }
 
@@ -69,7 +69,6 @@ export async function importBulkProducts(
             name,
             description,
             categoryId,
-            images: row.images,
             isNew: row.isNew,
             isFeatured: row.isNew,
             isActive: row.isActive,
@@ -90,7 +89,7 @@ export async function importBulkProducts(
             name,
             description,
             categoryId,
-            images: row.images,
+            images: [],
             isNew: row.isNew,
             isFeatured: row.isNew,
             isActive: row.isActive,

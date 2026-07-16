@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Download,
   FileSpreadsheet,
+  ImageIcon,
   Loader2,
   Upload,
   XCircle,
@@ -135,9 +136,37 @@ export default function BulkProductImportPage() {
 
       <h1 className="text-2xl font-bold text-brand-brown-dark">Toplu Ürün Yükleme</h1>
       <p className="mt-2 max-w-2xl text-sm text-muted">
-        Excel veya CSV dosyası ile yüzlerce ürünü tek seferde ekleyin. Mevcut SKU&apos;lar
-        güncellenebilir.
+        Excel veya CSV ile ürün bilgilerini toplu yükleyin. Görseller dosyaya eklenmez;
+        yükleme sonrası her ürünü tek tek açıp manuel ekleyin.
       </p>
+
+      <Card className="mt-6 border-brand-cream-dark/50 bg-brand-cream-light/30">
+        <CardContent className="pt-6">
+          <h2 className="flex items-center gap-2 font-semibold text-brand-brown-dark">
+            <ImageIcon className="h-5 w-5" />
+            Görseller nasıl eklenir?
+          </h2>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted">
+            <li>Excel/CSV ile ürünleri yükleyin (Ref, ad, açıklama, OEM vb.)</li>
+            <li>
+              <Link href={`/${locale}/admin/urunler`} className="font-medium text-brand-brown hover:underline">
+                Ürünler
+              </Link>{" "}
+              listesinden görseli olmayan ürünü bulun
+            </li>
+            <li>
+              <strong className="text-brand-brown-dark">Düzenle</strong> →{" "}
+              <strong className="text-brand-brown-dark">Görseller</strong> bölümünden{" "}
+              <strong className="text-brand-brown-dark">Görsel seç...</strong> ile dosya yükleyin
+            </li>
+            <li>Kaydedin — görsel sitede görünür</li>
+          </ol>
+          <p className="mt-3 text-xs text-muted">
+            Her ürün için bir veya birden fazla görsel yükleyebilirsiniz. Toplu yükleme görselleri
+            değiştirmez; mevcut görseller korunur.
+          </p>
+        </CardContent>
+      </Card>
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Button variant="outline" onClick={downloadExcelTemplate} className="gap-2">
@@ -180,7 +209,7 @@ export default function BulkProductImportPage() {
               checked={updateExisting}
               onChange={(e) => setUpdateExisting(e.target.checked)}
             />
-            Mevcut SKU&apos;ları güncelle (işaretli değilse aynı kod tekrar yüklenemez)
+            Mevcut Ref&apos;leri güncelle (işaretli değilse aynı kod tekrar yüklenemez)
           </label>
 
           <div className="flex flex-wrap gap-3">
@@ -226,13 +255,12 @@ export default function BulkProductImportPage() {
               </thead>
               <tbody className="text-muted">
                 {[
-                  ["sku", "Evet", "Beseka referans kodu (B8376)"],
+                  ["ref", "Evet", "Beseka referans kodu (B8376)"],
                   ["urun_adi", "Evet", "Ürün adı (Türkçe)"],
                   ["aciklama", "Hayır", "Ürün açıklaması"],
                   ["kategori", "Evet", "Kategori slug (motor-takozlari)"],
                   ["oem_kodlari", "Hayır", "12 34-56.78|77 888 (| ile ayırın)"],
                   ["cross_kodlari", "Hayır", "Cross kodları"],
-                  ["gorseller", "Hayır", "URL'ler | ile ayrılır"],
                   ["yeni", "Hayır", "evet / hayır"],
                   ["aktif", "Hayır", "evet / hayır (varsayılan: evet)"],
                 ].map(([col, req, desc]) => (
@@ -271,7 +299,7 @@ export default function BulkProductImportPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b text-left text-xs uppercase text-muted">
-                    <th className="py-2 pr-3">SKU</th>
+                    <th className="py-2 pr-3">Ref</th>
                     <th className="py-2 pr-3">Ürün</th>
                     <th className="py-2 pr-3">Kategori</th>
                     <th className="py-2 pr-3">OEM</th>
@@ -339,6 +367,14 @@ export default function BulkProductImportPage() {
                 </ul>
               </div>
             )}
+
+            <p className="mt-4 rounded-lg border border-brand-cream-dark/40 bg-white px-4 py-3 text-sm text-muted">
+              Görselleri şimdi eklemek için{" "}
+              <Link href={`/${locale}/admin/urunler`} className="font-medium text-brand-brown hover:underline">
+                ürün listesine
+              </Link>{" "}
+              gidin, her ürünü düzenleyip &quot;Görsel seç...&quot; ile yükleyin.
+            </p>
 
             <Link href={`/${locale}/admin/urunler`} className="mt-4 inline-block">
               <Button>Ürün Listesine Git</Button>
