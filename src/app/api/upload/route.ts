@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
-import { randomUUID } from "crypto";
-import { db } from "@/lib/db";
+import { saveImageBuffer } from "@/lib/media/save-image";
 
 export async function POST(request: NextRequest) {
   const session = await auth();
@@ -21,23 +18,7 @@ export async function POST(request: NextRequest) {
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
-  const ext = path.extname(file.name) || ".jpg";
-  const filename = `${randomUUID()}${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
+  const media = await saveImageBuffer(buffer, file.name, file.type || "application/octet-stream", alt);
 
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, filename), buffer);
-
-  const url = `/uploads/${filename}`;
-  const media = await db.media.create({
-    data: {
-      filename,
-      url,
-      mimeType: file.type || "application/octet-stream",
-      size: buffer.length,
-      alt,
-    },
-  });
-
-  return NextResponse.json(media);
+  return NextResponse.json(media.media);
 }

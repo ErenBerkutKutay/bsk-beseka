@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Package, Upload, ArrowUpDown } from "lucide-react";
+import { Plus, Search, Package, Upload, ArrowUpDown, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge, Card, CardContent, Input } from "@/components/ui/input";
 
@@ -86,6 +86,12 @@ export default function AdminProductsPage() {
             <Button variant="outline" className="gap-2">
               <Upload className="h-4 w-4" />
               Toplu Yükle
+            </Button>
+          </Link>
+          <Link href={`/${locale}/admin/urunler/gorseller`}>
+            <Button variant="outline" className="gap-2">
+              <ImageIcon className="h-4 w-4" />
+              Toplu Görsel
             </Button>
           </Link>
         </div>

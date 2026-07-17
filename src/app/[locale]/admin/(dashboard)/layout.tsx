@@ -9,6 +9,7 @@ const adminNav = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/urunler", label: "Ürünler" },
   { href: "/admin/urunler/toplu", label: "Toplu Ürün Yükle" },
+  { href: "/admin/urunler/gorseller", label: "Toplu Görsel Yükle" },
   { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/bannerlar", label: "Bannerlar" },
   { href: "/admin/istatistikler", label: "İstatistikler" },

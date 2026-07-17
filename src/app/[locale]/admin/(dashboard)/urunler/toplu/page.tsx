@@ -149,21 +149,28 @@ export default function BulkProductImportPage() {
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted">
             <li>Excel/CSV ile ürünleri yükleyin (Ref, ad, açıklama, OEM vb.)</li>
             <li>
+              Görselleri toplu eklemek için{" "}
+              <Link
+                href={`/${locale}/admin/urunler/gorseller`}
+                className="font-medium text-brand-brown hover:underline"
+              >
+                Toplu Görsel Yükle
+              </Link>{" "}
+              sayfasına gidin — dosya adları{" "}
+              <span className="font-mono text-brand-brown">B8376.jpg</span> formatında olmalı
+            </li>
+            <li>
+              Tek tek eklemek için{" "}
               <Link href={`/${locale}/admin/urunler`} className="font-medium text-brand-brown hover:underline">
                 Ürünler
               </Link>{" "}
-              listesinden görseli olmayan ürünü bulun
-            </li>
-            <li>
-              <strong className="text-brand-brown-dark">Düzenle</strong> →{" "}
-              <strong className="text-brand-brown-dark">Görseller</strong> bölümünden{" "}
-              <strong className="text-brand-brown-dark">Görsel seç...</strong> ile dosya yükleyin
+              listesinden ürünü düzenleyin
             </li>
             <li>Kaydedin — görsel sitede görünür</li>
           </ol>
           <p className="mt-3 text-xs text-muted">
-            Her ürün için bir veya birden fazla görsel yükleyebilirsiniz. Toplu yükleme görselleri
-            değiştirmez; mevcut görseller korunur.
+            Toplu görsel yüklemede dosya adı Beseka Ref kodu ile eşleşir (ör. B8306.T.jpg).
+            Mevcut görselleri korumak veya üzerine yazmak seçeneklerinden birini kullanın.
           </p>
         </CardContent>
       </Card>
