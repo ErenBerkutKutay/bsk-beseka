@@ -135,9 +135,10 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     if (nextModel) params.set("model", nextModel);
     if (nextSubModel) params.set("subModel", nextSubModel);
     if (nextCategory) params.set("category", nextCategory);
+    params.set("scroll", "results");
 
     startTransition(() => {
-      router.push(`/${locale}/urunler?${params.toString()}`);
+      router.push(`/${locale}/urunler?${params.toString()}`, { scroll: false });
     });
   }
 

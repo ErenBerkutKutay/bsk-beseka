@@ -8,6 +8,7 @@ import {
   CatalogCategoryTiles,
 } from "@/components/catalog/catalog-search-panel";
 import { CatalogProductList } from "@/components/catalog/product-grid";
+import { CatalogScrollToResults } from "@/components/catalog/catalog-scroll-to-results";
 
 function hasActiveSearch(params: Record<string, string | undefined>) {
   return !!(params.q || params.sku || params.make || params.model || params.subModel || params.category);
@@ -90,7 +91,13 @@ export default async function CatalogPage({
       />
 
       {isSearching ? (
-        <div className="mx-auto max-w-7xl px-4 py-8 md:py-10">
+        <div
+          id="catalog-sonuclar"
+          className="mx-auto max-w-7xl scroll-mt-24 px-4 py-8 md:py-10"
+        >
+          <Suspense fallback={null}>
+            <CatalogScrollToResults />
+          </Suspense>
           <Suspense fallback={<CatalogResultsSkeleton />}>
             <CatalogResults locale={locale} searchParams={filters} />
           </Suspense>

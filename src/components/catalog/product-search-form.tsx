@@ -24,7 +24,14 @@ export function ProductSearchForm({
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     const q = query.trim();
-    router.push(q ? `/${locale}/urunler?q=${encodeURIComponent(q)}` : `/${locale}/urunler`);
+    if (q) {
+      router.push(
+        `/${locale}/urunler?q=${encodeURIComponent(q)}&scroll=results`,
+        { scroll: false },
+      );
+    } else {
+      router.push(`/${locale}/urunler`);
+    }
     onNavigate?.();
   }
 
