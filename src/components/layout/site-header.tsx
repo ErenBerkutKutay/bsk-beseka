@@ -83,7 +83,7 @@ export function SiteHeader() {
             />
           </Link>
 
-          <div className="hidden min-w-0 flex-1 md:ml-10 md:block lg:ml-14 lg:max-w-sm xl:ml-20 xl:max-w-md">
+          <div className="hidden min-w-0 flex-1 md:ml-4 md:block lg:ml-6 lg:max-w-lg xl:max-w-xl">
             <ProductSearchForm variant="header" />
           </div>
 
