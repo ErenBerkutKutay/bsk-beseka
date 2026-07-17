@@ -29,9 +29,9 @@ export function HeroCategories({
   return (
     <section className="border-b border-border bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-brand-brown-mid">
+        <h2 className="mb-4 text-base font-black uppercase tracking-[0.18em] text-brand-brown-dark md:text-lg">
           Ürün Grupları
-        </p>
+        </h2>
         <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-thin md:mx-0 md:grid md:auto-rows-fr md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 lg:grid-cols-6">
           {items.map((cat) => (
             <Link
@@ -49,7 +49,7 @@ export function HeroCategories({
                 />
               </div>
               <div className="category-label mt-auto shrink-0 border-t border-border px-2 py-2.5 text-center">
-                <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-brown-dark transition-colors group-hover:text-white md:text-xs">
+                <span className="text-xs font-extrabold uppercase tracking-wide text-brand-brown-dark transition-colors group-hover:text-white md:text-sm">
                   {cat.name}
                 </span>
               </div>
