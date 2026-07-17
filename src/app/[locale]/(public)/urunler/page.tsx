@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { db } from "@/lib/db";
 import { searchProducts } from "@/lib/products/search";
+import { enrichCategoriesWithImages } from "@/lib/categories/display-image";
 import {
   CatalogSearchPanel,
   CatalogCategoryTiles,
@@ -125,10 +126,20 @@ export default async function CatalogPage({
   const filters = await searchParams;
   setRequestLocale(locale);
 
-  const categories = await db.category.findMany({
+  const categoriesRaw = await db.category.findMany({
     where: { isActive: true, parentId: null },
     orderBy: { sortOrder: "asc" },
+    include: {
+      products: {
+        where: { isActive: true, images: { isEmpty: false } },
+        take: 1,
+        orderBy: { updatedAt: "desc" },
+        select: { images: true },
+      },
+    },
   });
+
+  const categories = enrichCategoriesWithImages(categoriesRaw);
 
   const isSearching = hasActiveSearch(filters);
 

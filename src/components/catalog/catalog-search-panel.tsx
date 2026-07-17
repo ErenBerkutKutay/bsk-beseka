@@ -24,6 +24,7 @@ type Category = {
   slug: string;
   name: Record<string, string>;
   image?: string | null;
+  displayImage?: string;
 };
 
 type VehicleMake = {
@@ -521,14 +522,6 @@ export function CatalogCategoryTiles({
   const router = useRouter();
   const [, startTransition] = useTransition();
 
-  const iconMap: Record<string, string> = {
-    "amortisor-korukleri": "🔧",
-    "motor-takozlari": "⚙️",
-    "salincak-burclari": "🔩",
-    "turbo-hortumlari": "💨",
-    "direksiyon-korukleri": "🎯",
-  };
-
   function selectCategory(slug: string) {
     startTransition(() => {
       router.push(`/${locale}/urunler?category=${slug}`);
@@ -542,32 +535,39 @@ export function CatalogCategoryTiles({
           Ürün Grupları
         </p>
         <p className="mb-5 text-sm text-brand-brown-dark/80">Kategoriye göre hızlıca göz atın</p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.slug;
+            const imageSrc = cat.displayImage || cat.image;
             return (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => selectCategory(cat.slug)}
-                className={`card-hover flex flex-col items-center gap-2 rounded-xl border p-4 text-center transition-colors ${
+                className={`category-hover-card group flex flex-col overflow-hidden rounded-xl border text-center transition-colors ${
                   isActive
                     ? "border-brand-brown bg-brand-brown text-white shadow-lg shadow-brand-brown/30 scale-[1.02]"
                     : "border-brand-cream-dark/50 bg-white text-brand-brown-dark hover:border-brand-brown hover:bg-brand-brown hover:text-white hover:shadow-lg hover:shadow-brand-brown/25"
                 }`}
               >
-                <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-brand-cream/40 ring-1 ring-brand-cream-dark/30">
-                  {cat.image ? (
-                    <Image src={cat.image} alt="" fill className="object-cover" sizes="48px" />
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-white">
+                  {imageSrc ? (
+                    <Image
+                      src={imageSrc}
+                      alt={cat.name.tr || cat.slug}
+                      fill
+                      className="category-image object-contain p-2 transition duration-500 group-hover:scale-105"
+                      sizes="(max-width:640px) 50vw, 160px"
+                    />
                   ) : (
-                    <span className="flex h-full items-center justify-center text-2xl">
-                      {iconMap[cat.slug] || "📦"}
-                    </span>
+                    <span className="flex h-full items-center justify-center text-3xl">📦</span>
                   )}
                 </div>
-                <span className="text-xs font-semibold leading-tight">
-                  {cat.name.tr || cat.slug}
-                </span>
+                <div className="category-label border-t border-border px-2 py-2.5">
+                  <span className="text-[11px] font-semibold leading-tight md:text-xs">
+                    {cat.name.tr || cat.slug}
+                  </span>
+                </div>
               </button>
             );
           })}

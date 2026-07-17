@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { getLocalizedText } from "@/lib/utils";
 import { besekaAssets } from "@/lib/beseka/assets";
 import { fallbackHomeBanners } from "@/lib/beseka/home-banners";
+import { resolveCategoryImage } from "@/lib/categories/display-image";
 import { getActiveHomeBanners } from "@/lib/banners";
 import { getActiveHomeStats } from "@/lib/home-stats";
 import { ArrowRight } from "lucide-react";
@@ -29,9 +30,9 @@ export default async function HomePage({
       orderBy: { sortOrder: "asc" },
       include: {
         products: {
-          where: { isActive: true },
+          where: { isActive: true, images: { isEmpty: false } },
           take: 1,
-          orderBy: { createdAt: "desc" },
+          orderBy: { updatedAt: "desc" },
           select: { images: true },
         },
       },
@@ -50,15 +51,16 @@ export default async function HomePage({
     getActiveHomeStats(),
   ]);
 
-  const categoryItems = categories.map((cat, index) => {
-    const fallbackImages = Object.values(besekaAssets.products);
-    const productImage = cat.products[0]?.images[0];
-    return {
+  const categoryItems = categories.map((cat, index) => ({
+    slug: cat.slug,
+    name: getLocalizedText(cat.name as { tr: string }, locale),
+    image: resolveCategoryImage({
       slug: cat.slug,
-      name: getLocalizedText(cat.name as { tr: string }, locale),
-      image: productImage || fallbackImages[index % fallbackImages.length],
-    };
-  });
+      categoryImage: cat.image,
+      productImage: cat.products[0]?.images[0],
+      index,
+    }),
+  }));
 
   return (
     <>
