@@ -27,15 +27,8 @@ export default async function HomePage({
 
   const [categories, newProducts, blogPosts, homeBanners, homeStats] = await Promise.all([
     db.category.findMany({
+      where: { isActive: true, parentId: null },
       orderBy: { sortOrder: "asc" },
-      include: {
-        products: {
-          where: { isActive: true, images: { isEmpty: false } },
-          take: 1,
-          orderBy: { updatedAt: "desc" },
-          select: { images: true },
-        },
-      },
     }),
     db.product.findMany({
       where: { isActive: true, isNew: true },
@@ -51,16 +44,21 @@ export default async function HomePage({
     getActiveHomeStats(),
   ]);
 
-  const categoryItems = categories.map((cat, index) => ({
-    slug: cat.slug,
-    name: getLocalizedText(cat.name as { tr: string }, locale),
-    image: resolveCategoryImage({
-      slug: cat.slug,
-      categoryImage: cat.image,
-      productImage: cat.products[0]?.images[0],
-      index,
-    }),
-  }));
+  const categoryItems = categories
+    .map((cat, index) => {
+      const image = resolveCategoryImage({
+        slug: cat.slug,
+        categoryImage: cat.image,
+        index,
+      });
+      if (!image) return null;
+      return {
+        slug: cat.slug,
+        name: getLocalizedText(cat.name as { tr: string }, locale),
+        image,
+      };
+    })
+    .filter(Boolean) as { slug: string; name: string; image: string }[];
 
   return (
     <>

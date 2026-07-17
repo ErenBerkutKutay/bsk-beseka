@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
-import { Pencil, Loader2 } from "lucide-react";
+import { ImageIcon, Pencil, Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Card, CardContent } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/admin/image-upload";
@@ -20,6 +22,7 @@ type Category = {
 };
 
 export default function AdminCategoriesPage() {
+  const locale = useLocale();
   const [categories, setCategories] = useState<Category[]>([]);
   const [form, setForm] = useState({ slug: "", nameTr: "", image: "" });
   const [editing, setEditing] = useState<Category | null>(null);
@@ -66,8 +69,34 @@ export default function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Kategoriler</h1>
-      <p className="mb-6 text-sm text-muted">Katalogdaki ürün gruplarına görsel ekleyin</p>
+      <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Ürün Grupları</h1>
+      <p className="mb-4 max-w-2xl text-sm text-muted">
+        Ana sayfa ve katalogdaki <strong className="text-brand-brown-dark">Ürün Grupları</strong>{" "}
+        kutucuklarında görünen görselleri buradan yönetin. Ürün fotoğraflarından bağımsızdır.
+      </p>
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Link href={`/${locale}/admin/kategoriler/gorseller`}>
+          <Button variant="outline" className="gap-2">
+            <Upload className="h-4 w-4" />
+            Toplu Grup Görseli
+          </Button>
+        </Link>
+      </div>
+
+      <Card className="mb-8 border-brand-cream-dark/50 bg-brand-cream-light/30">
+        <CardContent className="pt-6 text-sm text-muted">
+          <p className="flex items-center gap-2 font-medium text-brand-brown-dark">
+            <ImageIcon className="h-4 w-4" />
+            Toplu yükleme dosya adları
+          </p>
+          <p className="mt-2">
+            Her görsel dosyası kategori slug&apos;u ile adlandırılır:{" "}
+            <span className="font-mono text-brand-brown">motor-takozlari.jpg</span>,{" "}
+            <span className="font-mono text-brand-brown">amortisor-korukleri.jpg</span>
+          </p>
+        </CardContent>
+      </Card>
 
       <Card className="mb-8">
         <CardContent className="space-y-4 pt-6">
@@ -95,10 +124,10 @@ export default function AdminCategoriesPage() {
             </div>
 
             <ImageUploadField
-              label="Kategori Görseli"
+              label="Grup Görseli"
               value={form.image}
               onChange={(image) => setForm({ ...form, image })}
-              hint="Katalog kategori kutucuklarında gösterilir"
+              hint="Ana sayfa ve katalog Ürün Grupları bölümünde gösterilir"
             />
 
             <div className="flex flex-wrap gap-2">

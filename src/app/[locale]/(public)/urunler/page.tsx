@@ -129,14 +129,6 @@ export default async function CatalogPage({
   const categoriesRaw = await db.category.findMany({
     where: { isActive: true, parentId: null },
     orderBy: { sortOrder: "asc" },
-    include: {
-      products: {
-        where: { isActive: true, images: { isEmpty: false } },
-        take: 1,
-        orderBy: { updatedAt: "desc" },
-        select: { images: true },
-      },
-    },
   });
 
   const categories = enrichCategoriesWithImages(categoriesRaw);

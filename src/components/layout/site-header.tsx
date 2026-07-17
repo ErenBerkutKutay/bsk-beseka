@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, Phone, Search, X } from "lucide-react";
 import { besekaAssets } from "@/lib/beseka/assets";
+import { ProductSearchForm } from "@/components/catalog/product-search-form";
 
 const corporateLinks = [
   { href: "/kurumsal/hakkimizda", label: "Hakkımızda" },
@@ -68,7 +69,7 @@ export function SiteHeader() {
           scrolled ? "py-2" : "py-3"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 lg:gap-5">
           <Link href={prefix} className="flex shrink-0 items-center transition-transform hover:scale-[1.03]">
             <Image
               src={besekaAssets.logo}
@@ -82,7 +83,11 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex">
+          <div className="hidden min-w-0 flex-1 md:block lg:max-w-sm xl:max-w-md">
+            <ProductSearchForm variant="header" />
+          </div>
+
+          <nav className="hidden shrink-0 items-center gap-1 lg:flex">
             <NavDropdown title={t("corporate")} links={corporateLinks} prefix={prefix} />
             <NavDropdown
               title={t("catalog")}
@@ -98,7 +103,7 @@ export function SiteHeader() {
           </nav>
 
           <button
-            className="rounded-lg p-2 text-brand-brown lg:hidden"
+            className="ml-auto rounded-lg p-2 text-brand-brown lg:ml-0 lg:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Menu"
           >
@@ -109,10 +114,17 @@ export function SiteHeader() {
 
       <div
         className={`overflow-hidden border-b border-border bg-white transition-all duration-300 lg:hidden ${
-          open ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          open ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="flex flex-col gap-1 px-4 py-4">
+          <div className="mb-3 md:hidden">
+            <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-brown">
+              <Search className="h-3.5 w-3.5" />
+              Ürün Ara
+            </p>
+            <ProductSearchForm variant="header" onNavigate={() => setOpen(false)} />
+          </div>
           <MobileLink href={`${prefix}/urunler`} onClick={() => setOpen(false)}>
             {t("catalog")}
           </MobileLink>

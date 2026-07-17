@@ -12,22 +12,19 @@ const slugFallbackMap: Record<string, string> = {
 export function resolveCategoryImage(options: {
   slug: string;
   categoryImage?: string | null;
-  productImage?: string | null;
   index?: number;
-}): string {
+}): string | null {
   if (options.categoryImage) return options.categoryImage;
-  if (options.productImage) return options.productImage;
   if (slugFallbackMap[options.slug]) return slugFallbackMap[options.slug];
 
   const fallbacks = Object.values(besekaAssets.products);
-  return fallbacks[(options.index ?? 0) % fallbacks.length];
+  return fallbacks[(options.index ?? 0) % fallbacks.length] ?? null;
 }
 
 export function enrichCategoriesWithImages<
   T extends {
     slug: string;
     image?: string | null;
-    products?: { images: string[] }[];
   },
 >(categories: T[]) {
   return categories.map((cat, index) => ({
@@ -35,7 +32,6 @@ export function enrichCategoriesWithImages<
     displayImage: resolveCategoryImage({
       slug: cat.slug,
       categoryImage: cat.image,
-      productImage: cat.products?.[0]?.images[0],
       index,
     }),
   }));
