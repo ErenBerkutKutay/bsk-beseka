@@ -13,7 +13,7 @@ const expertise = [
     icon: Cog,
     title: "Motor Takozları",
     desc: "Kauçuk-metal birleşim teknolojisiyle titreşim ve gürültüyü minimize eden motor takozları.",
-    href: "/urunler?category=motor-takozlari",
+    href: "/urunler?category=motor-sanziman-takozlari",
   },
   {
     icon: Wrench,

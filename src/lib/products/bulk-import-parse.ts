@@ -232,5 +232,5 @@ export function parseBulkProductCsv(content: string): {
 }
 
 export const BULK_PRODUCT_CSV_TEMPLATE = `ref;urun_adi;aciklama;kategori;agirlik_kg;gtip;oem_kodlari;cross_kodlari;yeni;aktif
-B8376;Motor Takozu Ön;Ön motor takozu;motor-takozlari;1.25;8708999790;12 34-56.78|77 888-99;CROSS1|CROSS2;evet;evet
-B6850;Motor Takozu Arka;Arka motor takozu;motor-takozlari;0.98;8708999790;98 76-54.32;;hayir;evet`;
+B8376;Motor Takozu Ön;Ön motor takozu;motor-sanziman-takozlari;1.25;8708999790;12 34-56.78|77 888-99;CROSS1|CROSS2;evet;evet
+B6850;Motor Takozu Arka;Arka motor takozu;motor-sanziman-takozlari;0.98;8708999790;98 76-54.32;;hayir;evet`;

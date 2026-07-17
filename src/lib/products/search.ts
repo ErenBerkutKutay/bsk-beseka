@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { normalizeOEM } from "@/lib/oem/normalize";
 import { trackSearchTerm } from "@/lib/analytics";
+import { LEGACY_CATEGORY_SLUG_MAP } from "@/lib/categories/product-groups";
 import type { Prisma } from "@/generated/prisma/client";
 
 const PRODUCT_TEXT_LOCALES = ["tr", "en", "de", "ar", "es", "it"] as const;
@@ -103,7 +104,9 @@ export async function searchProducts(params: ProductSearchParams) {
   const make = params.make?.trim() || "";
   const model = params.model?.trim() || "";
   const subModel = params.subModel?.trim() || "";
-  const category = params.category?.trim() || "";
+  const category = params.category?.trim()
+    ? LEGACY_CATEGORY_SLUG_MAP[params.category.trim()] || params.category.trim()
+    : "";
   const isNew = params.isNew === true;
   const page = Math.max(1, params.page || 1);
   const limit = Math.min(50, Math.max(1, params.limit || 24));

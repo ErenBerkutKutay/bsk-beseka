@@ -1,9 +1,10 @@
 import "dotenv/config";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PRODUCT_GROUPS } from "../src/lib/categories/product-groups";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import bcrypt from "bcryptjs";
 import { buildOEMEntries } from "../src/lib/oem/normalize";
+import { PRODUCT_GROUPS } from "../src/lib/categories/product-groups";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -101,20 +102,11 @@ async function main() {
     },
   });
 
-  const categories = [
-    { slug: "amortisor-korukleri", name: { tr: "Amortisör Körükleri" } },
-    { slug: "amortisor-takozlari", name: { tr: "Amortisör Takozları & Bilyaları" } },
-    { slug: "motor-takozlari", name: { tr: "Motor Takozları ve Kulakları" } },
-    { slug: "salincak-burclari", name: { tr: "Salıncak Burçları" } },
-    { slug: "turbo-hortumlari", name: { tr: "Turbo Hortumları" } },
-    { slug: "direksiyon-korukleri", name: { tr: "Direksiyon Körükleri" } },
-  ];
-
-  for (const [index, cat] of categories.entries()) {
+  for (const [index, cat] of PRODUCT_GROUPS.entries()) {
     await db.category.upsert({
       where: { slug: cat.slug },
-      update: {},
-      create: { ...cat, sortOrder: index },
+      update: { name: cat.name, sortOrder: index, isActive: true },
+      create: { ...cat, sortOrder: index, isActive: true },
     });
   }
 
@@ -122,7 +114,7 @@ async function main() {
     {
       sku: "B2306",
       slug: "b2306-suspansiyon-ara-yatak-takozu-arka-q14",
-      categorySlug: "salincak-burclari",
+      categorySlug: "suspansiyon-takozlari",
       name: { tr: "B2306 | Süspansiyon Ara Yatak Takozu Arka Q14 (Peugeot Boxer, Citroen Jumper, Fiat Ducato)" },
       description: { tr: "Süspansiyon ara yatak takozu arka. Peugeot Boxer, Citroen Jumper, Fiat Ducato uyumlu." },
       image: "/beseka/products/b2306.jpg",
@@ -134,7 +126,7 @@ async function main() {
     {
       sku: "B2307",
       slug: "b2307-suspansiyon-ara-yatak-takozu-arka-q18",
-      categorySlug: "salincak-burclari",
+      categorySlug: "suspansiyon-takozlari",
       name: { tr: "B2307 | Süspansiyon Ara Yatak Takozu Arka Q18-16 Jant (Peugeot Boxer, Citroen Jumper, Fiat Ducato)" },
       description: { tr: "Süspansiyon ara yatak takozu arka Q18-16 jant." },
       image: "/beseka/products/b2307.jpg",
@@ -146,7 +138,7 @@ async function main() {
     {
       sku: "B6850",
       slug: "b6850-amortisor-toz-korugu-fiat-egea",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B6850 | Amortisör Toz Körüğü (Fiat Egea 1.3 D Multijet, 1.4, 1.6)" },
       description: { tr: "Fiat Egea için amortisör toz körüğü." },
       image: "/beseka/products/b6850.jpg",
@@ -158,7 +150,7 @@ async function main() {
     {
       sku: "B6657",
       slug: "b6657-amortisor-toz-korugu-fiat-dogan",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B6657 | Amortisör Toz Körüğü (Fiat Doğan, Fiat Kartal, Fiat Şahin)" },
       description: { tr: "Klasik Fiat modelleri için amortisör toz körüğü." },
       image: "/beseka/products/b6657.jpg",
@@ -170,7 +162,7 @@ async function main() {
     {
       sku: "B6190",
       slug: "b6190-amortisor-toz-korugu-on-fiat-uno",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B6190 | Amortisör Toz Körüğü Ön (Fiat Uno, Fiat Regata, Fiat Ritmo)" },
       description: { tr: "Fiat Uno, Regata, Ritmo ön amortisör toz körüğü." },
       image: "/beseka/products/b6190.jpg",
@@ -182,7 +174,7 @@ async function main() {
     {
       sku: "B8359",
       slug: "b8359-amortisor-toz-korugu-renault-clio",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B8359 | Amortisör Toz Körüğü (Renault Clio III, Modus)" },
       description: { tr: "Renault Clio III ve Modus uyumlu amortisör toz körüğü." },
       image: "/beseka/products/b8359.jpg",
@@ -194,7 +186,7 @@ async function main() {
     {
       sku: "B8550",
       slug: "b8550-amortisor-toz-korugu-renault-megane",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B8550 | Amortisör Toz Körüğü Sağ Sol (Renault Megane II, Scenic II)" },
       description: { tr: "Renault Megane II ve Scenic II uyumlu." },
       image: "/beseka/products/b8550.jpg",
@@ -206,7 +198,7 @@ async function main() {
     {
       sku: "B8650",
       slug: "b8650-amortisor-toz-korugu-renault-fluence",
-      categorySlug: "amortisor-korukleri",
+      categorySlug: "korukler",
       name: { tr: "B8650 | Amortisör Toz Körüğü (Renault Fluence, Megane III)" },
       description: { tr: "Renault Fluence ve Megane III uyumlu." },
       image: "/beseka/products/b8650.jpg",
@@ -230,7 +222,7 @@ async function main() {
     {
       sku: "B8376",
       slug: "b8376-motor-takozu-sag-renault-clio-v",
-      categorySlug: "motor-takozlari",
+      categorySlug: "motor-sanziman-takozlari",
       name: { tr: "B8376 | Motor Takozu Sağ 1.0 Tce H4d Orijinal (Renault Clio V)" },
       description: { tr: "Renault Clio V 1.0 Tce motor takozu sağ." },
       image: "/beseka/products/b8376.jpg",

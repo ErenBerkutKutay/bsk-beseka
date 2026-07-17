@@ -13,7 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "prisma db push && tsx prisma/seed.ts",
     "db:sync-beseka": "tsx prisma/seed.ts",
-    "vehicles:import": "tsx scripts/import-vehicle-types.ts",
+    "categories:sync": "tsx scripts/sync-product-groups.ts",
     "postinstall": "prisma generate",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",

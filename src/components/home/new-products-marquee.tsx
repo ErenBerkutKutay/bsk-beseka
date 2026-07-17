@@ -34,7 +34,6 @@ export function NewProductsMarquee({ products }: { products: MarqueeProduct[] })
         >
           Yeni Ürünlerimiz
           <ArrowRight className="h-5 w-5 transition-transform group-hover/title:translate-x-1" aria-hidden />
-          <span className="sr-only">— tüm yeni ürünleri görüntüle</span>
         </Link>
       </h2>
 

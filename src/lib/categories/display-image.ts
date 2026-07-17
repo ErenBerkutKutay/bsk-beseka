@@ -1,8 +1,16 @@
 import { besekaAssets } from "@/lib/beseka/assets";
 
 const slugFallbackMap: Record<string, string> = {
-  "motor-takozlari": besekaAssets.products.B8376,
   "amortisor-takozlari": besekaAssets.products["B8306.T"],
+  "suspansiyon-takozlari": besekaAssets.products.B2306,
+  "amortisor-rulmanlari": besekaAssets.products["B8306.T"],
+  "motor-sanziman-takozlari": besekaAssets.products.B8376,
+  burclar: besekaAssets.products.B2306,
+  "viraj-lastikleri": besekaAssets.products.B8359,
+  korukler: besekaAssets.products.B6850,
+  "diger-urunler": besekaAssets.products.B8359,
+  // Eski slug'lar (geçiş dönemi)
+  "motor-takozlari": besekaAssets.products.B8376,
   "amortisor-korukleri": besekaAssets.products.B6850,
   "salincak-burclari": besekaAssets.products.B2306,
   "turbo-hortumlari": besekaAssets.products.B8359,
