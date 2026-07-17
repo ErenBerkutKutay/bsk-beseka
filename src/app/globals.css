@@ -234,6 +234,28 @@ html.lenis body {
   color: transparent;
 }
 
+@keyframes new-products-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.new-products-marquee-track {
+  animation: new-products-marquee 45s linear infinite;
+}
+
+.new-products-marquee:hover .new-products-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-products-marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 @keyframes road-scroll {
   from { background-position-x: 0; }
   to { background-position-x: -160px; }

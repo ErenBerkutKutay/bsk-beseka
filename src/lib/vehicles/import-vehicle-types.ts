@@ -5,7 +5,8 @@ import {
   type ParsedVehicleType,
 } from "./parse-vehicle-types";
 
-const BATCH_SIZE = 250;
+const BATCH_SIZE = 100;
+const UPSERT_CONCURRENCY = 15;
 
 export type VehicleTypeImportResult = {
   total: number;
@@ -14,36 +15,39 @@ export type VehicleTypeImportResult = {
   errors: string[];
 };
 
+function upsertVehicleType(item: ParsedVehicleType) {
+  const data = toVehicleTypeCreateInput(item);
+  return db.vehicleType.upsert({
+    where: { tipNo: item.tipNo },
+    create: data,
+    update: {
+      vehicleClass: data.vehicleClass,
+      linkTargetType: data.linkTargetType,
+      make: data.make,
+      modelSeries: data.modelSeries,
+      typeName: data.typeName,
+      modelSeriesNo: data.modelSeriesNo,
+      yearFrom: data.yearFrom,
+      yearTo: data.yearTo,
+      bodyType: data.bodyType,
+      driveType: data.driveType,
+      engineVolumeL: data.engineVolumeL,
+      fuelType: data.fuelType,
+      kw: data.kw,
+      hp: data.hp,
+      engineCodes: data.engineCodes,
+      motorNumbers: data.motorNumbers,
+      manufacturerNo: data.manufacturerNo,
+      dateGeneral: data.dateGeneral,
+    },
+  });
+}
+
 async function upsertBatch(batch: ParsedVehicleType[]) {
-  await db.$transaction(
-    batch.map((item) => {
-      const data = toVehicleTypeCreateInput(item);
-      return db.vehicleType.upsert({
-        where: { tipNo: item.tipNo },
-        create: data,
-        update: {
-          vehicleClass: data.vehicleClass,
-          linkTargetType: data.linkTargetType,
-          make: data.make,
-          modelSeries: data.modelSeries,
-          typeName: data.typeName,
-          modelSeriesNo: data.modelSeriesNo,
-          yearFrom: data.yearFrom,
-          yearTo: data.yearTo,
-          bodyType: data.bodyType,
-          driveType: data.driveType,
-          engineVolumeL: data.engineVolumeL,
-          fuelType: data.fuelType,
-          kw: data.kw,
-          hp: data.hp,
-          engineCodes: data.engineCodes,
-          motorNumbers: data.motorNumbers,
-          manufacturerNo: data.manufacturerNo,
-          dateGeneral: data.dateGeneral,
-        },
-      });
-    }),
-  );
+  for (let i = 0; i < batch.length; i += UPSERT_CONCURRENCY) {
+    const chunk = batch.slice(i, i + UPSERT_CONCURRENCY);
+    await Promise.all(chunk.map((item) => upsertVehicleType(item)));
+  }
 }
 
 export async function importVehicleTypesFromBuffer(
@@ -64,12 +68,28 @@ export async function importVehicleTypesFromBuffer(
       await upsertBatch(batch);
       result.imported += batch.length;
     } catch (err) {
-      result.failed += batch.length;
-      result.errors.push(
-        err instanceof Error
-          ? `Satır ${i + 1}-${i + batch.length}: ${err.message}`
-          : `Satır ${i + 1}-${i + batch.length}: Bilinmeyen hata`,
-      );
+      for (const item of batch) {
+        try {
+          await upsertVehicleType(item);
+          result.imported += 1;
+        } catch (itemErr) {
+          result.failed += 1;
+          if (result.errors.length < 50) {
+            result.errors.push(
+              itemErr instanceof Error
+                ? `${item.tipNo}: ${itemErr.message}`
+                : `${item.tipNo}: Bilinmeyen hata`,
+            );
+          }
+        }
+      }
+      if (err instanceof Error && result.errors.length < 50) {
+        result.errors.push(`Satır ${i + 1}-${i + batch.length}: ${err.message}`);
+      }
+    }
+
+    if ((i / BATCH_SIZE) % 20 === 0) {
+      console.log(`İlerleme: ${Math.min(i + batch.length, rows.length)} / ${rows.length}`);
     }
   }
 

@@ -6,7 +6,7 @@ import { HeroCategories } from "@/components/home/hero-categories";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { HomeCatalogSearch } from "@/components/home/home-catalog-search";
 import { HomeStatsBar } from "@/components/home/home-stats-bar";
-import { NewProductsShowcase } from "@/components/home/new-products-showcase";
+import { NewProductsMarquee } from "@/components/home/new-products-marquee";
 import { Button } from "@/components/ui/button";
 import { getLocalizedText } from "@/lib/utils";
 import { besekaAssets } from "@/lib/beseka/assets";
@@ -32,7 +32,7 @@ export default async function HomePage({
     }),
     db.product.findMany({
       where: { isActive: true, isNew: true },
-      take: 8,
+      take: 24,
       orderBy: { createdAt: "desc" },
     }),
     db.blogPost.findMany({
@@ -64,33 +64,7 @@ export default async function HomePage({
     <>
       <HeroSlider banners={homeBanners.length ? homeBanners : fallbackHomeBanners} />
 
-      {/* Yeni ürünler promo + vitrin */}
-      <section className="bg-gradient-to-r from-brand-cream-light via-brand-cream/40 to-brand-cream-light">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-6 sm:flex-row sm:items-center">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-brown">
-              Yeni Ürünler
-            </p>
-            <p className="mt-1 text-sm font-medium text-brand-brown-dark md:text-base">
-              Kataloga eklenen son motor takozu ve süspansiyon parçalarını inceleyin.
-            </p>
-          </div>
-          <Link href={`/${locale}/yeni-urunler`}>
-            <Button className="gap-2 whitespace-nowrap">
-              Ürünleri Görüntüle
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {newProducts.length > 0 && (
-        <section className="bg-white py-10 md:py-14">
-          <div className="mx-auto max-w-7xl px-4">
-            <NewProductsShowcase products={newProducts as never[]} />
-          </div>
-        </section>
-      )}
+      {newProducts.length > 0 && <NewProductsMarquee products={newProducts as never[]} />}
 
       <HeroCategories locale={locale} categories={categoryItems} />
 
