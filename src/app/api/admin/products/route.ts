@@ -13,6 +13,8 @@ const productSchema = z.object({
   descriptionTr: z.string().optional(),
   categoryId: z.string().min(1),
   images: z.array(z.string()).default([]),
+  weightKg: z.union([z.number(), z.string(), z.null()]).optional(),
+  gtip: z.string().optional(),
   isNew: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
@@ -20,6 +22,18 @@ const productSchema = z.object({
   oemCodes: z.string().optional(),
   crossCodes: z.string().optional(),
 });
+
+function parseWeightKg(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const num = typeof value === "number" ? value : Number(String(value).replace(",", "."));
+  if (!Number.isFinite(num) || num <= 0) return null;
+  return Math.round(num * 1000) / 1000;
+}
+
+function parseGtip(value: string | undefined): string | null {
+  const normalized = (value || "").replace(/[\s.]/g, "");
+  return normalized || null;
+}
 
 function buildSlug(sku: string, name: string) {
   return slugify(`${sku}-${name}`, { lower: true, strict: true });
@@ -80,6 +94,8 @@ export async function POST(request: NextRequest) {
       description,
       categoryId: data.categoryId,
       images: data.images,
+      weightKg: parseWeightKg(data.weightKg),
+      gtip: parseGtip(data.gtip),
       isNew: data.isNew,
       isFeatured: data.isFeatured,
       isActive: data.isActive,

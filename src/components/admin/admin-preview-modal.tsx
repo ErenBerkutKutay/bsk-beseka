@@ -79,6 +79,8 @@ export function ProductPreview({
   sku,
   name,
   description,
+  weightKg,
+  gtip,
   images,
   oemCodes,
   crossCodes,
@@ -87,6 +89,8 @@ export function ProductPreview({
   sku: string;
   name: string;
   description?: string;
+  weightKg?: string;
+  gtip?: string;
   images: string[];
   oemCodes: string;
   crossCodes: string;
@@ -121,6 +125,22 @@ export function ProductPreview({
             {name || "Ürün adı"}
           </h1>
           {description && <p className="mt-4 text-muted">{description}</p>}
+          {(weightKg || gtip) && (
+            <dl className="mt-6 grid gap-3 rounded-xl border border-border bg-white p-4 text-sm sm:grid-cols-2">
+              {weightKg && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Ağırlık</dt>
+                  <dd className="mt-1 font-medium text-brand-brown-dark">{weightKg} kg</dd>
+                </div>
+              )}
+              {gtip && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">GTIP</dt>
+                  <dd className="mt-1 font-mono font-medium text-brand-brown-dark">{gtip}</dd>
+                </div>
+              )}
+            </dl>
+          )}
           {oemList.length > 0 && (
             <div className="mt-6">
               <h2 className="text-sm font-bold text-brand-brown-dark">OEM Kodları</h2>

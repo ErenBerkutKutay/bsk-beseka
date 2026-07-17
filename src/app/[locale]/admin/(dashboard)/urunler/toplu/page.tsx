@@ -259,6 +259,8 @@ export default function BulkProductImportPage() {
                   ["urun_adi", "Evet", "Ürün adı (Türkçe)"],
                   ["aciklama", "Hayır", "Ürün açıklaması"],
                   ["kategori", "Evet", "Kategori slug (motor-takozlari)"],
+                  ["agirlik_kg", "Hayır", "Net ağırlık, kilogram (1.25 veya 1,25)"],
+                  ["gtip", "Hayır", "GTIP / HS kodu (8708999790 veya 8708.99.79.90)"],
                   ["oem_kodlari", "Hayır", "12 34-56.78|77 888 (| ile ayırın)"],
                   ["cross_kodlari", "Hayır", "Cross kodları"],
                   ["yeni", "Hayır", "evet / hayır"],
@@ -302,6 +304,8 @@ export default function BulkProductImportPage() {
                     <th className="py-2 pr-3">Ref</th>
                     <th className="py-2 pr-3">Ürün</th>
                     <th className="py-2 pr-3">Kategori</th>
+                    <th className="py-2 pr-3">Ağırlık</th>
+                    <th className="py-2 pr-3">GTIP</th>
                     <th className="py-2 pr-3">OEM</th>
                     <th className="py-2">Yeni</th>
                   </tr>
@@ -312,6 +316,10 @@ export default function BulkProductImportPage() {
                       <td className="py-2 pr-3 font-mono font-semibold">{row.sku}</td>
                       <td className="py-2 pr-3">{row.nameTr}</td>
                       <td className="py-2 pr-3 text-muted">{row.categorySlug}</td>
+                      <td className="py-2 pr-3 text-muted">
+                        {row.weightKg != null ? `${row.weightKg} kg` : "—"}
+                      </td>
+                      <td className="py-2 pr-3 font-mono text-xs">{row.gtip || "—"}</td>
                       <td className="py-2 pr-3 font-mono text-xs">
                         {row.oemCodes.join(", ") || "—"}
                       </td>

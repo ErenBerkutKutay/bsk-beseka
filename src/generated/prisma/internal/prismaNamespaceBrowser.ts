@@ -124,6 +124,8 @@ export const ProductScalarFieldEnum = {
   description: 'description',
   categoryId: 'categoryId',
   images: 'images',
+  weightKg: 'weightKg',
+  gtip: 'gtip',
   isNew: 'isNew',
   newUntil: 'newUntil',
   isFeatured: 'isFeatured',

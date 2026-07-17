@@ -55,6 +55,8 @@ model Product {
   categoryId  String
   category    Category         @relation(fields: [categoryId], references: [id])
   images      String[]
+  weightKg    Decimal?         @db.Decimal(10, 3)
+  gtip        String?
   isNew       Boolean          @default(false)
   newUntil    DateTime?
   isFeatured  Boolean          @default(false)

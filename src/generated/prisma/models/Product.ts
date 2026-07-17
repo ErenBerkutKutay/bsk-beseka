@@ -20,8 +20,18 @@ export type ProductModel = runtime.Types.Result.DefaultSelection<Prisma.$Product
 
 export type AggregateProduct = {
   _count: ProductCountAggregateOutputType | null
+  _avg: ProductAvgAggregateOutputType | null
+  _sum: ProductSumAggregateOutputType | null
   _min: ProductMinAggregateOutputType | null
   _max: ProductMaxAggregateOutputType | null
+}
+
+export type ProductAvgAggregateOutputType = {
+  weightKg: runtime.Decimal | null
+}
+
+export type ProductSumAggregateOutputType = {
+  weightKg: runtime.Decimal | null
 }
 
 export type ProductMinAggregateOutputType = {
@@ -29,6 +39,8 @@ export type ProductMinAggregateOutputType = {
   sku: string | null
   slug: string | null
   categoryId: string | null
+  weightKg: runtime.Decimal | null
+  gtip: string | null
   isNew: boolean | null
   newUntil: Date | null
   isFeatured: boolean | null
@@ -42,6 +54,8 @@ export type ProductMaxAggregateOutputType = {
   sku: string | null
   slug: string | null
   categoryId: string | null
+  weightKg: runtime.Decimal | null
+  gtip: string | null
   isNew: boolean | null
   newUntil: Date | null
   isFeatured: boolean | null
@@ -58,6 +72,8 @@ export type ProductCountAggregateOutputType = {
   description: number
   categoryId: number
   images: number
+  weightKg: number
+  gtip: number
   isNew: number
   newUntil: number
   isFeatured: number
@@ -68,11 +84,21 @@ export type ProductCountAggregateOutputType = {
 }
 
 
+export type ProductAvgAggregateInputType = {
+  weightKg?: true
+}
+
+export type ProductSumAggregateInputType = {
+  weightKg?: true
+}
+
 export type ProductMinAggregateInputType = {
   id?: true
   sku?: true
   slug?: true
   categoryId?: true
+  weightKg?: true
+  gtip?: true
   isNew?: true
   newUntil?: true
   isFeatured?: true
@@ -86,6 +112,8 @@ export type ProductMaxAggregateInputType = {
   sku?: true
   slug?: true
   categoryId?: true
+  weightKg?: true
+  gtip?: true
   isNew?: true
   newUntil?: true
   isFeatured?: true
@@ -102,6 +130,8 @@ export type ProductCountAggregateInputType = {
   description?: true
   categoryId?: true
   images?: true
+  weightKg?: true
+  gtip?: true
   isNew?: true
   newUntil?: true
   isFeatured?: true
@@ -149,6 +179,18 @@ export type ProductAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ProductAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ProductSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProductMinAggregateInputType
@@ -179,6 +221,8 @@ export type ProductGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ProductCountAggregateInputType | true
+  _avg?: ProductAvgAggregateInputType
+  _sum?: ProductSumAggregateInputType
   _min?: ProductMinAggregateInputType
   _max?: ProductMaxAggregateInputType
 }
@@ -191,6 +235,8 @@ export type ProductGroupByOutputType = {
   description: runtime.JsonValue | null
   categoryId: string
   images: string[]
+  weightKg: runtime.Decimal | null
+  gtip: string | null
   isNew: boolean
   newUntil: Date | null
   isFeatured: boolean
@@ -198,6 +244,8 @@ export type ProductGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: ProductCountAggregateOutputType | null
+  _avg: ProductAvgAggregateOutputType | null
+  _sum: ProductSumAggregateOutputType | null
   _min: ProductMinAggregateOutputType | null
   _max: ProductMaxAggregateOutputType | null
 }
@@ -228,6 +276,8 @@ export type ProductWhereInput = {
   description?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringFilter<"Product"> | string
   images?: Prisma.StringNullableListFilter<"Product">
+  weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.StringNullableFilter<"Product"> | string | null
   isNew?: Prisma.BoolFilter<"Product"> | boolean
   newUntil?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
@@ -249,6 +299,8 @@ export type ProductOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
+  gtip?: Prisma.SortOrderInput | Prisma.SortOrder
   isNew?: Prisma.SortOrder
   newUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -273,6 +325,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringFilter<"Product"> | string
   images?: Prisma.StringNullableListFilter<"Product">
+  weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.StringNullableFilter<"Product"> | string | null
   isNew?: Prisma.BoolFilter<"Product"> | boolean
   newUntil?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
@@ -294,6 +348,8 @@ export type ProductOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
+  gtip?: Prisma.SortOrderInput | Prisma.SortOrder
   isNew?: Prisma.SortOrder
   newUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -301,8 +357,10 @@ export type ProductOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProductCountOrderByAggregateInput
+  _avg?: Prisma.ProductAvgOrderByAggregateInput
   _max?: Prisma.ProductMaxOrderByAggregateInput
   _min?: Prisma.ProductMinOrderByAggregateInput
+  _sum?: Prisma.ProductSumOrderByAggregateInput
 }
 
 export type ProductScalarWhereWithAggregatesInput = {
@@ -316,6 +374,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   description?: Prisma.JsonNullableWithAggregatesFilter<"Product">
   categoryId?: Prisma.StringWithAggregatesFilter<"Product"> | string
   images?: Prisma.StringNullableListFilter<"Product">
+  weightKg?: Prisma.DecimalNullableWithAggregatesFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   isNew?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   newUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"Product"> | Date | string | null
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
@@ -331,6 +391,8 @@ export type ProductCreateInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -352,6 +414,8 @@ export type ProductUncheckedCreateInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -371,6 +435,8 @@ export type ProductUpdateInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -392,6 +458,8 @@ export type ProductUncheckedUpdateInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -412,6 +480,8 @@ export type ProductCreateManyInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -427,6 +497,8 @@ export type ProductUpdateManyMutationInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -443,6 +515,8 @@ export type ProductUncheckedUpdateManyInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -477,6 +551,8 @@ export type ProductCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrder
+  gtip?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   newUntil?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -485,11 +561,17 @@ export type ProductCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type ProductAvgOrderByAggregateInput = {
+  weightKg?: Prisma.SortOrder
+}
+
 export type ProductMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrder
+  gtip?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   newUntil?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -503,12 +585,18 @@ export type ProductMinOrderByAggregateInput = {
   sku?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  weightKg?: Prisma.SortOrder
+  gtip?: Prisma.SortOrder
   isNew?: Prisma.SortOrder
   newUntil?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ProductSumOrderByAggregateInput = {
+  weightKg?: Prisma.SortOrder
 }
 
 export type ProductScalarRelationFilter = {
@@ -565,6 +653,14 @@ export type ProductCreateimagesInput = {
 export type ProductUpdateimagesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -634,6 +730,8 @@ export type ProductCreateWithoutCategoryInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -653,6 +751,8 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -702,6 +802,8 @@ export type ProductScalarWhereInput = {
   description?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringFilter<"Product"> | string
   images?: Prisma.StringNullableListFilter<"Product">
+  weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.StringNullableFilter<"Product"> | string | null
   isNew?: Prisma.BoolFilter<"Product"> | boolean
   newUntil?: Prisma.DateTimeNullableFilter<"Product"> | Date | string | null
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
@@ -717,6 +819,8 @@ export type ProductCreateWithoutOemCodesInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -737,6 +841,8 @@ export type ProductUncheckedCreateWithoutOemCodesInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -771,6 +877,8 @@ export type ProductUpdateWithoutOemCodesInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -791,6 +899,8 @@ export type ProductUncheckedUpdateWithoutOemCodesInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -809,6 +919,8 @@ export type ProductCreateWithoutCrossCodesInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -829,6 +941,8 @@ export type ProductUncheckedCreateWithoutCrossCodesInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -863,6 +977,8 @@ export type ProductUpdateWithoutCrossCodesInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -883,6 +999,8 @@ export type ProductUncheckedUpdateWithoutCrossCodesInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -901,6 +1019,8 @@ export type ProductCreateWithoutFitmentsInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -921,6 +1041,8 @@ export type ProductUncheckedCreateWithoutFitmentsInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -955,6 +1077,8 @@ export type ProductUpdateWithoutFitmentsInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -975,6 +1099,8 @@ export type ProductUncheckedUpdateWithoutFitmentsInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -993,6 +1119,8 @@ export type ProductCreateWithoutViewStatsInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -1013,6 +1141,8 @@ export type ProductUncheckedCreateWithoutViewStatsInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId: string
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -1047,6 +1177,8 @@ export type ProductUpdateWithoutViewStatsInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1067,6 +1199,8 @@ export type ProductUncheckedUpdateWithoutViewStatsInput = {
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1085,6 +1219,8 @@ export type ProductCreateManyCategoryInput = {
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
+  weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: string | null
   isNew?: boolean
   newUntil?: Date | string | null
   isFeatured?: boolean
@@ -1100,6 +1236,8 @@ export type ProductUpdateWithoutCategoryInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1119,6 +1257,8 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1138,6 +1278,8 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
+  weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isNew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   newUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1203,6 +1345,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   categoryId?: boolean
   images?: boolean
+  weightKg?: boolean
+  gtip?: boolean
   isNew?: boolean
   newUntil?: boolean
   isFeatured?: boolean
@@ -1225,6 +1369,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   categoryId?: boolean
   images?: boolean
+  weightKg?: boolean
+  gtip?: boolean
   isNew?: boolean
   newUntil?: boolean
   isFeatured?: boolean
@@ -1242,6 +1388,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   categoryId?: boolean
   images?: boolean
+  weightKg?: boolean
+  gtip?: boolean
   isNew?: boolean
   newUntil?: boolean
   isFeatured?: boolean
@@ -1259,6 +1407,8 @@ export type ProductSelectScalar = {
   description?: boolean
   categoryId?: boolean
   images?: boolean
+  weightKg?: boolean
+  gtip?: boolean
   isNew?: boolean
   newUntil?: boolean
   isFeatured?: boolean
@@ -1267,7 +1417,7 @@ export type ProductSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "slug" | "name" | "description" | "categoryId" | "images" | "isNew" | "newUntil" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "slug" | "name" | "description" | "categoryId" | "images" | "weightKg" | "gtip" | "isNew" | "newUntil" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   oemCodes?: boolean | Prisma.Product$oemCodesArgs<ExtArgs>
@@ -1300,6 +1450,8 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: runtime.JsonValue | null
     categoryId: string
     images: string[]
+    weightKg: runtime.Decimal | null
+    gtip: string | null
     isNew: boolean
     newUntil: Date | null
     isFeatured: boolean
@@ -1741,6 +1893,8 @@ export interface ProductFieldRefs {
   readonly description: Prisma.FieldRef<"Product", 'Json'>
   readonly categoryId: Prisma.FieldRef<"Product", 'String'>
   readonly images: Prisma.FieldRef<"Product", 'String[]'>
+  readonly weightKg: Prisma.FieldRef<"Product", 'Decimal'>
+  readonly gtip: Prisma.FieldRef<"Product", 'String'>
   readonly isNew: Prisma.FieldRef<"Product", 'Boolean'>
   readonly newUntil: Prisma.FieldRef<"Product", 'DateTime'>
   readonly isFeatured: Prisma.FieldRef<"Product", 'Boolean'>

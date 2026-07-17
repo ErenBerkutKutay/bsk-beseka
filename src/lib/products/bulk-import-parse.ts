@@ -6,6 +6,8 @@ export type BulkProductRow = {
   nameTr: string;
   descriptionTr?: string;
   categorySlug: string;
+  weightKg?: number;
+  gtip?: string;
   oemCodes: string[];
   crossCodes: string[];
   images: string[];
@@ -43,6 +45,15 @@ const HEADER_MAP: Record<string, keyof Omit<BulkProductRow, "line">> = {
   category: "categorySlug",
   categoryslug: "categorySlug",
   kategori: "categorySlug",
+  weight: "weightKg",
+  weightkg: "weightKg",
+  agirlik: "weightKg",
+  ağırlık: "weightKg",
+  agirlik_kg: "weightKg",
+  gtip: "gtip",
+  gtip_no: "gtip",
+  gtip_kodu: "gtip",
+  hs_code: "gtip",
   oem: "oemCodes",
   oemcodes: "oemCodes",
   oem_kodlari: "oemCodes",
@@ -104,6 +115,19 @@ function parseList(value: string): string[] {
     return value.split("|").map((s) => s.trim()).filter(Boolean);
   }
   return parseCodeList(value);
+}
+
+function parseWeight(value: string): number | undefined {
+  const v = value.trim().replace(",", ".");
+  if (!v) return undefined;
+  const num = Number(v);
+  if (!Number.isFinite(num) || num <= 0) return undefined;
+  return Math.round(num * 1000) / 1000;
+}
+
+function parseGtip(value: string): string | undefined {
+  const normalized = value.replace(/[\s.]/g, "");
+  return normalized || undefined;
 }
 
 function parseBool(value: string, defaultValue: boolean): boolean {
@@ -194,6 +218,8 @@ export function parseBulkProductCsv(content: string): {
       nameTr,
       descriptionTr: get("descriptionTr") || undefined,
       categorySlug: categorySlug.toLowerCase(),
+      weightKg: parseWeight(get("weightKg")),
+      gtip: parseGtip(get("gtip")),
       oemCodes: parseList(get("oemCodes")),
       crossCodes: parseList(get("crossCodes")),
       images: parseList(get("images")),
@@ -205,6 +231,6 @@ export function parseBulkProductCsv(content: string): {
   return { rows, errors };
 }
 
-export const BULK_PRODUCT_CSV_TEMPLATE = `ref;urun_adi;aciklama;kategori;oem_kodlari;cross_kodlari;yeni;aktif
-B8376;Motor Takozu Ön;Ön motor takozu;motor-takozlari;12 34-56.78|77 888-99;CROSS1|CROSS2;evet;evet
-B6850;Motor Takozu Arka;Arka motor takozu;motor-takozlari;98 76-54.32;;hayir;evet`;
+export const BULK_PRODUCT_CSV_TEMPLATE = `ref;urun_adi;aciklama;kategori;agirlik_kg;gtip;oem_kodlari;cross_kodlari;yeni;aktif
+B8376;Motor Takozu Ön;Ön motor takozu;motor-takozlari;1.25;8708999790;12 34-56.78|77 888-99;CROSS1|CROSS2;evet;evet
+B6850;Motor Takozu Arka;Arka motor takozu;motor-takozlari;0.98;8708999790;98 76-54.32;;hayir;evet`;

@@ -46,6 +46,29 @@ export default async function ProductDetailPage({
           <h1 className="mt-3 text-3xl font-bold text-brand-brown-dark">{name}</h1>
           {description && <p className="mt-4 leading-relaxed text-muted">{description}</p>}
 
+          {(product.weightKg != null || product.gtip) && (
+            <dl className="mt-6 grid gap-4 rounded-xl border border-border bg-brand-cream-light/40 p-4 text-sm sm:grid-cols-2">
+              {product.weightKg != null && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Ağırlık</dt>
+                  <dd className="mt-1 font-medium text-brand-brown-dark">
+                    {Number(product.weightKg).toLocaleString("tr-TR", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 3,
+                    })}{" "}
+                    kg
+                  </dd>
+                </div>
+              )}
+              {product.gtip && (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">GTIP</dt>
+                  <dd className="mt-1 font-mono font-medium text-brand-brown-dark">{product.gtip}</dd>
+                </div>
+              )}
+            </dl>
+          )}
+
           <div className="mt-8">
             <h2 className="font-bold text-brand-brown-dark">OEM Kodları</h2>
             <div className="mt-2 flex flex-wrap gap-2">

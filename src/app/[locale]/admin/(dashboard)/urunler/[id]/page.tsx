@@ -35,6 +35,8 @@ export default function ProductFormPage() {
     nameEn: "",
     descriptionTr: "",
     categoryId: "",
+    weightKg: "",
+    gtip: "",
     images: "",
     isNew: false,
     isFeatured: false,
@@ -62,6 +64,8 @@ export default function ProductFormPage() {
             nameEn: product.name.en || "",
             descriptionTr: product.description?.tr || "",
             categoryId: product.categoryId,
+            weightKg: product.weightKg != null ? String(product.weightKg) : "",
+            gtip: product.gtip || "",
             images: product.images.join("\n"),
             isNew: product.isNew,
             isFeatured: product.isFeatured,
@@ -258,6 +262,29 @@ export default function ProductFormPage() {
               />
             </div>
 
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <Label>Ağırlık (kg)</Label>
+                <Input
+                  type="text"
+                  inputMode="decimal"
+                  value={form.weightKg}
+                  onChange={(e) => setForm({ ...form, weightKg: e.target.value })}
+                  placeholder="1.25"
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label>GTIP Numarası</Label>
+                <Input
+                  value={form.gtip}
+                  onChange={(e) => setForm({ ...form, gtip: e.target.value })}
+                  placeholder="8708.99.00"
+                  className="mt-1.5 font-mono"
+                />
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-6">
               <label className="flex cursor-pointer items-center gap-2 text-sm">
                 <input
@@ -410,6 +437,8 @@ export default function ProductFormPage() {
           sku={form.sku}
           name={form.nameTr}
           description={form.descriptionTr}
+          weightKg={form.weightKg}
+          gtip={form.gtip}
           images={imageUrls}
           oemCodes={form.oemCodes}
           crossCodes={form.crossCodes}
