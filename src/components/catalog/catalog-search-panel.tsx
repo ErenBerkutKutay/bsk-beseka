@@ -214,7 +214,6 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
   return (
     <div className="relative overflow-hidden catalog-search-hero text-white">
-      <div className="catalog-search-hero-inner">
       <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-12">
         <div className="mb-8 max-w-2xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-cream">
@@ -526,7 +525,6 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
             </div>
           )}
         </form>
-      </div>
       </div>
     </div>
   );

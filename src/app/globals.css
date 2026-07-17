@@ -264,15 +264,9 @@ html.lenis body {
 }
 
 .catalog-search-hero {
-  background: var(--brand-navy-dark);
-}
-
-.catalog-search-hero-inner {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(255, 171, 122, 0.1) 0%, transparent 55%),
     linear-gradient(135deg, #5a0814 0%, var(--brand-brown-dark) 50%, #7a1020 100%);
-  width: min(calc(100% - 2rem), 80rem);
-  margin-inline: auto;
 }
 
 .catalog-hint-card {
