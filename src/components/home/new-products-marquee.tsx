@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
 
@@ -23,9 +24,21 @@ export function NewProductsMarquee({ products }: { products: MarqueeProduct[] })
 
   return (
     <section
-      className="new-products-marquee group relative overflow-hidden bg-white py-5 md:py-6"
-      aria-label="Yeni ürünler bandı"
+      className="new-products-marquee group relative overflow-hidden border-b border-border bg-white pt-5 md:pt-6"
+      aria-labelledby="yeni-urunlerimiz-baslik"
     >
+      <h2 id="yeni-urunlerimiz-baslik" className="mb-4 text-center md:mb-5">
+        <Link
+          href={`/${locale}/yeni-urunler`}
+          className="group/title inline-flex items-center gap-2 text-base font-black uppercase tracking-[0.12em] text-brand-brown-dark transition hover:text-brand-brown md:text-lg"
+        >
+          Yeni Ürünlerimiz
+          <ArrowRight className="h-5 w-5 transition-transform group-hover/title:translate-x-1" aria-hidden />
+          <span className="sr-only">— tüm yeni ürünleri görüntüle</span>
+        </Link>
+      </h2>
+
+      <div className="relative overflow-hidden pb-5 md:pb-6">
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent md:w-24" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent md:w-24" />
 
@@ -65,6 +78,7 @@ export function NewProductsMarquee({ products }: { products: MarqueeProduct[] })
             </Link>
           );
         })}
+      </div>
       </div>
     </section>
   );
