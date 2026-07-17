@@ -82,6 +82,16 @@ export type VehicleModel = Prisma.VehicleModelModel
  */
 export type VehicleSubModel = Prisma.VehicleSubModelModel
 /**
+ * Model VehicleType
+ * 
+ */
+export type VehicleType = Prisma.VehicleTypeModel
+/**
+ * Model ProductVehicleType
+ * 
+ */
+export type ProductVehicleType = Prisma.ProductVehicleTypeModel
+/**
  * Model VehicleFitment
  * 
  */

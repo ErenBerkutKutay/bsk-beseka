@@ -519,14 +519,6 @@ export type VehicleFitmentUncheckedUpdateManyWithoutProductNestedInput = {
   deleteMany?: Prisma.VehicleFitmentScalarWhereInput | Prisma.VehicleFitmentScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type VehicleFitmentCreateWithoutProductInput = {
   id?: string
   make: string

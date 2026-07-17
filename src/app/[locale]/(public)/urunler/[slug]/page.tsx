@@ -101,23 +101,42 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      {product.fitments.length > 0 && (
+      {(product.vehicleTypes.length > 0 || product.fitments.length > 0) && (
         <div className="mt-12">
           <h2 className="mb-4 text-xl font-bold text-brand-brown-dark">Uyumlu Araçlar</h2>
           <div className="overflow-x-auto rounded-xl border border-border shadow-sm">
             <table className="min-w-full text-sm">
               <thead className="bg-brand-brown text-brand-cream">
                 <tr>
+                  <th className="px-4 py-3 text-left">Tip No</th>
                   <th className="px-4 py-3 text-left">Marka</th>
-                  <th className="px-4 py-3 text-left">Model</th>
-                  <th className="px-4 py-3 text-left">Alt Model</th>
+                  <th className="px-4 py-3 text-left">Model Serisi</th>
+                  <th className="px-4 py-3 text-left">Tip</th>
                   <th className="px-4 py-3 text-left">Yıl</th>
-                  <th className="px-4 py-3 text-left">Motor</th>
+                  <th className="px-4 py-3 text-left">Yakıt</th>
                 </tr>
               </thead>
               <tbody>
+                {product.vehicleTypes.map((link) => (
+                  <tr
+                    key={link.id}
+                    className="border-t border-border even:bg-brand-cream-light/50"
+                  >
+                    <td className="px-4 py-3 font-mono">{link.vehicleType.tipNo}</td>
+                    <td className="px-4 py-3">{link.vehicleType.make}</td>
+                    <td className="px-4 py-3">{link.vehicleType.modelSeries}</td>
+                    <td className="px-4 py-3">{link.vehicleType.typeName}</td>
+                    <td className="px-4 py-3">
+                      {link.vehicleType.yearFrom || link.vehicleType.yearTo
+                        ? `${link.vehicleType.yearFrom || "?"} - ${link.vehicleType.yearTo || "?"}`
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-3">{link.vehicleType.fuelType || "-"}</td>
+                  </tr>
+                ))}
                 {product.fitments.map((fitment) => (
                   <tr key={fitment.id} className="border-t border-border even:bg-brand-cream-light/50">
+                    <td className="px-4 py-3">—</td>
                     <td className="px-4 py-3">{fitment.make}</td>
                     <td className="px-4 py-3">{fitment.model}</td>
                     <td className="px-4 py-3">{fitment.subModel || "-"}</td>

@@ -116,15 +116,34 @@ export async function searchProducts(params: ProductSearchParams) {
     ...(category ? { category: { slug: category } } : {}),
     ...(make || model || subModel
       ? {
-          fitments: {
-            some: {
-              ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
-              ...(model ? { model: { equals: model, mode: "insensitive" } } : {}),
-              ...(subModel
-                ? { subModel: { equals: subModel, mode: "insensitive" } }
-                : {}),
+          OR: [
+            {
+              vehicleTypes: {
+                some: {
+                  vehicleType: {
+                    ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
+                    ...(model
+                      ? { modelSeries: { equals: model, mode: "insensitive" } }
+                      : {}),
+                    ...(subModel
+                      ? { typeName: { equals: subModel, mode: "insensitive" } }
+                      : {}),
+                  },
+                },
+              },
             },
-          },
+            {
+              fitments: {
+                some: {
+                  ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
+                  ...(model ? { model: { equals: model, mode: "insensitive" } } : {}),
+                  ...(subModel
+                    ? { subModel: { equals: subModel, mode: "insensitive" } }
+                    : {}),
+                },
+              },
+            },
+          ],
         }
       : {}),
   };
@@ -168,6 +187,23 @@ export async function getProductBySlug(slug: string) {
       oemCodes: true,
       crossCodes: true,
       fitments: { orderBy: [{ make: "asc" }, { model: "asc" }] },
+      vehicleTypes: {
+        include: {
+          vehicleType: {
+            select: {
+              tipNo: true,
+              make: true,
+              modelSeries: true,
+              typeName: true,
+              yearFrom: true,
+              yearTo: true,
+              fuelType: true,
+              engineCodes: true,
+            },
+          },
+        },
+        orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],
+      },
     },
   });
 }

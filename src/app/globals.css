@@ -4,12 +4,15 @@
   --background: #fff8f4;
   --foreground: #1a0a0c;
   --brand-brown: #e31837;
-  --brand-brown-dark: #b01028;
-  --brand-brown-mid: #ff4d5e;
+  --brand-brown-dark: #961018;
+  --brand-brown-mid: #c41430;
   --brand-cream: #ffab7a;
   --brand-cream-dark: #ff8f57;
   --brand-cream-light: #ffe0cc;
   --brand-cyan: #00b8e6;
+  --brand-navy: #0f1d3a;
+  --brand-navy-dark: #0a1428;
+  --brand-navy-light: #162952;
   --muted: #6b4044;
   --border: #ffc9a8;
 
@@ -32,6 +35,9 @@
   --color-brand-cream-dark: var(--brand-cream-dark);
   --color-brand-cream-light: var(--brand-cream-light);
   --color-brand-cyan: var(--brand-cyan);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-navy-dark: var(--brand-navy-dark);
+  --color-brand-navy-light: var(--brand-navy-light);
   --color-brand-red: var(--brand-red);
   --color-brand-red-dark: var(--brand-red-dark);
   --color-brand-red-light: var(--brand-red-light);
@@ -258,10 +264,15 @@ html.lenis body {
 }
 
 .catalog-search-hero {
+  background: var(--brand-navy-dark);
+}
+
+.catalog-search-hero-inner {
   background:
-    radial-gradient(ellipse at 80% 0%, rgba(255, 171, 122, 0.32) 0%, transparent 50%),
-    radial-gradient(ellipse at 0% 100%, rgba(255, 143, 87, 0.18) 0%, transparent 45%),
-    linear-gradient(135deg, var(--brand-brown-dark) 0%, var(--brand-brown) 100%);
+    radial-gradient(ellipse at 50% 0%, rgba(255, 171, 122, 0.1) 0%, transparent 55%),
+    linear-gradient(135deg, #5a0814 0%, var(--brand-brown-dark) 50%, #7a1020 100%);
+  width: min(calc(100% - 2rem), 80rem);
+  margin-inline: auto;
 }
 
 .catalog-hint-card {

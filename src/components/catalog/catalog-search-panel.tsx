@@ -27,11 +27,7 @@ type Category = {
   displayImage?: string;
 };
 
-type VehicleMake = {
-  id: string;
-  name: string;
-  models: { id: string; name: string; subModels: { id: string; name: string }[] }[];
-};
+type VehicleOption = { id: string; name: string };
 
 type SearchMode = "oem" | "sku" | "vehicle" | "text";
 
@@ -48,7 +44,9 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-  const [vehicles, setVehicles] = useState<VehicleMake[]>([]);
+  const [makes, setMakes] = useState<VehicleOption[]>([]);
+  const [models, setModels] = useState<VehicleOption[]>([]);
+  const [subModels, setSubModels] = useState<VehicleOption[]>([]);
   const [showVehicleFilters, setShowVehicleFilters] = useState(false);
 
   const [sku, setSku] = useState(searchParams.get("sku") || "");
@@ -68,16 +66,38 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   useEffect(() => {
     fetch("/api/vehicles")
       .then((res) => res.json())
-      .then(setVehicles)
-      .catch(() => setVehicles([]));
+      .then(setMakes)
+      .catch(() => setMakes([]));
   }, []);
+
+  useEffect(() => {
+    if (!make) {
+      setModels([]);
+      return;
+    }
+    fetch(`/api/vehicles?make=${encodeURIComponent(make)}`)
+      .then((res) => res.json())
+      .then(setModels)
+      .catch(() => setModels([]));
+  }, [make]);
+
+  useEffect(() => {
+    if (!make || !model) {
+      setSubModels([]);
+      return;
+    }
+    fetch(
+      `/api/vehicles?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`,
+    )
+      .then((res) => res.json())
+      .then(setSubModels)
+      .catch(() => setSubModels([]));
+  }, [make, model]);
 
   useEffect(() => {
     if (make || model || subModel) setShowVehicleFilters(true);
   }, [make, model, subModel]);
 
-  const selectedMake = vehicles.find((v) => v.name === make);
-  const selectedModel = selectedMake?.models.find((m) => m.name === model);
   const normalizedPreview = useMemo(() => (q.trim() ? normalizeOEM(q) : ""), [q]);
 
   const activeFilters = useMemo(() => {
@@ -179,8 +199,11 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     }
   }
 
+  const inputClass =
+    "h-14 border-2 border-white/30 bg-white pl-12 text-base text-brand-brown-dark shadow-sm placeholder:text-muted/55 focus-visible:border-brand-cream focus-visible:ring-2 focus-visible:ring-brand-cream/50";
+
   const selectClass =
-    "h-11 w-full rounded-lg border border-brand-brown-mid bg-brand-brown-dark/80 px-3 text-sm text-white focus:border-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-cream/30 disabled:cursor-not-allowed disabled:opacity-40";
+    "h-11 w-full rounded-lg border-2 border-white/30 bg-white px-3 text-sm text-brand-brown-dark shadow-sm focus:border-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-cream/40 disabled:cursor-not-allowed disabled:bg-white/60 disabled:text-muted/60";
 
   const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
     { id: "text", label: "Genel Arama", icon: AlignLeft },
@@ -191,17 +214,14 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
   return (
     <div className="relative overflow-hidden catalog-search-hero text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,171,122,0.28)_0%,transparent_55%)]" />
-      <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-brand-cream/20 blur-3xl" />
-      <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-brand-cream/15 blur-3xl" />
-
+      <div className="catalog-search-hero-inner">
       <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-12">
         <div className="mb-8 max-w-2xl">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-cream/70">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-cream">
             Beseka Katalog
           </p>
-          <h1 className="text-2xl font-bold tracking-tight md:text-4xl">{t("title")}</h1>
-          <p className="mt-3 text-sm leading-relaxed text-brand-cream/80 md:text-base">
+          <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">{t("title")}</h1>
+          <p className="mt-3 text-sm leading-relaxed text-white/85 md:text-base">
             Tek kutuda ürün adı, açıklama, Beseka kodu ve OEM/cross kodu arayın. Tire, boşluk
             veya nokta fark etmez.
           </p>
@@ -212,7 +232,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
             e.preventDefault();
             applyFilters();
           }}
-          className="rounded-2xl border border-brand-cream/30 bg-brand-brown-dark/50 p-5 shadow-xl shadow-brand-cream/10 backdrop-blur-sm md:p-7"
+          className="rounded-2xl border-2 border-white/20 bg-black/25 p-5 shadow-2xl shadow-black/30 backdrop-blur-sm md:p-7"
         >
           {/* Sekmeler */}
           <div className="mb-6 flex flex-wrap gap-2">
@@ -226,8 +246,8 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                   onClick={() => setMode(tab.id)}
                   className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
                     isActive
-                      ? "bg-brand-cream text-brand-brown-dark shadow-lg shadow-brand-cream/40"
-                      : "bg-white/10 text-brand-cream hover:bg-brand-cream/25 hover:text-brand-brown-dark"
+                      ? "bg-brand-cream text-brand-brown-dark shadow-lg shadow-black/25"
+                      : "border border-white/30 bg-white/10 text-white hover:border-white/50 hover:bg-white/20"
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -240,20 +260,20 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           {/* Ana arama alanı */}
           {mode === "text" && (
             <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
                 Genel arama
               </label>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-cream/50" />
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Örn: motor takozu, B8376, 1311 826 080"
-                  className="h-14 border-brand-brown-mid bg-brand-brown-dark/60 pl-12 text-base text-white placeholder:text-brand-cream/35 focus-visible:ring-brand-cream"
+                  className={inputClass}
                   autoFocus
                 />
               </div>
-              <p className="text-xs text-brand-cream/60">
+              <p className="text-xs text-white/75">
                 Ürün adı, açıklama, Beseka referans kodu ve kayıtlı OEM/cross kodlarında arar.
                 Kısmi eşleşmeler de listelenir.
               </p>
@@ -262,27 +282,27 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
           {mode === "oem" && (
             <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
                 {t("oemSearch")}
               </label>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-cream/50" />
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Örn: 12 34-56.78 veya 1234567890"
-                  className="h-14 border-brand-brown-mid bg-brand-brown-dark/60 pl-12 text-base text-white placeholder:text-brand-cream/35 focus-visible:ring-brand-cream"
+                  className={inputClass}
                   autoFocus
                 />
               </div>
               {normalizedPreview && (
-                <div className="flex flex-wrap items-center gap-2 rounded-lg bg-brand-cream/10 px-4 py-2.5 text-sm">
+                <div className="flex flex-wrap items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm">
                   <Sparkles className="h-4 w-4 shrink-0 text-brand-cream" />
-                  <span className="text-brand-cream/70">Normalize edilmiş arama:</span>
-                  <code className="rounded-md bg-brand-brown px-2 py-0.5 font-mono text-brand-cream">
+                  <span className="text-white/80">Normalize edilmiş arama:</span>
+                  <code className="rounded-md bg-brand-brown-dark px-2 py-0.5 font-mono text-white">
                     {normalizedPreview}
                   </code>
-                  <span className="text-xs text-brand-cream/50">
+                  <span className="text-xs text-white/60">
                     (tire, boşluk, nokta otomatik temizlenir)
                   </span>
                 </div>
@@ -292,16 +312,16 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
           {mode === "sku" && (
             <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
                 {t("skuSearch")}
               </label>
               <div className="relative">
-                <Hash className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-cream/50" />
+                <Hash className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
                 <Input
                   value={sku}
                   onChange={(e) => setSku(e.target.value.toUpperCase())}
                   placeholder="B8376, B6850, B2306..."
-                  className="h-14 border-brand-brown-mid bg-brand-brown-dark/60 pl-12 font-mono text-base uppercase text-white placeholder:text-brand-cream/35 focus-visible:ring-brand-cream"
+                  className={`${inputClass} font-mono uppercase`}
                   autoFocus
                 />
               </div>
@@ -311,7 +331,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           {mode === "vehicle" && (
             <div className="grid gap-4 sm:grid-cols-3">
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
                   {t("manufacturer")}
                 </label>
                 <select
@@ -324,13 +344,13 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                   }}
                 >
                   <option value="">{t("selectManufacturer")}</option>
-                  {vehicles.map((v) => (
+                  {makes.map((v) => (
                     <option key={v.id} value={v.name}>{v.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
                   {t("model")}
                 </label>
                 <select
@@ -340,13 +360,13 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                   disabled={!make}
                 >
                   <option value="">{make ? t("model") : t("selectManufacturer")}</option>
-                  {selectedMake?.models.map((m) => (
+                  {models.map((m) => (
                     <option key={m.id} value={m.name}>{m.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/80">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
                   {t("subModel")}
                 </label>
                 <select
@@ -356,7 +376,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                   disabled={!model}
                 >
                   <option value="">{model ? t("subModel") : t("selectModel")}</option>
-                  {selectedModel?.subModels.map((s) => (
+                  {subModels.map((s) => (
                     <option key={s.id} value={s.name}>{s.name}</option>
                   ))}
                 </select>
@@ -365,11 +385,11 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           )}
 
           {/* Gelişmiş filtreler */}
-          <div className="mt-5 border-t border-brand-cream/10 pt-5">
+          <div className="mt-5 border-t border-white/20 pt-5">
             <button
               type="button"
               onClick={() => setShowVehicleFilters(!showVehicleFilters)}
-              className="flex w-full items-center justify-between text-sm font-medium text-brand-cream/80 transition hover:text-brand-cream"
+              className="flex w-full items-center justify-between text-sm font-medium text-white/90 transition hover:text-white"
             >
               <span>Gelişmiş filtreler (araç & ürün grubu)</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${showVehicleFilters ? "rotate-180" : ""}`} />
@@ -380,7 +400,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                 {mode !== "vehicle" && (
                   <>
                     <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/70">
+                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
                         {t("manufacturer")}
                       </label>
                       <select
@@ -389,13 +409,13 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                         onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
                       >
                         <option value="">{t("selectManufacturer")}</option>
-                        {vehicles.map((v) => (
+                        {makes.map((v) => (
                           <option key={v.id} value={v.name}>{v.name}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/70">
+                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
                         {t("model")}
                       </label>
                       <select
@@ -405,13 +425,13 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                         disabled={!make}
                       >
                         <option value="">{make ? t("model") : "—"}</option>
-                        {selectedMake?.models.map((m) => (
+                        {models.map((m) => (
                           <option key={m.id} value={m.name}>{m.name}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/70">
+                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
                         {t("subModel")}
                       </label>
                       <select
@@ -421,7 +441,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                         disabled={!model}
                       >
                         <option value="">{model ? t("subModel") : "—"}</option>
-                        {selectedModel?.subModels.map((s) => (
+                        {subModels.map((s) => (
                           <option key={s.id} value={s.name}>{s.name}</option>
                         ))}
                       </select>
@@ -429,7 +449,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                   </>
                 )}
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-brand-cream/70">
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
                     {t("productGroup")}
                   </label>
                   <select
@@ -451,13 +471,13 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
           {/* Örnek aramalar */}
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-brand-cream/50">Örnek:</span>
+            <span className="text-xs font-medium text-white/70">Örnek:</span>
             {EXAMPLE_SEARCHES.map((ex) => (
               <button
                 key={ex.label}
                 type="button"
                 onClick={() => applyExample(ex)}
-                className="rounded-full border border-brand-cream/20 bg-white/5 px-3 py-1 font-mono text-xs text-brand-cream/90 transition hover:border-brand-cream/50 hover:bg-white/10"
+                className="rounded-full border border-white/35 bg-white/10 px-3 py-1 font-mono text-xs text-white transition hover:border-brand-cream hover:bg-brand-cream/20 hover:text-brand-cream"
               >
                 {ex.label}
               </button>
@@ -480,7 +500,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                 variant="outline"
                 size="lg"
                 onClick={clearFilters}
-                className="gap-2 border-brand-cream/30 bg-transparent text-white hover:bg-white/10"
+                className="gap-2 border-white/40 bg-transparent text-white hover:bg-white/15"
               >
                 <X className="h-4 w-4" />
                 {t("clearFilters")}
@@ -490,14 +510,14 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
           {/* Aktif filtreler */}
           {activeFilters.length > 0 && (
-            <div className="mt-5 flex flex-wrap gap-2 border-t border-brand-cream/10 pt-5">
-              <span className="self-center text-xs font-medium text-brand-cream/50">Aktif:</span>
+            <div className="mt-5 flex flex-wrap gap-2 border-t border-white/20 pt-5">
+              <span className="self-center text-xs font-medium text-white/70">Aktif:</span>
               {activeFilters.map((chip) => (
                 <button
                   key={chip.key}
                   type="button"
                   onClick={() => removeFilter(chip.key)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-brand-cream/15 px-3 py-1 text-xs font-medium text-brand-cream transition hover:bg-brand-cream/25"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-brown-dark transition hover:bg-white"
                 >
                   {chip.label}
                   <X className="h-3 w-3 opacity-60" />
@@ -506,6 +526,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
             </div>
           )}
         </form>
+      </div>
       </div>
     </div>
   );

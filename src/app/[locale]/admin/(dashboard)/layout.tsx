@@ -17,7 +17,7 @@ const adminNav = [
   { href: "/admin/blog", label: "Blog" },
   { href: "/admin/sayfalar", label: "Sayfalar" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
-  { href: "/admin/arac-import", label: "Araç Import Log" },
+  { href: "/admin/arac-import", label: "Araç Kataloğu" },
 ];
 
 export default async function AdminProtectedLayout({

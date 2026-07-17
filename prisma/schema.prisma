@@ -64,6 +64,7 @@ model Product {
   oemCodes    OEMCode[]
   crossCodes  CrossCode[]
   fitments    VehicleFitment[]
+  vehicleTypes ProductVehicleType[]
   viewStats   AnalyticsProductView?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
@@ -122,6 +123,51 @@ model VehicleSubModel {
 
   @@unique([modelId, name])
   @@index([modelId])
+}
+
+model VehicleType {
+  id             String   @id @default(cuid())
+  tipNo          Int      @unique
+  vehicleClass   String?
+  linkTargetType String?
+  make           String
+  modelSeries    String
+  typeName       String
+  modelSeriesNo  String?
+  yearFrom       Int?
+  yearTo         Int?
+  bodyType       String?
+  driveType      String?
+  engineVolumeL  Decimal? @db.Decimal(8, 3)
+  fuelType       String?
+  kw             Int?
+  hp             Int?
+  engineCodes    String?
+  motorNumbers   String?
+  manufacturerNo String?
+  dateGeneral    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  productLinks ProductVehicleType[]
+
+  @@index([make])
+  @@index([make, modelSeries])
+  @@index([make, modelSeries, typeName])
+  @@index([linkTargetType])
+}
+
+model ProductVehicleType {
+  id        String      @id @default(cuid())
+  productId String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tipNo     Int
+  vehicleType VehicleType @relation(fields: [tipNo], references: [tipNo], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@unique([productId, tipNo])
+  @@index([productId])
+  @@index([tipNo])
 }
 
 model VehicleFitment {

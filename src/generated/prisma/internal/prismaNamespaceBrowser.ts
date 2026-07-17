@@ -59,6 +59,8 @@ export const ModelName = {
   VehicleMake: 'VehicleMake',
   VehicleModel: 'VehicleModel',
   VehicleSubModel: 'VehicleSubModel',
+  VehicleType: 'VehicleType',
+  ProductVehicleType: 'ProductVehicleType',
   VehicleFitment: 'VehicleFitment',
   FitmentImportLog: 'FitmentImportLog',
   BlogPost: 'BlogPost',
@@ -184,6 +186,44 @@ export const VehicleSubModelScalarFieldEnum = {
 } as const
 
 export type VehicleSubModelScalarFieldEnum = (typeof VehicleSubModelScalarFieldEnum)[keyof typeof VehicleSubModelScalarFieldEnum]
+
+
+export const VehicleTypeScalarFieldEnum = {
+  id: 'id',
+  tipNo: 'tipNo',
+  vehicleClass: 'vehicleClass',
+  linkTargetType: 'linkTargetType',
+  make: 'make',
+  modelSeries: 'modelSeries',
+  typeName: 'typeName',
+  modelSeriesNo: 'modelSeriesNo',
+  yearFrom: 'yearFrom',
+  yearTo: 'yearTo',
+  bodyType: 'bodyType',
+  driveType: 'driveType',
+  engineVolumeL: 'engineVolumeL',
+  fuelType: 'fuelType',
+  kw: 'kw',
+  hp: 'hp',
+  engineCodes: 'engineCodes',
+  motorNumbers: 'motorNumbers',
+  manufacturerNo: 'manufacturerNo',
+  dateGeneral: 'dateGeneral',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VehicleTypeScalarFieldEnum = (typeof VehicleTypeScalarFieldEnum)[keyof typeof VehicleTypeScalarFieldEnum]
+
+
+export const ProductVehicleTypeScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  tipNo: 'tipNo',
+  createdAt: 'createdAt'
+} as const
+
+export type ProductVehicleTypeScalarFieldEnum = (typeof ProductVehicleTypeScalarFieldEnum)[keyof typeof ProductVehicleTypeScalarFieldEnum]
 
 
 export const VehicleFitmentScalarFieldEnum = {

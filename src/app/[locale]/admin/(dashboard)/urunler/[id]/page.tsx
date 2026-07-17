@@ -44,6 +44,8 @@ export default function ProductFormPage() {
     oemCodes: "",
     crossCodes: "",
     fitmentsBulk: "",
+    tipNosBulk: "",
+    replaceTipNos: false,
   });
 
   useEffect(() => {
@@ -73,6 +75,8 @@ export default function ProductFormPage() {
             oemCodes: product.oemCodes.map((c: { code: string }) => c.code).join("\n"),
             crossCodes: product.crossCodes.map((c: { code: string }) => c.code).join("\n"),
             fitmentsBulk: "",
+            tipNosBulk: "",
+            replaceTipNos: false,
           });
         })
         .catch(() => setError("Ürün yüklenemedi."))
@@ -167,6 +171,17 @@ export default function ProductFormPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ bulk: form.fitmentsBulk }),
+        });
+      }
+
+      if (form.tipNosBulk.trim()) {
+        await fetch(`/api/admin/products/${saved.id}/vehicle-types`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            bulk: form.tipNosBulk,
+            replace: form.replaceTipNos,
+          }),
         });
       }
 
@@ -379,6 +394,32 @@ export default function ProductFormPage() {
                 />
               </div>
             </details>
+          </CardContent>
+        </Card>
+
+        {/* Tip no crosslama */}
+        <Card>
+          <CardContent className="space-y-4 pt-6">
+            <h2 className="font-semibold text-brand-brown-dark">Tip No Crosslama</h2>
+            <p className="text-xs text-muted">
+              Araç kataloğundaki benzersiz tip numaralarını ürüne bağlayın. Her satıra bir tip no
+              yazın (ör. 14219). Excel kataloğundaki &quot;Tip no.&quot; sütunu kullanılır.
+            </p>
+            <Textarea
+              value={form.tipNosBulk}
+              onChange={(e) => setForm({ ...form, tipNosBulk: e.target.value })}
+              placeholder={"14219\n117699\n103833"}
+              rows={5}
+              className="font-mono text-sm"
+            />
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.replaceTipNos}
+                onChange={(e) => setForm({ ...form, replaceTipNos: e.target.checked })}
+              />
+              Mevcut tip no eşleşmelerinin üzerine yaz
+            </label>
           </CardContent>
         </Card>
 

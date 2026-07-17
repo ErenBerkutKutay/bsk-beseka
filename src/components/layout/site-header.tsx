@@ -43,7 +43,7 @@ export function SiteHeader() {
         scrolled ? "shadow-lg shadow-brand-brown/10" : ""
       }`}
     >
-      <div className="bg-brand-brown text-brand-cream">
+      <div className="bg-brand-brown-dark text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-4">
             <a

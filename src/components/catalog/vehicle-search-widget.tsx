@@ -6,22 +6,16 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 
-type VehicleMake = {
-  id: string;
-  name: string;
-  models: {
-    id: string;
-    name: string;
-    subModels: { id: string; name: string }[];
-  }[];
-};
+type VehicleOption = { id: string; name: string };
 
 export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) {
   const t = useTranslations("home");
   const tc = useTranslations("catalog");
   const locale = useLocale();
   const router = useRouter();
-  const [vehicles, setVehicles] = useState<VehicleMake[]>([]);
+  const [makes, setMakes] = useState<VehicleOption[]>([]);
+  const [models, setModels] = useState<VehicleOption[]>([]);
+  const [subModels, setSubModels] = useState<VehicleOption[]>([]);
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [subModel, setSubModel] = useState("");
@@ -30,12 +24,33 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
   useEffect(() => {
     fetch("/api/vehicles")
       .then((res) => res.json())
-      .then(setVehicles)
-      .catch(() => setVehicles([]));
+      .then(setMakes)
+      .catch(() => setMakes([]));
   }, []);
 
-  const selectedMake = vehicles.find((v) => v.name === make);
-  const selectedModel = selectedMake?.models.find((m) => m.name === model);
+  useEffect(() => {
+    if (!make) {
+      setModels([]);
+      return;
+    }
+    fetch(`/api/vehicles?make=${encodeURIComponent(make)}`)
+      .then((res) => res.json())
+      .then(setModels)
+      .catch(() => setModels([]));
+  }, [make]);
+
+  useEffect(() => {
+    if (!make || !model) {
+      setSubModels([]);
+      return;
+    }
+    fetch(
+      `/api/vehicles?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`,
+    )
+      .then((res) => res.json())
+      .then(setSubModels)
+      .catch(() => setSubModels([]));
+  }, [make, model]);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -74,7 +89,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
             }}
           >
             <option value="">{tc("selectManufacturer")}</option>
-            {vehicles.map((v) => (
+            {makes.map((v) => (
               <option key={v.id} value={v.name}>
                 {v.name}
               </option>
@@ -93,7 +108,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
             disabled={!make}
           >
             <option value="">{make ? tc("model") : tc("selectManufacturer")}</option>
-            {selectedMake?.models.map((m) => (
+            {models.map((m) => (
               <option key={m.id} value={m.name}>
                 {m.name}
               </option>
@@ -109,7 +124,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
             disabled={!model}
           >
             <option value="">{model ? tc("subModel") : tc("selectModel")}</option>
-            {selectedModel?.subModels.map((s) => (
+            {subModels.map((s) => (
               <option key={s.id} value={s.name}>
                 {s.name}
               </option>
@@ -118,7 +133,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
         </div>
       </div>
       <Button type="submit" className="mt-4">
-        {tc("title") ? "Ara" : "Search"}
+        Ara
       </Button>
     </form>
   );
