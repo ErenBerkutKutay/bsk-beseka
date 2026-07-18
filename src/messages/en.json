@@ -6,8 +6,8 @@
     "quickView": "Quick View",
     "readMore": "Read More",
     "contact": "Contact",
-    "login": "Login",
-    "logout": "Logout",
+    "login": "Log In",
+    "logout": "Log Out",
     "all": "All",
     "products": "Products",
     "categories": "Categories"
@@ -21,11 +21,25 @@
     "contact": "Contact",
     "b2b": "B2B Login",
     "newProducts": "New Products",
-    "catalog": "Product Catalog"
+    "catalog": "Products & Catalog",
+    "onlineCatalog": "Online Catalog",
+    "aboutUs": "About Us",
+    "culture": "Corporate Culture",
+    "visionMission": "Vision & Mission",
+    "values": "Our Values",
+    "sustainability": "Sustainability",
+    "welding": "Welding",
+    "toolshop": "Tool Shop",
+    "cnc": "CNC Machining",
+    "vulcanization": "Vulcanization",
+    "assembly": "Assembly",
+    "followUs": "Follow Us",
+    "searchProducts": "Search Products",
+    "menu": "Menu"
   },
   "home": {
     "heroTitle": "Strong, Young and Innovative Team",
-    "heroSubtitle": "Engineering and quality in automotive spare parts manufacturing",
+    "heroSubtitle": "Over 35 years of engineering experience in engine mounts and automotive spare parts. Maximum fit and performance with rubber-metal bonding technology.",
     "searchTitle": "Search Products",
     "productsTitle": "Our Products",
     "journeyTitle": "Our Journey",
@@ -45,7 +59,10 @@
     "selectManufacturer": "Select manufacturer first",
     "selectModel": "Select model first",
     "noResults": "No products matched your search.",
-    "matchedOem": "Matched OEM"
+    "clearFilters": "Clear Filters",
+    "matchedOem": "Matched OEM",
+    "landingHint": "Search by Beseka reference code or OEM code",
+    "landingSubhint": "Enter Ref, OEM/cross code or vehicle details in the search panel above."
   },
   "product": {
     "oemCodes": "OEM Codes",
@@ -63,7 +80,7 @@
     "orders": "My Orders",
     "creditNotes": "Credit Notes",
     "address": "My Address",
-    "profile": "Profile",
+    "profile": "My Profile",
     "placeholder": "Order integration will be available soon."
   },
   "admin": {
@@ -75,5 +92,15 @@
     "users": "Users",
     "media": "Media",
     "login": "Admin Login"
+  },
+  "footer": {
+    "tagline": "Manufacturer of engine mounts and automotive spare parts. Maximum fit and performance with rubber-metal bonding technology.",
+    "aboutUs": "About Us",
+    "kvkk": "Privacy (KVKK)",
+    "support": "Support",
+    "rights": "All Rights Reserved."
+  },
+  "language": {
+    "switchLabel": "Language selection"
   }
 }

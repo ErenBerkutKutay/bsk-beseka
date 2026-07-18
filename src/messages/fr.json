@@ -1,0 +1,106 @@
+{
+  "common": {
+    "search": "Rechercher",
+    "clearFilters": "Effacer les filtres",
+    "new": "Nouveau",
+    "quickView": "Aperçu rapide",
+    "readMore": "En savoir plus",
+    "contact": "Contact",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "all": "Tous",
+    "products": "Produits",
+    "categories": "Catégories"
+  },
+  "nav": {
+    "corporate": "Entreprise",
+    "products": "Produits",
+    "blog": "Blog",
+    "production": "Production",
+    "rd": "R&D et technologie",
+    "contact": "Contact",
+    "b2b": "Connexion B2B",
+    "newProducts": "Nouveaux produits",
+    "catalog": "Produits et catalogue",
+    "onlineCatalog": "Catalogue en ligne",
+    "aboutUs": "À propos",
+    "culture": "Culture d'entreprise",
+    "visionMission": "Vision et mission",
+    "values": "Nos valeurs",
+    "sustainability": "Durabilité",
+    "welding": "Soudure",
+    "toolshop": "Outillage",
+    "cnc": "Usinage CNC",
+    "vulcanization": "Vulcanisation",
+    "assembly": "Assemblage",
+    "followUs": "Suivez-nous",
+    "searchProducts": "Rechercher des produits",
+    "menu": "Menu"
+  },
+  "home": {
+    "heroTitle": "Une équipe forte, jeune et innovante",
+    "heroSubtitle": "Plus de 35 ans d'expérience en ingénierie des supports moteur et pièces détachées automobile. Adéquation et performance maximales grâce à la technologie de liaison caoutchouc-métal.",
+    "searchTitle": "Rechercher des produits",
+    "productsTitle": "Nos produits",
+    "journeyTitle": "Notre parcours",
+    "goalsTitle": "Nos objectifs",
+    "newsTitle": "Nos actualités",
+    "newsletterTitle": "S'abonner à la newsletter",
+    "newsletterDesc": "Restez informé des événements et des campagnes."
+  },
+  "catalog": {
+    "title": "Produits et catalogue",
+    "skuSearch": "Rechercher par réf. Beseka",
+    "oemSearch": "Codes OEM et cross",
+    "manufacturer": "Constructeurs",
+    "model": "Modèles",
+    "subModel": "Sous-modèles",
+    "productGroup": "Groupes de produits",
+    "selectManufacturer": "Sélectionnez d'abord le constructeur",
+    "selectModel": "Sélectionnez d'abord le modèle",
+    "noResults": "Aucun produit ne correspond à votre recherche.",
+    "clearFilters": "Effacer les filtres",
+    "matchedOem": "OEM correspondant",
+    "landingHint": "Recherchez par code de référence Beseka ou code OEM",
+    "landingSubhint": "Saisissez la réf., le code OEM/cross ou les informations du véhicule dans le panneau de recherche ci-dessus."
+  },
+  "product": {
+    "oemCodes": "Codes OEM",
+    "crossCodes": "Codes cross",
+    "compatibleVehicles": "Véhicules compatibles",
+    "make": "Marque",
+    "model": "Modèle",
+    "subModel": "Sous-modèle",
+    "year": "Année",
+    "engine": "Moteur"
+  },
+  "b2b": {
+    "title": "Connexion B2B",
+    "dashboard": "Tableau de bord B2B",
+    "orders": "Mes commandes",
+    "creditNotes": "Avoirs",
+    "address": "Mon adresse",
+    "profile": "Mon profil",
+    "placeholder": "L'intégration des commandes sera bientôt disponible."
+  },
+  "admin": {
+    "dashboard": "Panneau d'administration",
+    "products": "Produits",
+    "categories": "Catégories",
+    "blog": "Blog",
+    "pages": "Pages",
+    "users": "Utilisateurs",
+    "media": "Médias",
+    "login": "Connexion admin"
+  },
+  "footer": {
+    "tagline": "Fabricant de supports moteur et pièces détachées automobile. Adéquation et performance maximales grâce à la technologie de liaison caoutchouc-métal.",
+    "aboutUs": "À propos",
+    "kvkk": "Confidentialité (KVKK)",
+    "support": "Assistance",
+    "rights": "Tous droits réservés."
+  },
+  "language": {
+    "switchLabel": "Sélection de la langue"
+  }
+}

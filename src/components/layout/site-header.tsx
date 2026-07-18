@@ -8,23 +8,8 @@ import { Menu, Phone, Search, X } from "lucide-react";
 import { besekaAssets } from "@/lib/beseka/assets";
 import { BESEKA_B2B_URL } from "@/lib/beseka/links";
 import { ProductSearchForm } from "@/components/catalog/product-search-form";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { SocialFollowLinks } from "@/components/layout/social-follow-links";
-
-const corporateLinks = [
-  { href: "/kurumsal/hakkimizda", label: "Hakkımızda" },
-  { href: "/kurumsal/kultur", label: "Kurumsal Kültürümüz" },
-  { href: "/kurumsal/vizyon-misyon", label: "Vizyon & Misyon" },
-  { href: "/kurumsal/degerler", label: "Değerlerimiz" },
-  { href: "/kurumsal/surdurulebilirlik", label: "Sürdürülebilirlik" },
-];
-
-const productionLinks = [
-  { href: "/uretim/kaynak", label: "Kaynak" },
-  { href: "/uretim/kaliphane", label: "Kalıphane" },
-  { href: "/uretim/cnc", label: "CNC İşleme" },
-  { href: "/uretim/vulkanizasyon", label: "Vulkanizasyon" },
-  { href: "/uretim/montaj", label: "Montaj" },
-];
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -32,6 +17,27 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const prefix = `/${locale}`;
+
+  const corporateLinks = [
+    { href: "/kurumsal/hakkimizda", label: t("aboutUs") },
+    { href: "/kurumsal/kultur", label: t("culture") },
+    { href: "/kurumsal/vizyon-misyon", label: t("visionMission") },
+    { href: "/kurumsal/degerler", label: t("values") },
+    { href: "/kurumsal/surdurulebilirlik", label: t("sustainability") },
+  ];
+
+  const productionLinks = [
+    { href: "/uretim/kaynak", label: t("welding") },
+    { href: "/uretim/kaliphane", label: t("toolshop") },
+    { href: "/uretim/cnc", label: t("cnc") },
+    { href: "/uretim/vulkanizasyon", label: t("vulcanization") },
+    { href: "/uretim/montaj", label: t("assembly") },
+  ];
+
+  const catalogLinks = [
+    { href: "/urunler", label: t("onlineCatalog") },
+    { href: "/yeni-urunler", label: t("newProducts") },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -46,8 +52,8 @@ export function SiteHeader() {
       }`}
     >
       <div className="bg-brand-brown-dark text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-sm">
-          <div className="flex items-center gap-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <a
               href="tel:+902244824455"
               className="flex items-center gap-1 transition-colors hover:text-white"
@@ -57,7 +63,8 @@ export function SiteHeader() {
             </a>
             <span className="hidden sm:inline opacity-80">info@beseka.com</span>
           </div>
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <LanguageSwitcher className="order-first sm:order-none" />
             <SocialFollowLinks className="hidden lg:flex" />
             <SocialFollowLinks className="lg:hidden" showLabel={false} iconClassName="h-3.5 w-3.5" />
             <a
@@ -95,14 +102,7 @@ export function SiteHeader() {
 
           <nav className="hidden shrink-0 items-center gap-1 lg:flex">
             <NavDropdown title={t("corporate")} links={corporateLinks} prefix={prefix} />
-            <NavDropdown
-              title={t("catalog")}
-              links={[
-                { href: "/urunler", label: "Online Katalog" },
-                { href: "/yeni-urunler", label: "Yeni Ürünler" },
-              ]}
-              prefix={prefix}
-            />
+            <NavDropdown title={t("catalog")} links={catalogLinks} prefix={prefix} />
             <NavDropdown title={t("production")} links={productionLinks} prefix={prefix} />
             <NavLink href={`${prefix}/blog`}>{t("blog")}</NavLink>
             <NavLink href={`${prefix}/iletisim`}>{t("contact")}</NavLink>
@@ -111,7 +111,7 @@ export function SiteHeader() {
           <button
             className="ml-auto rounded-lg p-2 text-brand-brown lg:ml-0 lg:hidden"
             onClick={() => setOpen(!open)}
-            aria-label="Menu"
+            aria-label={t("menu")}
           >
             {open ? <X /> : <Menu />}
           </button>
@@ -125,9 +125,10 @@ export function SiteHeader() {
       >
         <div className="flex flex-col gap-1 px-4 py-4">
           <div className="mb-3 md:hidden">
+            <LanguageSwitcher compact variant="light" className="mb-3" />
             <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-brown">
               <Search className="h-3.5 w-3.5" />
-              Ürün Ara
+              {t("searchProducts")}
             </p>
             <ProductSearchForm variant="header" onNavigate={() => setOpen(false)} />
           </div>

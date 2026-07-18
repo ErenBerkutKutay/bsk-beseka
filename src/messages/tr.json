@@ -21,7 +21,21 @@
     "contact": "İletişim",
     "b2b": "B2B Giriş",
     "newProducts": "Yeni Ürünler",
-    "catalog": "Ürünler & Katalog"
+    "catalog": "Ürünler & Katalog",
+    "onlineCatalog": "Online Katalog",
+    "aboutUs": "Hakkımızda",
+    "culture": "Kurumsal Kültürümüz",
+    "visionMission": "Vizyon & Misyon",
+    "values": "Değerlerimiz",
+    "sustainability": "Sürdürülebilirlik",
+    "welding": "Kaynak",
+    "toolshop": "Kalıphane",
+    "cnc": "CNC İşleme",
+    "vulcanization": "Vulkanizasyon",
+    "assembly": "Montaj",
+    "followUs": "Bizi Takip Edin",
+    "searchProducts": "Ürün Ara",
+    "menu": "Menü"
   },
   "home": {
     "heroTitle": "Güçlü, Genç ve Yenilikçi Ekip",
@@ -78,5 +92,15 @@
     "users": "Kullanıcılar",
     "media": "Medya",
     "login": "Admin Girişi"
+  },
+  "footer": {
+    "tagline": "Motor takozu ve otomotiv yedek parça üreticisi. Kauçuk-metal birleşim teknolojisiyle maksimum uyum ve performans.",
+    "aboutUs": "Hakkımızda",
+    "kvkk": "KVKK",
+    "support": "Destek",
+    "rights": "Tüm Hakları Saklıdır."
+  },
+  "language": {
+    "switchLabel": "Dil seçimi"
   }
 }

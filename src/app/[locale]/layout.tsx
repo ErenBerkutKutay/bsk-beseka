@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { rtlLocales } from "@/i18n/locales";
 import { Providers } from "@/components/providers";
 import { Inter } from "next/font/google";
 import "../globals.css";
@@ -27,9 +28,10 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  const dir = rtlLocales.has(locale as (typeof routing.locales)[number]) ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} className={`${inter.variable} h-full`}>
+    <html lang={locale} dir={dir} className={`${inter.variable} h-full`}>
       <body className="min-h-full bg-white font-sans text-zinc-900 antialiased">
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>

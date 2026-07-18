@@ -1,4 +1,7 @@
+"use client";
+
 import { BESEKA_SOCIAL_LINKS } from "@/lib/beseka/social-links";
+import { useTranslations } from "next-intl";
 
 function SocialIcon({ id, className }: { id: (typeof BESEKA_SOCIAL_LINKS)[number]["id"]; className?: string }) {
   switch (id) {
@@ -46,10 +49,12 @@ export function SocialFollowLinks({
   iconClassName = "h-4 w-4",
   showLabel = true,
 }: SocialFollowLinksProps) {
+  const t = useTranslations("nav");
+
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       {showLabel ? (
-        <span className="whitespace-nowrap text-xs font-medium text-white/90">Bizi Takip Edin:</span>
+        <span className="whitespace-nowrap text-xs font-medium text-white/90">{t("followUs")}:</span>
       ) : null}
       <div className="flex items-center gap-1.5">
         {BESEKA_SOCIAL_LINKS.map((link) => (
