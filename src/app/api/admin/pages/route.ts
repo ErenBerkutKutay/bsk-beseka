@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { z } from "zod";
-import type { Prisma } from "@/generated/prisma/client";
+import {
+  adminPageUpdateSchema,
+  buildRequiredLocalizedJson,
+} from "@/lib/admin/content-schema";
 
 const pageSchema = z.object({
   slug: z.string().min(1),
   type: z.enum(["CORPORATE", "PRODUCTION", "RD", "LEGAL"]),
-  titleTr: z.string().min(1),
-  contentTr: z.string().min(1),
+  title: adminPageUpdateSchema.shape.title,
+  content: adminPageUpdateSchema.shape.content,
   heroImage: z.string().optional(),
   images: z.array(z.string()).default([]),
   sortOrder: z.number().default(0),
@@ -33,15 +36,12 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const data = pageSchema.parse(body);
 
-  const title: Prisma.InputJsonValue = { tr: data.titleTr };
-  const content: Prisma.InputJsonValue = { tr: data.contentTr };
-
   const page = await db.page.create({
     data: {
       slug: data.slug,
       type: data.type,
-      title,
-      content,
+      title: buildRequiredLocalizedJson(data.title),
+      content: buildRequiredLocalizedJson(data.content),
       heroImage: data.heroImage || null,
       images: data.images,
       sortOrder: data.sortOrder,
@@ -59,17 +59,17 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { id, titleTr, contentTr, heroImage, images, isActive, sortOrder } = body;
+  const data = adminPageUpdateSchema.parse(body);
 
   const page = await db.page.update({
-    where: { id },
+    where: { id: data.id },
     data: {
-      title: { tr: titleTr },
-      content: { tr: contentTr },
-      heroImage: heroImage || null,
-      images: images ?? [],
-      isActive,
-      sortOrder,
+      title: buildRequiredLocalizedJson(data.title),
+      content: buildRequiredLocalizedJson(data.content),
+      heroImage: data.heroImage || null,
+      images: data.images ?? [],
+      isActive: data.isActive,
+      sortOrder: data.sortOrder,
     },
   });
 

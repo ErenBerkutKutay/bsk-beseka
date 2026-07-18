@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { besekaAssets } from "@/lib/beseka/assets";
-import { PRODUCT_GROUPS } from "@/lib/categories/product-groups";
+import { getProductGroupLabel, PRODUCT_GROUPS } from "@/lib/categories/product-groups";
 import { resolveCategoryImage } from "@/lib/categories/display-image";
 
 type CategoryItem = {
@@ -10,28 +10,30 @@ type CategoryItem = {
   image: string;
 };
 
-const defaultCategories: CategoryItem[] = PRODUCT_GROUPS.map((group, index) => ({
-  slug: group.slug,
-  name: group.name.tr,
-  image:
-    resolveCategoryImage({ slug: group.slug, index }) ||
-    besekaAssets.products.B8376,
-}));
-
 export function HeroCategories({
   locale,
   categories,
+  sectionTitle,
 }: {
   locale: string;
   categories?: CategoryItem[];
+  sectionTitle: string;
 }) {
+  const defaultCategories: CategoryItem[] = PRODUCT_GROUPS.map((group, index) => ({
+    slug: group.slug,
+    name: getProductGroupLabel(group.slug, locale),
+    image:
+      resolveCategoryImage({ slug: group.slug, index }) ||
+      besekaAssets.products.B8376,
+  }));
+
   const items = categories?.length ? categories : defaultCategories;
 
   return (
     <section className="border-b border-border bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
         <h2 className="mb-4 text-center text-base font-black uppercase tracking-[0.12em] text-brand-brown-dark md:mb-5 md:text-lg">
-          Ürün Grupları
+          {sectionTitle}
         </h2>
         <div className="-mx-4 grid grid-cols-2 gap-3 px-4 pb-2 sm:gap-4 md:mx-0 md:grid-cols-4 md:px-0">
           {items.map((cat) => (

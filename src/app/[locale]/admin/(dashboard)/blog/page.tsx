@@ -4,32 +4,37 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Loader2, Pencil, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Card, CardContent } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/input";
+import { ImageUploadField } from "@/components/admin/image-upload";
 import {
-  ImageGalleryField,
-  ImageUploadField,
-  RichContentEditor,
-} from "@/components/admin/image-upload";
+  LocalizedRichContentFields,
+  LocalizedTextFields,
+} from "@/components/admin/localized-text-fields";
 import {
   AdminPreviewModal,
   BlogPreview,
   PreviewButton,
 } from "@/components/admin/admin-preview-modal";
+import type { AppLocale } from "@/i18n/routing";
+import {
+  emptyLocalizedContent,
+  parseLocalizedContent,
+} from "@/lib/i18n/localized-content";
 
 type BlogPost = {
   id: string;
   slug: string;
-  title: { tr: string };
-  excerpt?: { tr: string } | null;
-  content: { tr: string };
+  title: Record<string, string>;
+  excerpt?: Record<string, string> | null;
+  content: Record<string, string>;
   coverImage?: string | null;
   isPublished: boolean;
 };
 
 const emptyForm = {
-  titleTr: "",
-  excerptTr: "",
-  contentTr: "",
+  title: emptyLocalizedContent(),
+  excerpt: emptyLocalizedContent(),
+  content: emptyLocalizedContent(),
   coverImage: "",
   isPublished: true,
 };
@@ -53,9 +58,9 @@ export default function AdminBlogPage() {
   function startEdit(post: BlogPost) {
     setEditingId(post.id);
     setForm({
-      titleTr: post.title.tr || "",
-      excerptTr: post.excerpt?.tr || "",
-      contentTr: post.content.tr || "",
+      title: parseLocalizedContent(post.title),
+      excerpt: parseLocalizedContent(post.excerpt),
+      content: parseLocalizedContent(post.content),
       coverImage: post.coverImage || "",
       isPublished: post.isPublished,
     });
@@ -92,6 +97,17 @@ export default function AdminBlogPage() {
     load();
   }
 
+  function openPreviewFromPost(post: BlogPost) {
+    setForm({
+      title: parseLocalizedContent(post.title),
+      excerpt: parseLocalizedContent(post.excerpt),
+      content: parseLocalizedContent(post.content),
+      coverImage: post.coverImage || "",
+      isPublished: post.isPublished,
+    });
+    setPreviewOpen(true);
+  }
+
   return (
     <div>
       <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Blog</h1>
@@ -100,65 +116,74 @@ export default function AdminBlogPage() {
       <Card className="mb-8">
         <CardContent className="space-y-4 pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-          <h2 className="font-semibold text-brand-brown-dark">
-            {editingId ? "Yazıyı Düzenle" : "Yeni Yazı"}
-          </h2>
+            <h2 className="font-semibold text-brand-brown-dark">
+              {editingId ? "Yazıyı Düzenle" : "Yeni Yazı"}
+            </h2>
 
-          <div>
-            <Label>Başlık</Label>
-            <Input
-              value={form.titleTr}
-              onChange={(e) => setForm({ ...form, titleTr: e.target.value })}
-              className="mt-1.5"
-              required
+            <LocalizedTextFields
+              label="Başlık"
+              values={form.title}
+              onChange={(lang: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  title: { ...prev.title, [lang]: value },
+                }))
+              }
+              requiredLocale="tr"
             />
-          </div>
 
-          <ImageUploadField
-            label="Kapak Görseli"
-            value={form.coverImage}
-            onChange={(coverImage) => setForm({ ...form, coverImage })}
-            hint="Blog listesinde ve yazı detayında gösterilir"
-          />
-
-          <div>
-            <Label>Özet</Label>
-            <Input
-              value={form.excerptTr}
-              onChange={(e) => setForm({ ...form, excerptTr: e.target.value })}
-              className="mt-1.5"
+            <ImageUploadField
+              label="Kapak Görseli"
+              value={form.coverImage}
+              onChange={(coverImage) => setForm({ ...form, coverImage })}
+              hint="Blog listesinde ve yazı detayında gösterilir"
             />
-          </div>
 
-          <RichContentEditor
-            label="İçerik"
-            value={form.contentTr}
-            onChange={(contentTr) => setForm({ ...form, contentTr })}
-            rows={8}
-            required
-          />
-
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={form.isPublished}
-              onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
+            <LocalizedTextFields
+              label="Özet"
+              values={form.excerpt}
+              onChange={(lang: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  excerpt: { ...prev.excerpt, [lang]: value },
+                }))
+              }
             />
-            Yayında
-          </label>
 
-          <div className="flex flex-wrap gap-2">
-            <Button type="submit" disabled={saving}>
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-              {editingId ? "Güncelle" : "Yayınla"}
-            </Button>
-            <PreviewButton onClick={() => setPreviewOpen(true)} />
-            {editingId && (
-              <Button type="button" variant="outline" onClick={cancelEdit}>
-                İptal
+            <LocalizedRichContentFields
+              label="İçerik"
+              values={form.content}
+              onChange={(lang: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  content: { ...prev.content, [lang]: value },
+                }))
+              }
+              rows={8}
+              requiredLocale="tr"
+            />
+
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.isPublished}
+                onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
+              />
+              Yayında
+            </label>
+
+            <div className="flex flex-wrap gap-2">
+              <Button type="submit" disabled={saving}>
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                {editingId ? "Güncelle" : "Yayınla"}
               </Button>
-            )}
-          </div>
+              <PreviewButton onClick={() => setPreviewOpen(true)} />
+              {editingId && (
+                <Button type="button" variant="outline" onClick={cancelEdit}>
+                  İptal
+                </Button>
+              )}
+            </div>
           </form>
         </CardContent>
       </Card>
@@ -169,9 +194,9 @@ export default function AdminBlogPage() {
         title="Blog Yazısı Önizlemesi"
       >
         <BlogPreview
-          title={form.titleTr}
-          excerpt={form.excerptTr}
-          content={form.contentTr}
+          title={form.title.tr}
+          excerpt={form.excerpt.tr}
+          content={form.content.tr}
           coverImage={form.coverImage}
         />
       </AdminPreviewModal>
@@ -197,16 +222,7 @@ export default function AdminBlogPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  setForm({
-                    titleTr: post.title.tr || "",
-                    excerptTr: post.excerpt?.tr || "",
-                    contentTr: post.content.tr || "",
-                    coverImage: post.coverImage || "",
-                    isPublished: post.isPublished,
-                  });
-                  setPreviewOpen(true);
-                }}
+                onClick={() => openPreviewFromPost(post)}
                 title="Önizle"
               >
                 <Eye className="h-4 w-4" />

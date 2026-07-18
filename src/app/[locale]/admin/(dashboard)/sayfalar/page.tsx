@@ -8,19 +8,27 @@ import { getLocalizedText } from "@/lib/utils";
 import {
   ImageGalleryField,
   ImageUploadField,
-  RichContentEditor,
 } from "@/components/admin/image-upload";
+import {
+  LocalizedRichContentFields,
+  LocalizedTextFields,
+} from "@/components/admin/localized-text-fields";
 import {
   AdminPreviewModal,
   PagePreview,
   PreviewButton,
 } from "@/components/admin/admin-preview-modal";
+import type { AppLocale } from "@/i18n/routing";
+import {
+  emptyLocalizedContent,
+  parseLocalizedContent,
+} from "@/lib/i18n/localized-content";
 
 type Page = {
   id: string;
   slug: string;
-  title: { tr: string };
-  content: { tr: string };
+  title: Record<string, string>;
+  content: Record<string, string>;
   heroImage?: string | null;
   images: string[];
 };
@@ -28,7 +36,8 @@ type Page = {
 export default function AdminPagesPage() {
   const [pages, setPages] = useState<Page[]>([]);
   const [selected, setSelected] = useState<Page | null>(null);
-  const [contentTr, setContentTr] = useState("");
+  const [title, setTitle] = useState(emptyLocalizedContent());
+  const [content, setContent] = useState(emptyLocalizedContent());
   const [heroImage, setHeroImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -46,7 +55,8 @@ export default function AdminPagesPage() {
 
   function selectPage(page: Page) {
     setSelected(page);
-    setContentTr(page.content.tr || "");
+    setTitle(parseLocalizedContent(page.title));
+    setContent(parseLocalizedContent(page.content));
     setHeroImage(page.heroImage || "");
     setImages(page.images || []);
     setSaved(false);
@@ -62,8 +72,8 @@ export default function AdminPagesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         id: selected.id,
-        titleTr: selected.title.tr,
-        contentTr,
+        title,
+        content,
         heroImage,
         images,
         isActive: true,
@@ -108,7 +118,16 @@ export default function AdminPagesPage() {
         {selected ? (
           <Card>
             <CardContent className="space-y-5 pt-6">
-              <h2 className="text-lg font-bold text-brand-brown-dark">{selected.title.tr}</h2>
+              <h2 className="text-lg font-bold text-brand-brown-dark">{selected.slug}</h2>
+
+              <LocalizedTextFields
+                label="Sayfa Başlığı"
+                values={title}
+                onChange={(lang: AppLocale, value) =>
+                  setTitle((prev) => ({ ...prev, [lang]: value }))
+                }
+                requiredLocale="tr"
+              />
 
               <ImageUploadField
                 label="Kapak / Hero Görseli"
@@ -123,11 +142,14 @@ export default function AdminPagesPage() {
                 onChange={setImages}
               />
 
-              <RichContentEditor
+              <LocalizedRichContentFields
                 label="Sayfa İçeriği"
-                value={contentTr}
-                onChange={setContentTr}
+                values={content}
+                onChange={(lang: AppLocale, value) =>
+                  setContent((prev) => ({ ...prev, [lang]: value }))
+                }
                 rows={12}
+                requiredLocale="tr"
               />
 
               {saved && (
@@ -153,12 +175,12 @@ export default function AdminPagesPage() {
       <AdminPreviewModal
         open={previewOpen && !!selected}
         onClose={() => setPreviewOpen(false)}
-        title={selected ? `${selected.title.tr} — Önizleme` : "Önizleme"}
+        title={selected ? `${title.tr} — Önizleme` : "Önizleme"}
       >
         {selected && (
           <PagePreview
-            title={selected.title.tr}
-            content={contentTr}
+            title={title.tr}
+            content={content.tr}
             heroImage={heroImage}
             images={images}
           />

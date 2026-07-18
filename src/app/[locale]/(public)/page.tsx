@@ -9,6 +9,7 @@ import { HomeStatsBar } from "@/components/home/home-stats-bar";
 import { NewProductsMarquee } from "@/components/home/new-products-marquee";
 import { Button } from "@/components/ui/button";
 import { getLocalizedText } from "@/lib/utils";
+import { resolveCategoryLabel } from "@/lib/categories/product-groups";
 import { besekaAssets } from "@/lib/beseka/assets";
 import { fallbackHomeBanners } from "@/lib/beseka/home-banners";
 import { resolveCategoryImage } from "@/lib/categories/display-image";
@@ -24,6 +25,7 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("home");
+  const tCatalog = await getTranslations("catalog");
 
   const [categories, newProducts, blogPosts, homeBanners, homeStats] = await Promise.all([
     db.category.findMany({
@@ -54,7 +56,7 @@ export default async function HomePage({
       if (!image) return null;
       return {
         slug: cat.slug,
-        name: getLocalizedText(cat.name as { tr: string }, locale),
+        name: resolveCategoryLabel(cat.slug, locale, cat.name as Record<string, string>),
         image,
       };
     })
@@ -66,7 +68,11 @@ export default async function HomePage({
 
       {newProducts.length > 0 && <NewProductsMarquee products={newProducts as never[]} />}
 
-      <HeroCategories locale={locale} categories={categoryItems} />
+      <HeroCategories
+        locale={locale}
+        categories={categoryItems}
+        sectionTitle={tCatalog("categoryBrowseTitle")}
+      />
 
       {/* Kurumsal tanıtım */}
       <section className="bg-white py-16 md:py-20">

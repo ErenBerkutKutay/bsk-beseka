@@ -8,23 +8,35 @@ import { ImageIcon, Pencil, Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Card, CardContent } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/admin/image-upload";
+import { LocalizedTextFields } from "@/components/admin/localized-text-fields";
 import {
   AdminPreviewModal,
   CategoryPreview,
   PreviewButton,
 } from "@/components/admin/admin-preview-modal";
+import type { AppLocale } from "@/i18n/routing";
+import {
+  emptyLocalizedContent,
+  parseLocalizedContent,
+} from "@/lib/i18n/localized-content";
 
 type Category = {
   id: string;
   slug: string;
-  name: { tr: string };
+  name: Record<string, string>;
   image?: string | null;
+};
+
+const emptyForm = {
+  slug: "",
+  name: emptyLocalizedContent(),
+  image: "",
 };
 
 export default function AdminCategoriesPage() {
   const locale = useLocale();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [form, setForm] = useState({ slug: "", nameTr: "", image: "" });
+  const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState<Category | null>(null);
   const [saving, setSaving] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -42,27 +54,28 @@ export default function AdminCategoriesPage() {
     e.preventDefault();
     setSaving(true);
 
+    const payload = {
+      slug: form.slug,
+      name: form.name,
+      image: form.image,
+    };
+
     if (editing) {
       await fetch("/api/admin/categories", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: editing.id,
-          slug: form.slug,
-          nameTr: form.nameTr,
-          image: form.image,
-        }),
+        body: JSON.stringify({ id: editing.id, ...payload }),
       });
       setEditing(null);
     } else {
       await fetch("/api/admin/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
     }
 
-    setForm({ slug: "", nameTr: "", image: "" });
+    setForm(emptyForm);
     setSaving(false);
     load();
   }
@@ -102,26 +115,27 @@ export default function AdminCategoriesPage() {
         <CardContent className="space-y-4 pt-6">
           <h2 className="font-semibold">{editing ? "Kategori Düzenle" : "Yeni Kategori"}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <Label>Slug</Label>
-                <Input
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  className="mt-1.5"
-                  required
-                />
-              </div>
-              <div>
-                <Label>Ad (TR)</Label>
-                <Input
-                  value={form.nameTr}
-                  onChange={(e) => setForm({ ...form, nameTr: e.target.value })}
-                  className="mt-1.5"
-                  required
-                />
-              </div>
+            <div>
+              <Label>Slug</Label>
+              <Input
+                value={form.slug}
+                onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                className="mt-1.5"
+                required
+              />
             </div>
+
+            <LocalizedTextFields
+              label="Kategori Adı"
+              values={form.name}
+              onChange={(lang: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  name: { ...prev.name, [lang]: value },
+                }))
+              }
+              requiredLocale="tr"
+            />
 
             <ImageUploadField
               label="Grup Görseli"
@@ -142,7 +156,7 @@ export default function AdminCategoriesPage() {
                   variant="outline"
                   onClick={() => {
                     setEditing(null);
-                    setForm({ slug: "", nameTr: "", image: "" });
+                    setForm(emptyForm);
                   }}
                 >
                   İptal
@@ -177,7 +191,7 @@ export default function AdminCategoriesPage() {
                 setEditing(cat);
                 setForm({
                   slug: cat.slug,
-                  nameTr: cat.name.tr,
+                  name: parseLocalizedContent(cat.name),
                   image: cat.image || "",
                 });
               }}
@@ -193,7 +207,7 @@ export default function AdminCategoriesPage() {
         onClose={() => setPreviewOpen(false)}
         title="Kategori Önizlemesi"
       >
-        <CategoryPreview name={form.nameTr} image={form.image} />
+        <CategoryPreview name={form.name.tr} image={form.image} />
       </AdminPreviewModal>
     </div>
   );

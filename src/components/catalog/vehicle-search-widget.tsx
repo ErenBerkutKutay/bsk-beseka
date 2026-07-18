@@ -11,6 +11,7 @@ type VehicleOption = { id: string; name: string };
 export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) {
   const t = useTranslations("home");
   const tc = useTranslations("catalog");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
   const [makes, setMakes] = useState<VehicleOption[]>([]);
@@ -74,7 +75,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
           <Input
             value={oem}
             onChange={(e) => setOem(e.target.value)}
-            placeholder="12 34-56.78"
+            placeholder={tc("oemWidgetPlaceholder")}
           />
         </div>
         <div>
@@ -133,7 +134,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
         </div>
       </div>
       <Button type="submit" className="mt-4">
-        Ara
+        {tCommon("search")}
       </Button>
     </form>
   );

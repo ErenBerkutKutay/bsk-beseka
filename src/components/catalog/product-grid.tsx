@@ -21,6 +21,7 @@ type ProductResult = {
 };
 
 function CopyButton({ text }: { text: string }) {
+  const t = useTranslations("catalog");
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -34,7 +35,7 @@ function CopyButton({ text }: { text: string }) {
       type="button"
       onClick={copy}
       className="rounded p-0.5 text-muted transition hover:bg-brand-cream-light hover:text-brand-brown"
-      title="Kopyala"
+      title={t("copy")}
     >
       {copied ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}
     </button>
@@ -82,6 +83,8 @@ function CatalogProductCard({
   locale: string;
   onQuickView: () => void;
 }) {
+  const t = useTranslations("catalog");
+  const tCommon = useTranslations("common");
   const name = getLocalizedText(product.name, locale);
 
   return (
@@ -105,7 +108,7 @@ function CatalogProductCard({
         )}
         {product.isNew && (
           <Badge variant="new" className="absolute left-3 top-3 shadow-sm">
-            Yeni
+            {tCommon("new")}
           </Badge>
         )}
       </Link>
@@ -126,10 +129,10 @@ function CatalogProductCard({
         <div className="mt-4 flex gap-2">
           <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={onQuickView}>
             <Eye className="h-3.5 w-3.5" />
-            Hızlı Bak
+            {tCommon("quickView")}
           </Button>
           <Link href={`/${locale}/urunler/${product.slug}`} className="flex-1">
-            <Button size="sm" className="w-full">Detay</Button>
+            <Button size="sm" className="w-full">{t("detail")}</Button>
           </Link>
         </div>
       </div>
@@ -147,6 +150,8 @@ export function CatalogProductList({
   total: number;
 }) {
   const t = useTranslations("catalog");
+  const tCommon = useTranslations("common");
+  const tProduct = useTranslations("product");
   const [quickView, setQuickView] = useState<ProductResult | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -158,8 +163,7 @@ export function CatalogProductList({
         </div>
         <p className="text-lg font-semibold text-brand-brown-dark">{t("noResults")}</p>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
-          Farklı bir OEM kodu formatı deneyin (ör. 12-34-56.78), Beseka Ref girin veya araç
-          filtresini genişletin.
+          {t("noResultsHint")}
         </p>
       </div>
     );
@@ -170,8 +174,7 @@ export function CatalogProductList({
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-sm text-muted">
-            <span className="text-2xl font-bold text-brand-brown-dark">{total}</span>
-            <span className="ml-1.5">ürün bulundu</span>
+            {t("productsFound", { count: total })}
           </p>
         </div>
         <div className="flex rounded-lg border border-border bg-white p-1 shadow-sm">
@@ -179,7 +182,7 @@ export function CatalogProductList({
             type="button"
             onClick={() => setViewMode("grid")}
             className={`rounded-md p-2 transition ${viewMode === "grid" ? "bg-brand-brown text-brand-cream" : "text-muted hover:bg-brand-cream-light"}`}
-            aria-label="Grid görünüm"
+            aria-label={t("gridView")}
           >
             <LayoutGrid className="h-4 w-4" />
           </button>
@@ -187,7 +190,7 @@ export function CatalogProductList({
             type="button"
             onClick={() => setViewMode("list")}
             className={`rounded-md p-2 transition ${viewMode === "list" ? "bg-brand-brown text-brand-cream" : "text-muted hover:bg-brand-cream-light"}`}
-            aria-label="Liste görünüm"
+            aria-label={t("listView")}
           >
             <List className="h-4 w-4" />
           </button>
@@ -208,11 +211,11 @@ export function CatalogProductList({
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
           <div className="hidden grid-cols-[72px_110px_1fr_200px_130px] gap-4 border-b border-brand-cream bg-brand-brown px-4 py-3 text-xs font-semibold uppercase tracking-wider text-brand-cream lg:grid">
-            <span>Görsel</span>
-            <span>Ref Kodu</span>
-            <span>Ürün Adı</span>
-            <span>OEM / Cross</span>
-            <span className="text-right">İşlem</span>
+            <span>{t("listColImage")}</span>
+            <span>{t("listColRef")}</span>
+            <span>{t("listColName")}</span>
+            <span>{t("listColCodes")}</span>
+            <span className="text-right">{t("listColAction")}</span>
           </div>
           <ul className="divide-y divide-border">
             {products.map((product) => {
@@ -233,14 +236,14 @@ export function CatalogProductList({
                   </div>
                   <div>
                     <span className="font-mono font-bold text-brand-brown">{product.sku}</span>
-                    {product.isNew && <Badge variant="new" className="ml-2">Yeni</Badge>}
+                    {product.isNew && <Badge variant="new" className="ml-2">{tCommon("new")}</Badge>}
                   </div>
                   <p className="font-medium leading-snug text-brand-brown-dark">{name}</p>
                   <CodePills oemCodes={product.oemCodes} crossCodes={product.crossCodes} max={2} />
                   <div className="flex gap-2 lg:justify-end">
-                    <Button variant="outline" size="sm" onClick={() => setQuickView(product)}>Bak</Button>
+                    <Button variant="outline" size="sm" onClick={() => setQuickView(product)}>{t("view")}</Button>
                     <Link href={`/${locale}/urunler/${product.slug}`}>
-                      <Button size="sm">Detay</Button>
+                      <Button size="sm">{t("detail")}</Button>
                     </Link>
                   </div>
                 </li>
@@ -274,7 +277,7 @@ export function CatalogProductList({
                 </div>
               )}
               {quickView.isNew && (
-                <Badge variant="new" className="absolute left-4 top-4">Yeni</Badge>
+                <Badge variant="new" className="absolute left-4 top-4">{tCommon("new")}</Badge>
               )}
             </div>
             <div className="p-6">
@@ -298,7 +301,7 @@ export function CatalogProductList({
 
               {quickView.oemCodes && quickView.oemCodes.length > 0 && (
                 <div className="mt-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">OEM Kodları</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">{tProduct("oemCodes")}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {quickView.oemCodes.map((c) => (
                       <span
@@ -315,7 +318,7 @@ export function CatalogProductList({
 
               {quickView.crossCodes && quickView.crossCodes.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">Cross Kodları</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">{tProduct("crossCodes")}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {quickView.crossCodes.map((c) => (
                       <span
@@ -331,7 +334,7 @@ export function CatalogProductList({
               )}
 
               <Link href={`/${locale}/urunler/${quickView.slug}`} className="mt-6 block">
-                <Button className="w-full" size="lg">Ürün Detayına Git</Button>
+                <Button className="w-full" size="lg">{t("goToDetail")}</Button>
               </Link>
             </div>
           </div>
@@ -350,6 +353,7 @@ export function NewProductCard({
   locale: string;
   className?: string;
 }) {
+  const tCommon = useTranslations("common");
   const name = getLocalizedText(product.name, locale);
 
   return (
@@ -372,7 +376,7 @@ export function NewProductCard({
           </div>
         )}
         <Badge variant="new" className="absolute left-3 top-3 shadow-sm">
-          Yeni
+          {tCommon("new")}
         </Badge>
       </div>
       <div className="p-4">
@@ -415,10 +419,11 @@ export function NewProductsGrid({
   products: ProductResult[];
   locale: string;
 }) {
+  const t = useTranslations("catalog");
   if (!products.length) {
     return (
       <p className="rounded-xl border border-dashed border-border bg-brand-cream-light/50 py-16 text-center text-muted">
-        Henüz yeni ürün bulunmuyor.
+        {t("noNewProducts")}
       </p>
     );
   }

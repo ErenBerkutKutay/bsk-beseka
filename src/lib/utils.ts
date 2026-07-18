@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type Locale = "tr" | "en" | "de" | "ar" | "es" | "it";
+export type Locale = "tr" | "en" | "de" | "it" | "fr" | "es" | "ar" | "ru";
 
 export type LocalizedText = Partial<Record<Locale, string>> & { tr?: string };
 

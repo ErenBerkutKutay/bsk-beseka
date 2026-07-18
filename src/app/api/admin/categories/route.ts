@@ -1,18 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { z } from "zod";
-import type { Prisma } from "@/generated/prisma/client";
-
-const categorySchema = z.object({
-  slug: z.string().min(1),
-  nameTr: z.string().min(1),
-  nameEn: z.string().optional(),
-  image: z.string().optional(),
-  parentId: z.string().nullable().optional(),
-  sortOrder: z.number().default(0),
-  isActive: z.boolean().default(true),
-});
+import {
+  adminCategorySchema,
+  adminCategoryUpdateSchema,
+  buildRequiredLocalizedJson,
+} from "@/lib/admin/content-schema";
 
 export async function GET() {
   const categories = await db.category.findMany({
@@ -29,17 +22,12 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const data = categorySchema.parse(body);
-
-  const name: Prisma.InputJsonValue = {
-    tr: data.nameTr,
-    ...(data.nameEn ? { en: data.nameEn } : {}),
-  };
+  const data = adminCategorySchema.parse(body);
 
   const category = await db.category.create({
     data: {
       slug: data.slug,
-      name,
+      name: buildRequiredLocalizedJson(data.name),
       image: data.image || null,
       parentId: data.parentId || null,
       sortOrder: data.sortOrder,
@@ -57,15 +45,15 @@ export async function PUT(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { id, slug, nameTr, image, isActive } = body;
+  const data = adminCategoryUpdateSchema.parse(body);
 
   const category = await db.category.update({
-    where: { id },
+    where: { id: data.id },
     data: {
-      ...(slug ? { slug } : {}),
-      ...(nameTr ? { name: { tr: nameTr } } : {}),
-      image: image ?? null,
-      ...(typeof isActive === "boolean" ? { isActive } : {}),
+      slug: data.slug,
+      name: buildRequiredLocalizedJson(data.name),
+      image: data.image ?? null,
+      ...(typeof data.isActive === "boolean" ? { isActive: data.isActive } : {}),
     },
   });
 

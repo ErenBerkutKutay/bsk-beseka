@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { HeroBannerItem } from "@/lib/beseka/home-banners";
 
-const INTERVAL_MS = 6000;
+const INTERVAL_MS = 3000;
 
 export function HeroSlider({ banners }: { banners: HeroBannerItem[] }) {
   const locale = useLocale();

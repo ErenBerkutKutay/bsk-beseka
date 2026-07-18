@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { normalizeOEM } from "@/lib/oem/normalize";
+import { resolveCategoryLabel } from "@/lib/categories/product-groups";
 import { buildCatalogSearchUrl } from "@/lib/catalog/navigation";
 
 type Category = {
@@ -31,13 +32,6 @@ type Category = {
 type VehicleOption = { id: string; name: string };
 
 type SearchMode = "oem" | "sku" | "vehicle" | "text";
-
-const EXAMPLE_SEARCHES = [
-  { label: "motor takozu", type: "text" as const },
-  { label: "amortisör körüğü", type: "text" as const },
-  { label: "B8376", type: "sku" as const },
-  { label: "12 34-56.78", type: "oem" as const },
-];
 
 export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const t = useTranslations("catalog");
@@ -99,12 +93,23 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     if (make || model || subModel) setShowVehicleFilters(true);
   }, [make, model, subModel]);
 
+  const exampleSearches = useMemo(
+    () =>
+      [
+        { label: t("exampleMotorMount"), value: "motor takozu", type: "text" as const },
+        { label: t("exampleBootBellows"), value: "amortisör körüğü", type: "text" as const },
+        { label: "B8376", value: "B8376", type: "sku" as const },
+        { label: "12 34-56.78", value: "12 34-56.78", type: "oem" as const },
+      ] as const,
+    [t],
+  );
+
   const normalizedPreview = useMemo(() => (q.trim() ? normalizeOEM(q) : ""), [q]);
 
   const activeFilters = useMemo(() => {
     const chips: { key: string; label: string; clear: () => void }[] = [];
-    if (sku) chips.push({ key: "sku", label: `Ref: ${sku}`, clear: () => setSku("") });
-    if (q) chips.push({ key: "q", label: `Arama: ${q}`, clear: () => setQ("") });
+    if (sku) chips.push({ key: "sku", label: t("filterRef", { value: sku }), clear: () => setSku("") });
+    if (q) chips.push({ key: "q", label: t("filterQuery", { value: q }), clear: () => setQ("") });
     if (make) chips.push({ key: "make", label: make, clear: () => { setMake(""); setModel(""); setSubModel(""); } });
     if (model) chips.push({ key: "model", label: model, clear: () => { setModel(""); setSubModel(""); } });
     if (subModel) chips.push({ key: "subModel", label: subModel, clear: () => setSubModel("") });
@@ -112,12 +117,12 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
       const cat = categories.find((c) => c.slug === category);
       chips.push({
         key: "category",
-        label: cat?.name.tr || category,
+        label: resolveCategoryLabel(category, locale, cat?.name),
         clear: () => setCategory(""),
       });
     }
     return chips;
-  }, [sku, q, make, model, subModel, category, categories]);
+  }, [sku, q, make, model, subModel, category, categories, locale, t]);
 
   function pushFilters(overrides?: Partial<{
     sku: string; q: string; make: string; model: string; subModel: string; category: string;
@@ -181,24 +186,31 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     pushFilters(next);
   }
 
-  function applyExample(example: (typeof EXAMPLE_SEARCHES)[number]) {
+  function applyExample(example: (typeof exampleSearches)[number]) {
     if (example.type === "sku") {
-      setSku(example.label);
+      setSku(example.value);
       setQ("");
       setMode("sku");
-      pushFilters({ sku: example.label, q: "", make: "", model: "", subModel: "" });
+      pushFilters({ sku: example.value, q: "", make: "", model: "", subModel: "" });
     } else if (example.type === "text") {
-      setQ(example.label);
+      setQ(example.value);
       setSku("");
       setMode("text");
-      pushFilters({ q: example.label, sku: "", make: "", model: "", subModel: "" });
+      pushFilters({ q: example.value, sku: "", make: "", model: "", subModel: "" });
     } else {
-      setQ(example.label);
+      setQ(example.value);
       setSku("");
       setMode("oem");
-      pushFilters({ q: example.label, sku: "", make: "", model: "", subModel: "" });
+      pushFilters({ q: example.value, sku: "", make: "", model: "", subModel: "" });
     }
   }
+
+  const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
+    { id: "text", label: t("tabGeneral"), icon: AlignLeft },
+    { id: "oem", label: t("tabOemCross"), icon: Wrench },
+    { id: "sku", label: t("tabBesekaRef"), icon: Hash },
+    { id: "vehicle", label: t("tabByVehicle"), icon: Car },
+  ];
 
   const inputClass =
     "h-14 border-2 border-white/30 bg-white pl-12 text-base text-brand-brown-dark shadow-sm placeholder:text-muted/55 focus-visible:border-brand-cream focus-visible:ring-2 focus-visible:ring-brand-cream/50";
@@ -206,24 +218,16 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const selectClass =
     "h-11 w-full rounded-lg border-2 border-white/30 bg-white px-3 text-sm text-brand-brown-dark shadow-sm focus:border-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-cream/40 disabled:cursor-not-allowed disabled:bg-white/60 disabled:text-muted/60";
 
-  const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
-    { id: "text", label: "Genel Arama", icon: AlignLeft },
-    { id: "oem", label: "OEM / Cross", icon: Wrench },
-    { id: "sku", label: "Beseka Ref", icon: Hash },
-    { id: "vehicle", label: "Araç ile", icon: Car },
-  ];
-
   return (
     <div className="relative overflow-hidden catalog-search-hero text-white">
       <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-12">
         <div className="mb-8 max-w-2xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            Beseka Katalog
+            {t("kicker")}
           </p>
           <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">{t("title")}</h1>
           <p className="mt-3 text-sm leading-relaxed text-white/85 md:text-base">
-            Tek kutuda ürün adı, açıklama, Beseka kodu ve OEM/cross kodu arayın. Tire, boşluk
-            veya nokta fark etmez.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -261,21 +265,20 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           {mode === "text" && (
             <div className="space-y-3">
               <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
-                Genel arama
+                {t("generalSearchLabel")}
               </label>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Örn: motor takozu, B8376, 1311 826 080"
+                  placeholder={t("generalSearchPlaceholder")}
                   className={inputClass}
                   autoFocus
                 />
               </div>
               <p className="text-xs text-white/75">
-                Ürün adı, açıklama, Beseka referans kodu ve kayıtlı OEM/cross kodlarında arar.
-                Kısmi eşleşmeler de listelenir.
+                {t("generalSearchHint")}
               </p>
             </div>
           )}
@@ -290,7 +293,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Örn: 12 34-56.78 veya 1234567890"
+                  placeholder={t("oemPlaceholder")}
                   className={inputClass}
                   autoFocus
                 />
@@ -298,12 +301,12 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
               {normalizedPreview && (
                 <div className="flex flex-wrap items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm">
                   <Sparkles className="h-4 w-4 shrink-0 text-brand-cream" />
-                  <span className="text-white/80">Normalize edilmiş arama:</span>
+                  <span className="text-white/80">{t("normalizedSearch")}</span>
                   <code className="rounded-md bg-brand-brown-dark px-2 py-0.5 font-mono text-white">
                     {normalizedPreview}
                   </code>
                   <span className="text-xs text-white/60">
-                    (tire, boşluk, nokta otomatik temizlenir)
+                    {t("normalizedHint")}
                   </span>
                 </div>
               )}
@@ -320,7 +323,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                 <Input
                   value={sku}
                   onChange={(e) => setSku(e.target.value.toUpperCase())}
-                  placeholder="B8376, B6850, B2306..."
+                  placeholder={t("skuPlaceholder")}
                   className={`${inputClass} font-mono uppercase`}
                   autoFocus
                 />
@@ -391,7 +394,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
               onClick={() => setShowVehicleFilters(!showVehicleFilters)}
               className="flex w-full items-center justify-between text-sm font-medium text-white/90 transition hover:text-white"
             >
-              <span>Gelişmiş filtreler (araç & ürün grubu)</span>
+              <span>{t("advancedFilters")}</span>
               <ChevronDown className={`h-4 w-4 transition-transform ${showVehicleFilters ? "rotate-180" : ""}`} />
             </button>
 
@@ -457,10 +460,10 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    <option value="">Tüm Gruplar</option>
+                    <option value="">{t("allGroups")}</option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.slug}>
-                        {cat.name.tr || cat.slug}
+                        {resolveCategoryLabel(cat.slug, locale, cat.name)}
                       </option>
                     ))}
                   </select>
@@ -471,10 +474,10 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
           {/* Örnek aramalar */}
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-white/70">Örnek:</span>
-            {EXAMPLE_SEARCHES.map((ex) => (
+            <span className="text-xs font-medium text-white/70">{t("examplesLabel")}</span>
+            {exampleSearches.map((ex) => (
               <button
-                key={ex.label}
+                key={ex.value}
                 type="button"
                 onClick={() => applyExample(ex)}
                 className="rounded-full border border-white/35 bg-white/10 px-3 py-1 font-mono text-xs text-white transition hover:border-brand-cream hover:bg-brand-cream/20 hover:text-brand-cream"
@@ -492,7 +495,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
               ) : (
                 <Search className="h-4 w-4" />
               )}
-              {isPending ? "Aranıyor..." : "Arama Yap"}
+              {isPending ? t("searching") : t("searchSubmit")}
             </Button>
             {activeFilters.length > 0 && (
               <Button
@@ -511,7 +514,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
           {/* Aktif filtreler */}
           {activeFilters.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2 border-t border-white/20 pt-5">
-              <span className="self-center text-xs font-medium text-white/70">Aktif:</span>
+              <span className="self-center text-xs font-medium text-white/70">{t("activeFilters")}</span>
               {activeFilters.map((chip) => (
                 <button
                   key={chip.key}
@@ -538,6 +541,7 @@ export function CatalogCategoryTiles({
   categories: Category[];
   activeCategory?: string;
 }) {
+  const t = useTranslations("catalog");
   const locale = useLocale();
   const router = useRouter();
   const [, startTransition] = useTransition();
@@ -552,13 +556,14 @@ export function CatalogCategoryTiles({
     <div className="catalog-category-strip border-b py-8">
       <div className="mx-auto max-w-7xl px-4">
         <p className="mb-1 text-sm font-bold uppercase tracking-wider text-brand-brown">
-          Ürün Grupları
+          {t("categoryBrowseTitle")}
         </p>
-        <p className="mb-5 text-sm text-brand-brown-dark/80">Kategoriye göre hızlıca göz atın</p>
+        <p className="mb-5 text-sm text-brand-brown-dark/80">{t("categoryBrowseHint")}</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.slug;
             const imageSrc = cat.displayImage || cat.image;
+            const categoryName = resolveCategoryLabel(cat.slug, locale, cat.name);
             return (
               <button
                 key={cat.id}
@@ -574,7 +579,7 @@ export function CatalogCategoryTiles({
                   {imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={cat.name.tr || cat.slug}
+                      alt={categoryName}
                       fill
                       className="category-image object-contain p-2 transition duration-500 group-hover:scale-105"
                       sizes="(max-width:640px) 50vw, 160px"
@@ -585,7 +590,7 @@ export function CatalogCategoryTiles({
                 </div>
                 <div className="category-label flex min-h-[4.5rem] items-center justify-center border-t border-border px-2 py-2 md:min-h-[4.75rem]">
                   <span className="line-clamp-3 text-[10px] font-semibold leading-snug sm:text-[11px] md:text-xs">
-                    {cat.name.tr || cat.slug}
+                    {categoryName}
                   </span>
                 </div>
               </button>

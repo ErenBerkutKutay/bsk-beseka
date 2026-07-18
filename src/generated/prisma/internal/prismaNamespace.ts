@@ -2076,6 +2076,7 @@ export const MediaScalarFieldEnum = {
   mimeType: 'mimeType',
   size: 'size',
   alt: 'alt',
+  data: 'data',
   createdAt: 'createdAt'
 } as const
 
@@ -2286,6 +2287,20 @@ export type EnumPageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'PageType[]'
  */
 export type ListEnumPageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PageType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
 

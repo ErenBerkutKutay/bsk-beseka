@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { z } from "zod";
-import type { Prisma } from "@/generated/prisma/client";
 import slugify from "slugify";
-
-const blogSchema = z.object({
-  titleTr: z.string().min(1),
-  titleEn: z.string().optional(),
-  excerptTr: z.string().optional(),
-  contentTr: z.string().min(1),
-  coverImage: z.string().optional(),
-  isPublished: z.boolean().default(false),
-});
+import {
+  adminBlogSchema,
+  buildOptionalLocalizedField,
+  buildRequiredLocalizedJson,
+} from "@/lib/admin/content-schema";
 
 export async function GET() {
   const session = await auth();
@@ -31,27 +25,16 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const data = blogSchema.parse(body);
-
-  const title: Prisma.InputJsonValue = {
-    tr: data.titleTr,
-    ...(data.titleEn ? { en: data.titleEn } : {}),
-  };
-
-  const excerpt: Prisma.InputJsonValue | undefined = data.excerptTr
-    ? { tr: data.excerptTr }
-    : undefined;
-
-  const content: Prisma.InputJsonValue = { tr: data.contentTr };
-  const slug = slugify(data.titleTr, { lower: true, strict: true });
+  const data = adminBlogSchema.parse(body);
+  const slug = slugify(data.title.tr, { lower: true, strict: true });
 
   const post = await db.blogPost.create({
     data: {
       slug,
-      title,
-      excerpt,
-      content,
-      coverImage: data.coverImage,
+      title: buildRequiredLocalizedJson(data.title),
+      excerpt: buildOptionalLocalizedField(data.excerpt),
+      content: buildRequiredLocalizedJson(data.content),
+      coverImage: data.coverImage || null,
       isPublished: data.isPublished,
       publishedAt: data.isPublished ? new Date() : null,
     },

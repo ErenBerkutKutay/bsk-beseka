@@ -297,6 +297,7 @@ export const MediaScalarFieldEnum = {
   mimeType: 'mimeType',
   size: 'size',
   alt: 'alt',
+  data: 'data',
   createdAt: 'createdAt'
 } as const
 

@@ -64,7 +64,6 @@ export function SiteHeader() {
             <span className="hidden sm:inline opacity-80">info@beseka.com</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <LanguageSwitcher className="order-first sm:order-none" />
             <SocialFollowLinks className="hidden lg:flex" />
             <SocialFollowLinks className="lg:hidden" showLabel={false} iconClassName="h-3.5 w-3.5" />
             <a
@@ -97,7 +96,7 @@ export function SiteHeader() {
           </Link>
 
           <div className="hidden min-w-0 flex-1 md:ml-4 md:block lg:ml-6 lg:max-w-lg xl:max-w-xl">
-            <ProductSearchForm variant="header" />
+            <ProductSearchForm key={locale} variant="header" />
           </div>
 
           <nav className="hidden shrink-0 items-center gap-1 lg:flex">
@@ -106,6 +105,7 @@ export function SiteHeader() {
             <NavDropdown title={t("production")} links={productionLinks} prefix={prefix} />
             <NavLink href={`${prefix}/blog`}>{t("blog")}</NavLink>
             <NavLink href={`${prefix}/iletisim`}>{t("contact")}</NavLink>
+            <LanguageSwitcher />
           </nav>
 
           <button
@@ -125,12 +125,11 @@ export function SiteHeader() {
       >
         <div className="flex flex-col gap-1 px-4 py-4">
           <div className="mb-3 md:hidden">
-            <LanguageSwitcher compact variant="light" className="mb-3" />
             <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-brown">
               <Search className="h-3.5 w-3.5" />
               {t("searchProducts")}
             </p>
-            <ProductSearchForm variant="header" onNavigate={() => setOpen(false)} />
+            <ProductSearchForm key={locale} variant="header" onNavigate={() => setOpen(false)} />
           </div>
           <MobileLink href={`${prefix}/urunler`} onClick={() => setOpen(false)}>
             {t("catalog")}
@@ -144,6 +143,7 @@ export function SiteHeader() {
           <MobileLink href={`${prefix}/iletisim`} onClick={() => setOpen(false)}>
             {t("contact")}
           </MobileLink>
+          <LanguageSwitcher variant="mobile" className="mt-2 px-3" />
           <a
             href={BESEKA_B2B_URL}
             onClick={() => setOpen(false)}

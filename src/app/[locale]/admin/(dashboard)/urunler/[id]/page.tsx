@@ -13,6 +13,12 @@ import {
   ProductPreview,
   PreviewButton,
 } from "@/components/admin/admin-preview-modal";
+import { LocalizedTextFields } from "@/components/admin/localized-text-fields";
+import type { AppLocale } from "@/i18n/routing";
+import {
+  emptyLocalizedContent,
+  parseLocalizedContent,
+} from "@/lib/i18n/localized-content";
 
 type Category = { id: string; slug: string; name: { tr: string } };
 
@@ -31,9 +37,8 @@ export default function ProductFormPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [form, setForm] = useState({
     sku: "",
-    nameTr: "",
-    nameEn: "",
-    descriptionTr: "",
+    name: emptyLocalizedContent(),
+    description: emptyLocalizedContent(),
     categoryId: "",
     weightKg: "",
     gtip: "",
@@ -62,9 +67,8 @@ export default function ProductFormPage() {
         .then((product) => {
           setForm({
             sku: product.sku,
-            nameTr: product.name.tr || "",
-            nameEn: product.name.en || "",
-            descriptionTr: product.description?.tr || "",
+            name: parseLocalizedContent(product.name),
+            description: parseLocalizedContent(product.description),
             categoryId: product.categoryId,
             weightKg: product.weightKg != null ? String(product.weightKg) : "",
             gtip: product.gtip || "",
@@ -145,8 +149,18 @@ export default function ProductFormPage() {
     setSaving(true);
 
     const payload = {
-      ...form,
+      sku: form.sku,
+      name: form.name,
+      description: form.description,
+      categoryId: form.categoryId,
+      weightKg: form.weightKg,
+      gtip: form.gtip,
       images: imageUrls,
+      isNew: form.isNew,
+      isFeatured: form.isFeatured,
+      isActive: form.isActive,
+      oemCodes: form.oemCodes,
+      crossCodes: form.crossCodes,
     };
 
     const url = productId ? `/api/admin/products/${productId}` : "/api/admin/products";
@@ -257,25 +271,30 @@ export default function ProductFormPage() {
               </div>
             </div>
 
-            <div>
-              <Label>Ürün Adı (TR)</Label>
-              <Input
-                value={form.nameTr}
-                onChange={(e) => setForm({ ...form, nameTr: e.target.value })}
-                className="mt-1.5"
-                required
-              />
-            </div>
+            <LocalizedTextFields
+              label="Ürün Adı"
+              values={form.name}
+              onChange={(locale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  name: { ...prev.name, [locale]: value },
+                }))
+              }
+              requiredLocale="tr"
+            />
 
-            <div>
-              <Label>Açıklama (TR)</Label>
-              <Textarea
-                value={form.descriptionTr}
-                onChange={(e) => setForm({ ...form, descriptionTr: e.target.value })}
-                rows={3}
-                className="mt-1.5"
-              />
-            </div>
+            <LocalizedTextFields
+              label="Açıklama"
+              values={form.description}
+              onChange={(locale: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  description: { ...prev.description, [locale]: value },
+                }))
+              }
+              multiline
+              rows={4}
+            />
 
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -476,8 +495,8 @@ export default function ProductFormPage() {
       >
         <ProductPreview
           sku={form.sku}
-          name={form.nameTr}
-          description={form.descriptionTr}
+          name={form.name.tr}
+          description={form.description.tr}
           weightKg={form.weightKg}
           gtip={form.gtip}
           images={imageUrls}

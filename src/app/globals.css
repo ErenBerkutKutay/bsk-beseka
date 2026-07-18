@@ -142,7 +142,7 @@ html.lenis body {
 }
 
 .animate-hero-progress {
-  animation: hero-progress 6s linear forwards;
+  animation: hero-progress 3s linear forwards;
 }
 
 .hero-slider {
@@ -191,7 +191,7 @@ html.lenis body {
 }
 
 .hero-progress-bar {
-  animation: hero-progress 6s linear forwards;
+  animation: hero-progress 3s linear forwards;
   background: linear-gradient(90deg, var(--brand-cream), var(--brand-brown-mid));
   border-radius: 0 2px 2px 0;
 }
