@@ -31,6 +31,7 @@ export default function AdminBannersPage() {
   const [saving, setSaving] = useState(false);
 
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   async function load() {
     setLoadError(null);
@@ -70,6 +71,7 @@ export default function AdminBannersPage() {
     if (!form.image) return;
 
     setSaving(true);
+    setSaveError(null);
 
     const payload = {
       title: form.title || undefined,
@@ -79,18 +81,23 @@ export default function AdminBannersPage() {
       isActive: form.isActive,
     };
 
-    if (editingId) {
-      await fetch(`/api/admin/banners/${editingId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } else {
-      await fetch("/api/admin/banners", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    const res = editingId
+      ? await fetch(`/api/admin/banners/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        })
+      : await fetch("/api/admin/banners", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+    if (!res.ok) {
+      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      setSaveError(data?.error || "Banner kaydedilemedi. Lütfen tekrar deneyin.");
+      setSaving(false);
+      return;
     }
 
     setSaving(false);
@@ -109,12 +116,15 @@ export default function AdminBannersPage() {
     <div>
       <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Ana Sayfa Bannerları</h1>
       <p className="mb-6 text-sm text-muted">
-        Önerilen boyut: 1920×600–1080 px. Metin görsellerin üzerinde olmalıdır.
+        Önerilen boyut: 1920×600–1080 px. Metin görsellerin üzerinde olmalıdır. Canlı sitede görsel
+        yüklemek için Firebase Storage kullanılır; yerelde dosya{" "}
+        <code className="rounded bg-brand-cream-light px-1.5 py-0.5">public/beseka/banners/</code>{" "}
+        altına kaydedilir.
       </p>
 
-      {loadError && (
+      {(loadError || saveError) && (
         <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {loadError}
+          {loadError || saveError}
         </p>
       )}
 
@@ -129,7 +139,8 @@ export default function AdminBannersPage() {
               label="Banner Görseli"
               value={form.image}
               onChange={(image) => setForm({ ...form, image })}
-              hint="Ana sayfa slider'ında tam genişlikte gösterilir"
+              uploadFolder="beseka/banners"
+              hint="Canlıda Firebase'e yüklenir; yerelde public/beseka/banners/ altına kaydedilir."
             />
 
             <div className="grid gap-4 md:grid-cols-2">

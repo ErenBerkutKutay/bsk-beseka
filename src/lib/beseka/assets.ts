@@ -8,6 +8,8 @@ export const besekaAssets = {
     "/beseka/hero/slide-2.webp",
     "/beseka/hero/slide-3.webp",
   ],
+  /** Admin panelden yüklenen bannerlar: public/beseka/banners/ */
+  bannersDir: "/beseka/banners",
   journey: [
     "/beseka/cms/journey-1.webp",
     "/beseka/cms/journey-2.webp",

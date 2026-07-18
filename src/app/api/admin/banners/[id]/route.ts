@@ -21,21 +21,30 @@ export async function PUT(
   }
 
   const { id } = await params;
-  const body = await request.json();
-  const data = bannerSchema.parse(body);
 
-  const banner = await db.homeBanner.update({
-    where: { id },
-    data: {
-      title: data.title || null,
-      image: data.image,
-      href: data.href || null,
-      sortOrder: data.sortOrder,
-      isActive: data.isActive,
-    },
-  });
+  try {
+    const body = await request.json();
+    const data = bannerSchema.parse(body);
 
-  return NextResponse.json(banner);
+    const banner = await db.homeBanner.update({
+      where: { id },
+      data: {
+        title: data.title || null,
+        image: data.image,
+        href: data.href || null,
+        sortOrder: data.sortOrder,
+        isActive: data.isActive,
+      },
+    });
+
+    return NextResponse.json(banner);
+  } catch (error) {
+    console.error("[admin/banners PUT]", error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: "Geçersiz banner verisi." }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Banner güncellenemedi." }, { status: 500 });
+  }
 }
 
 export async function DELETE(

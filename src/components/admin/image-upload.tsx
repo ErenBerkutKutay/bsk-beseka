@@ -6,13 +6,19 @@ import { ImagePlus, Link2, Loader2, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 
-export async function uploadAdminImage(file: File): Promise<string> {
+export async function uploadAdminImage(file: File, folder?: string): Promise<string> {
   const formData = new FormData();
   formData.append("file", file);
+  if (folder) formData.append("folder", folder);
   const res = await fetch("/api/upload", { method: "POST", body: formData });
-  if (!res.ok) throw new Error("Yükleme başarısız");
-  const media = await res.json();
-  return media.url as string;
+  const data = (await res.json()) as { url?: string; error?: string };
+  if (!res.ok) {
+    throw new Error(data.error || "Görsel yüklenemedi.");
+  }
+  if (!data.url) {
+    throw new Error("Sunucu geçerli bir görsel adresi döndürmedi.");
+  }
+  return data.url;
 }
 
 type ImageUploadFieldProps = {
@@ -20,18 +26,30 @@ type ImageUploadFieldProps = {
   value: string;
   onChange: (url: string) => void;
   hint?: string;
+  /** public/ altındaki hedef klasör, örn. "beseka/banners" */
+  uploadFolder?: string;
 };
 
-export function ImageUploadField({ label, value, onChange, hint }: ImageUploadFieldProps) {
+export function ImageUploadField({
+  label,
+  value,
+  onChange,
+  hint,
+  uploadFolder,
+}: ImageUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [urlInput, setUrlInput] = useState("");
 
   async function handleFile(file: File) {
     setUploading(true);
+    setUploadError(null);
     try {
-      const url = await uploadAdminImage(file);
+      const url = await uploadAdminImage(file, uploadFolder);
       onChange(url);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Görsel yüklenemedi.");
     } finally {
       setUploading(false);
     }
@@ -82,6 +100,12 @@ export function ImageUploadField({ label, value, onChange, hint }: ImageUploadFi
         </label>
       )}
 
+      {uploadError && (
+        <p className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {uploadError}
+        </p>
+      )}
+
       <div className="mt-3 flex gap-2">
         <Input
           value={urlInput}
@@ -98,6 +122,7 @@ export function ImageUploadField({ label, value, onChange, hint }: ImageUploadFi
             if (urlInput.trim()) {
               onChange(urlInput.trim());
               setUrlInput("");
+              setUploadError(null);
             }
           }}
         >

@@ -29,18 +29,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await request.json();
-  const data = bannerSchema.parse(body);
+  try {
+    const body = await request.json();
+    const data = bannerSchema.parse(body);
 
-  const banner = await db.homeBanner.create({
-    data: {
-      title: data.title || null,
-      image: data.image,
-      href: data.href || null,
-      sortOrder: data.sortOrder,
-      isActive: data.isActive,
-    },
-  });
+    const banner = await db.homeBanner.create({
+      data: {
+        title: data.title || null,
+        image: data.image,
+        href: data.href || null,
+        sortOrder: data.sortOrder,
+        isActive: data.isActive,
+      },
+    });
 
-  return NextResponse.json(banner, { status: 201 });
+    return NextResponse.json(banner, { status: 201 });
+  } catch (error) {
+    console.error("[admin/banners POST]", error);
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: "Geçersiz banner verisi." }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Banner kaydedilemedi." }, { status: 500 });
+  }
 }
