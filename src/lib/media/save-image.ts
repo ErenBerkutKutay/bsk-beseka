@@ -2,10 +2,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
 import { db } from "@/lib/db";
-import {
-  hasFirebaseAdminCredentials,
-  uploadToFirebaseStorage,
-} from "@/lib/media/firebase-storage";
+import { saveImageToDatabase } from "@/lib/media/save-image-db";
 
 const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
 
@@ -23,11 +20,6 @@ function resolvePublicSubdir(publicSubdir?: string) {
     throw new Error("Geçersiz yükleme klasörü.");
   }
   return subdir;
-}
-
-function shouldUseCloudStorage() {
-  if (process.env.VERCEL === "1") return true;
-  return hasFirebaseAdminCredentials();
 }
 
 async function saveToPublicDir(
@@ -52,34 +44,25 @@ export async function saveImageBuffer(
   const safeExt = ALLOWED_EXTENSIONS.has(ext) ? ext : ".jpg";
   const filename = `${randomUUID()}${safeExt}`;
   const publicSubdir = resolvePublicSubdir(options?.publicSubdir);
+  const resolvedMimeType = mimeType || "application/octet-stream";
 
   let url: string;
+  let media;
 
-  if (shouldUseCloudStorage()) {
-    if (!hasFirebaseAdminCredentials()) {
-      throw new Error(
-        "Canlı ortamda görsel yüklemek için Vercel'de FIREBASE_SERVICE_ACCOUNT_JSON tanımlayın.",
-      );
-    }
-    url = await uploadToFirebaseStorage(
-      buffer,
-      filename,
-      mimeType || "application/octet-stream",
-      publicSubdir,
-    );
+  if (process.env.VERCEL === "1") {
+    ({ url, media } = await saveImageToDatabase(buffer, filename, resolvedMimeType, alt));
   } else {
     url = await saveToPublicDir(buffer, filename, publicSubdir);
+    media = await db.media.create({
+      data: {
+        filename,
+        url,
+        mimeType: resolvedMimeType,
+        size: buffer.length,
+        alt,
+      },
+    });
   }
-
-  const media = await db.media.create({
-    data: {
-      filename,
-      url,
-      mimeType: mimeType || "application/octet-stream",
-      size: buffer.length,
-      alt,
-    },
-  });
 
   return { url, media };
 }

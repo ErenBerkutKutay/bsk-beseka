@@ -26,6 +26,14 @@ function parseServiceAccount(): ServiceAccount | null {
   return null;
 }
 
+export function resolveFirebaseStorageBucket(projectId: string) {
+  return (
+    process.env.FIREBASE_STORAGE_BUCKET ||
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    `${projectId}.appspot.com`
+  );
+}
+
 /** Sunucu tarafı Firebase Admin (Storage, custom token vb.). */
 export function getFirebaseAdminApp(): App {
   const existing = getApps()[0];
@@ -33,19 +41,23 @@ export function getFirebaseAdminApp(): App {
 
   const serviceAccount = parseServiceAccount();
   if (serviceAccount) {
+    const projectId =
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
+      (serviceAccount as ServiceAccount & { project_id?: string }).project_id ??
+      "beseka-encom";
+
     return initializeApp({
       credential: cert(serviceAccount),
-      projectId:
-        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
-        (serviceAccount as ServiceAccount & { project_id?: string }).project_id,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      projectId,
+      storageBucket: resolveFirebaseStorageBucket(projectId),
     });
   }
 
   // Firebase App Hosting / Cloud Run: varsayılan kimlik bilgileri
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "beseka-encom";
   return initializeApp({
     credential: applicationDefault(),
-    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "beseka-encom",
-    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    projectId,
+    storageBucket: resolveFirebaseStorageBucket(projectId),
   });
 }
