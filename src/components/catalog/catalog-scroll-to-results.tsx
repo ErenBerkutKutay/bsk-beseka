@@ -1,46 +1,73 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { CATALOG_RESULTS_ID } from "@/lib/catalog/navigation";
 
 const HEADER_OFFSET = 96;
 
+function scrollToCatalogResults() {
+  const el = document.getElementById(CATALOG_RESULTS_ID);
+  if (!el) return false;
+
+  const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+  window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  return true;
+}
+
+function shouldScrollToResults(searchParams: URLSearchParams) {
+  if (searchParams.get("scroll") === "results") return true;
+  if (typeof window === "undefined") return false;
+  return window.location.hash === `#${CATALOG_RESULTS_ID}`;
+}
+
+function cleanScrollMarkers() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("scroll");
+  url.hash = "";
+  const next = `${url.pathname}${url.search}`;
+  window.history.replaceState(null, "", next);
+}
+
 export function CatalogScrollToResults() {
   const searchParams = useSearchParams();
-  const scrolledRef = useRef(false);
+  const paramKey = searchParams.toString();
 
   useEffect(() => {
-    if (searchParams.get("scroll") !== "results") return;
-    if (scrolledRef.current) return;
+    if (!shouldScrollToResults(searchParams)) return;
 
-    const scrollToResults = () => {
-      const el = document.getElementById("catalog-sonuclar");
-      if (!el) return false;
+    let attempts = 0;
+    const maxAttempts = 100;
+    let cleaned = false;
 
-      const top = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-      scrolledRef.current = true;
-
-      const url = new URL(window.location.href);
-      url.searchParams.delete("scroll");
-      window.history.replaceState(null, "", `${url.pathname}${url.search}`);
-
+    const tryScroll = () => {
+      if (!scrollToCatalogResults()) return false;
+      if (!cleaned) {
+        cleanScrollMarkers();
+        cleaned = true;
+      }
       return true;
     };
 
-    if (scrollToResults()) return;
+    const timers = [
+      window.setTimeout(() => tryScroll(), 0),
+      window.setTimeout(() => tryScroll(), 150),
+      window.setTimeout(() => tryScroll(), 400),
+      window.setTimeout(() => tryScroll(), 800),
+    ];
 
     const interval = window.setInterval(() => {
-      if (scrollToResults()) window.clearInterval(interval);
+      attempts += 1;
+      if (tryScroll() || attempts >= maxAttempts) {
+        window.clearInterval(interval);
+      }
     }, 50);
 
-    const timeout = window.setTimeout(() => window.clearInterval(interval), 4000);
-
     return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
       window.clearInterval(interval);
-      window.clearTimeout(timeout);
     };
-  }, [searchParams]);
+  }, [paramKey, searchParams]);
 
   return null;
 }

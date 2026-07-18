@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { FormEvent, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { buildCatalogSearchUrl } from "@/lib/catalog/navigation";
 
 type ProductSearchFormProps = {
   variant?: "header" | "hero";
@@ -25,10 +26,7 @@ export function ProductSearchForm({
     e.preventDefault();
     const q = query.trim();
     if (q) {
-      router.push(
-        `/${locale}/urunler?q=${encodeURIComponent(q)}&scroll=results`,
-        { scroll: false },
-      );
+      router.push(buildCatalogSearchUrl(locale, { q }), { scroll: false });
     } else {
       router.push(`/${locale}/urunler`);
     }

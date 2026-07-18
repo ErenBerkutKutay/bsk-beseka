@@ -6,7 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
 import { Menu, Phone, Search, X } from "lucide-react";
 import { besekaAssets } from "@/lib/beseka/assets";
+import { BESEKA_B2B_URL } from "@/lib/beseka/links";
 import { ProductSearchForm } from "@/components/catalog/product-search-form";
+import { SocialFollowLinks } from "@/components/layout/social-follow-links";
 
 const corporateLinks = [
   { href: "/kurumsal/hakkimizda", label: "Hakkımızda" },
@@ -55,12 +57,16 @@ export function SiteHeader() {
             </a>
             <span className="hidden sm:inline opacity-80">info@beseka.com</span>
           </div>
-          <Link
-            href={`${prefix}/b2b`}
-            className="rounded bg-brand-cream px-2.5 py-0.5 text-xs font-bold tracking-wide text-brand-brown-dark transition hover:bg-white"
-          >
-            B2B
-          </Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <SocialFollowLinks className="hidden lg:flex" />
+            <SocialFollowLinks className="lg:hidden" showLabel={false} iconClassName="h-3.5 w-3.5" />
+            <a
+              href={BESEKA_B2B_URL}
+              className="rounded bg-brand-cream px-2.5 py-0.5 text-xs font-bold tracking-wide text-brand-brown-dark transition hover:bg-white"
+            >
+              B2B
+            </a>
+          </div>
         </div>
       </div>
 
@@ -137,9 +143,13 @@ export function SiteHeader() {
           <MobileLink href={`${prefix}/iletisim`} onClick={() => setOpen(false)}>
             {t("contact")}
           </MobileLink>
-          <MobileLink href={`${prefix}/b2b`} onClick={() => setOpen(false)} accent>
+          <a
+            href={BESEKA_B2B_URL}
+            onClick={() => setOpen(false)}
+            className="rounded-lg bg-brand-cream px-3 py-2.5 text-sm font-medium text-brand-brown-dark transition-colors"
+          >
             {t("b2b")}
-          </MobileLink>
+          </a>
         </div>
       </div>
     </header>

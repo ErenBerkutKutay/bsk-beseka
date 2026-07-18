@@ -1,12 +1,12 @@
 export const PRODUCT_GROUPS = [
-  { slug: "amortisor-takozlari", name: { tr: "Amortisör takozları" } },
-  { slug: "suspansiyon-takozlari", name: { tr: "Süspansiyon takozları" } },
-  { slug: "amortisor-rulmanlari", name: { tr: "Amortisör rulmanları" } },
-  { slug: "motor-sanziman-takozlari", name: { tr: "Motor ve şanzuman takozları" } },
+  { slug: "amortisor-takozlari", name: { tr: "Amortisör Takozları" } },
+  { slug: "suspansiyon-takozlari", name: { tr: "Süspansiyon Takozları" } },
+  { slug: "amortisor-rulmanlari", name: { tr: "Amortisör Rulmanları" } },
+  { slug: "motor-sanziman-takozlari", name: { tr: "Motor ve Şanzıman Takozları" } },
   { slug: "burclar", name: { tr: "Burçlar" } },
-  { slug: "viraj-lastikleri", name: { tr: "Viraj lastikleri" } },
+  { slug: "viraj-lastikleri", name: { tr: "Viraj Lastikleri" } },
   { slug: "korukler", name: { tr: "Körükler" } },
-  { slug: "diger-urunler", name: { tr: "Diğer ürünler" } },
+  { slug: "diger-urunler", name: { tr: "Diğer Ürünler" } },
 ] as const;
 
 /** Eski slug → yeni slug (ürün taşıma) */

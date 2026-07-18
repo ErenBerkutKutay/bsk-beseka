@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { normalizeOEM } from "@/lib/oem/normalize";
+import { buildCatalogSearchUrl } from "@/lib/catalog/navigation";
 
 type Category = {
   id: string;
@@ -135,10 +136,9 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     if (nextModel) params.set("model", nextModel);
     if (nextSubModel) params.set("subModel", nextSubModel);
     if (nextCategory) params.set("category", nextCategory);
-    params.set("scroll", "results");
 
     startTransition(() => {
-      router.push(`/${locale}/urunler?${params.toString()}`, { scroll: false });
+      router.push(buildCatalogSearchUrl(locale, params), { scroll: false });
     });
   }
 
