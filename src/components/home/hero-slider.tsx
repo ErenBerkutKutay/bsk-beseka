@@ -57,14 +57,12 @@ export function HeroSlider({ banners }: { banners: HeroBannerItem[] }) {
               }`}
               aria-hidden={!isActive}
             >
-              <div
-                className={`hero-slide-media absolute inset-0 ${isActive ? "animate-ken-burns" : ""}`}
-              >
+              <div className="hero-slide-media absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={banner.image}
                   alt={banner.alt}
-                  className="absolute inset-0 h-full w-full object-cover object-center"
+                  className="absolute inset-0 h-full w-full object-contain object-center"
                   loading={index === 0 ? "eager" : "lazy"}
                   fetchPriority={index === 0 ? "high" : "auto"}
                   decoding="async"
@@ -110,7 +108,7 @@ export function HeroSlider({ banners }: { banners: HeroBannerItem[] }) {
 
         <div className="absolute bottom-0 left-0 right-0 z-20">
           {banners.length > 1 && (
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 pb-5 pt-16 md:px-8 md:pb-7">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 pb-4 pt-10 md:px-8 md:pb-5">
               <div className="flex items-center gap-2">
                 {banners.map((banner, index) => {
                   const key = banner.id ?? banner.image;

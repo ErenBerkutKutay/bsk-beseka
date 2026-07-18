@@ -116,10 +116,8 @@ export default function AdminBannersPage() {
     <div>
       <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Ana Sayfa Bannerları</h1>
       <p className="mb-6 text-sm text-muted">
-        Önerilen boyut: 1920×600–1080 px, en fazla 4 MB. Canlı sitede görsel veritabanında saklanır;
-        yerelde{" "}
-        <code className="rounded bg-brand-cream-light px-1.5 py-0.5">public/beseka/banners/</code>{" "}
-        altına kaydedilir. Ek ücret veya Firebase gerekmez.
+        Önerilen boyut: 1920 × 900 px (2:1), en fazla 4 MB. Metin ve logo ortada kalsın; alt şerit
+        (iletişim, sertifikalar) görselin içinde tasarlanmalıdır.
       </p>
 
       {(loadError || saveError) && (
