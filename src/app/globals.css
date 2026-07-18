@@ -119,16 +119,8 @@ html.lenis body {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 1;
-  max-height: min(78vh, 960px);
-  min-height: 240px;
+  max-height: min(50vw, 960px);
   background: var(--brand-brown-dark);
-}
-
-@media (max-width: 767px) {
-  .hero-slider-track {
-    aspect-ratio: 16 / 9;
-    max-height: min(56vw, 420px);
-  }
 }
 
 /* Safari: overflow + border-radius + transform birlikte görüntüyü gizleyebilir */

@@ -62,7 +62,7 @@ export function HeroSlider({ banners }: { banners: HeroBannerItem[] }) {
                 <img
                   src={banner.image}
                   alt={banner.alt}
-                  className="absolute inset-0 h-full w-full object-contain object-center"
+                  className="absolute inset-0 h-full w-full object-cover object-center"
                   loading={index === 0 ? "eager" : "lazy"}
                   fetchPriority={index === 0 ? "high" : "auto"}
                   decoding="async"

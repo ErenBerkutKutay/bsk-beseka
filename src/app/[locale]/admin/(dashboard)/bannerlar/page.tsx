@@ -116,8 +116,8 @@ export default function AdminBannersPage() {
     <div>
       <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Ana Sayfa Bannerları</h1>
       <p className="mb-6 text-sm text-muted">
-        Önerilen boyut: 1920 × 900 px (2:1), en fazla 4 MB. Metin ve logo ortada kalsın; alt şerit
-        (iletişim, sertifikalar) görselin içinde tasarlanmalıdır.
+        Zorunlu ölçü: <strong>1920 × 960 px</strong> (tam 2:1 oran). Başka oran kullanırsanız yanlarda veya
+        üstte boşluk kalır ya da görsel kırpılır. WebP/JPG, en fazla 4 MB.
       </p>
 
       {(loadError || saveError) && (
@@ -138,7 +138,7 @@ export default function AdminBannersPage() {
               value={form.image}
               onChange={(image) => setForm({ ...form, image })}
               uploadFolder="beseka/banners"
-              hint="Canlıda /api/media/... adresiyle sunulur; yerelde public/beseka/banners/ altına kaydedilir."
+              hint="Tam 1920×960 px (2:1) dışa aktarın — slider bu orana göre tam ekran doldurur."
             />
 
             <div className="grid gap-4 md:grid-cols-2">
