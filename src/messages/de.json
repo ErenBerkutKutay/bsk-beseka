@@ -105,7 +105,18 @@
     "searchAriaLabel": "Produkte suchen",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "Motorlager",
-    "exampleBootBellows": "Faltenbalg"
+    "exampleBootBellows": "Faltenbalg",
+    "colProduct": "PRODUKT",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & ANDERE REF.",
+    "colMakeModel": "MARKE / MODELL",
+    "colModelYear": "MODELLJAHR",
+    "showDetail": "DETAILS ANZEIGEN",
+    "resultsDisclaimer": "OEM-Codes dienen nur zum Vergleich. Bitte Beseka-Ref zur Produktkompatibilität prüfen.",
+    "resultsShowing": "{shown} von {total} Produkten werden angezeigt",
+    "selectedFilters": "Ausgewählte Filter",
+    "clearAll": "Alle löschen",
+    "startSearch": "Suche starten"
   },
   "product": {
     "oemCodes": "OEM-Codes",

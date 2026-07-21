@@ -105,7 +105,18 @@
     "searchAriaLabel": "Cerca prodotti",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "supporto motore",
-    "exampleBootBellows": "soffietto ammortizzatore"
+    "exampleBootBellows": "soffietto ammortizzatore",
+    "colProduct": "PRODOTTO",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & ALTRE REF.",
+    "colMakeModel": "MARCA / MODELLO",
+    "colModelYear": "ANNO MODELLO",
+    "showDetail": "MOSTRA DETTAGLI",
+    "resultsDisclaimer": "I codici OEM sono solo a scopo di confronto. Verificare la ref Beseka per la compatibilità.",
+    "resultsShowing": "Visualizzati {shown} di {total} prodotti",
+    "selectedFilters": "Filtri selezionati",
+    "clearAll": "Cancella tutto",
+    "startSearch": "Avvia ricerca"
   },
   "product": {
     "oemCodes": "Codici OEM",

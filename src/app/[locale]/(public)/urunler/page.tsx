@@ -5,9 +5,10 @@ import { searchProducts } from "@/lib/products/search";
 import { enrichCategoriesWithImages } from "@/lib/categories/display-image";
 import {
   CatalogSearchPanel,
+  CatalogSearchSidebar,
   CatalogCategoryTiles,
 } from "@/components/catalog/catalog-search-panel";
-import { CatalogProductList } from "@/components/catalog/product-grid";
+import { CatalogResultsTable } from "@/components/catalog/catalog-results-table";
 import { CatalogScrollToResults } from "@/components/catalog/catalog-scroll-to-results";
 import { CATALOG_RESULTS_ID } from "@/lib/catalog/navigation";
 
@@ -17,20 +18,11 @@ function hasActiveSearch(params: Record<string, string | undefined>) {
 
 function CatalogResultsSkeleton() {
   return (
-    <div className="space-y-6">
-      <div className="h-8 w-48 animate-pulse rounded-lg bg-brand-cream" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="overflow-hidden rounded-xl border border-border bg-white">
-            <div className="aspect-[4/3] animate-pulse bg-brand-cream-light" />
-            <div className="space-y-3 p-4">
-              <div className="h-5 w-20 animate-pulse rounded bg-brand-cream-light" />
-              <div className="h-4 w-full animate-pulse rounded bg-brand-cream-light" />
-              <div className="h-4 w-2/3 animate-pulse rounded bg-brand-cream-light" />
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="space-y-4">
+      <div className="h-10 animate-pulse rounded bg-brand-cream" />
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="h-28 animate-pulse rounded-lg bg-brand-cream-light" />
+      ))}
     </div>
   );
 }
@@ -52,9 +44,8 @@ async function CatalogResults({
   });
 
   return (
-    <CatalogProductList
+    <CatalogResultsTable
       products={products as never[]}
-      locale={locale}
       total={total}
     />
   );
@@ -77,7 +68,6 @@ export default async function CatalogPage({
   });
 
   const categories = enrichCategoriesWithImages(categoriesRaw);
-
   const isSearching = hasActiveSearch(filters);
 
   return (
@@ -86,25 +76,34 @@ export default async function CatalogPage({
         <CatalogScrollToResults />
       </Suspense>
 
-      <Suspense fallback={<div className="h-56 animate-pulse bg-brand-brown" />}>
-        <CatalogSearchPanel categories={categories as never[]} />
-      </Suspense>
-
-      <CatalogCategoryTiles
-        categories={categories as never[]}
-        activeCategory={filters.category}
-      />
-
       {isSearching ? (
-        <div
-          id={CATALOG_RESULTS_ID}
-          className="mx-auto max-w-7xl scroll-mt-28 px-4 py-8 md:py-10"
-        >
-          <Suspense fallback={<CatalogResultsSkeleton />}>
-            <CatalogResults locale={locale} searchParams={filters} />
-          </Suspense>
+        <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+          <div
+            id={CATALOG_RESULTS_ID}
+            className="grid scroll-mt-28 gap-6 lg:grid-cols-[280px_1fr] lg:items-start"
+          >
+            <Suspense fallback={<div className="h-96 animate-pulse rounded-lg bg-brand-cream" />}>
+              <CatalogSearchSidebar categories={categories as never[]} />
+            </Suspense>
+            <div className="min-w-0">
+              <Suspense fallback={<CatalogResultsSkeleton />}>
+                <CatalogResults locale={locale} searchParams={filters} />
+              </Suspense>
+            </div>
+          </div>
         </div>
-      ) : null}
+      ) : (
+        <>
+          <Suspense fallback={<div className="h-48 animate-pulse bg-white" />}>
+            <CatalogSearchPanel categories={categories as never[]} />
+          </Suspense>
+
+          <CatalogCategoryTiles
+            categories={categories as never[]}
+            activeCategory={filters.category}
+          />
+        </>
+      )}
     </div>
   );
 }

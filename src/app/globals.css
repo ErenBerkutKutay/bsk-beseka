@@ -258,10 +258,21 @@ html.lenis body {
   border-color: rgba(255, 143, 87, 0.35);
 }
 
-.catalog-search-hero {
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(255, 171, 122, 0.1) 0%, transparent 55%),
-    linear-gradient(135deg, #5a0814 0%, var(--brand-brown-dark) 50%, #7a1020 100%);
+.catalog-search-ytt {
+  background: linear-gradient(180deg, #fff 0%, var(--brand-cream-light) 100%);
+}
+
+.catalog-category-ytt {
+  background: linear-gradient(180deg, var(--brand-cream-light) 0%, #fff 100%);
+}
+
+.catalog-results-table {
+  border-color: rgba(122, 16, 32, 0.12);
+}
+
+.catalog-sidebar-select option {
+  background: #18181b;
+  color: #fff;
 }
 
 .catalog-hint-card {

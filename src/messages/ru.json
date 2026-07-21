@@ -105,7 +105,18 @@
     "searchAriaLabel": "Поиск продуктов",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "опора двигателя",
-    "exampleBootBellows": "пыльник амортизатора"
+    "exampleBootBellows": "пыльник амортизатора",
+    "colProduct": "ПРОДУКТ",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & ДР. REF.",
+    "colMakeModel": "МАРКА / МОДЕЛЬ",
+    "colModelYear": "ГОД МОДЕЛИ",
+    "showDetail": "ПОДРОБНЕЕ",
+    "resultsDisclaimer": "OEM-коды приведены только для сравнения. Проверяйте ref Beseka для совместимости.",
+    "resultsShowing": "Показано {shown} из {total} продуктов",
+    "selectedFilters": "Выбранные фильтры",
+    "clearAll": "Очистить все",
+    "startSearch": "Начать поиск"
   },
   "product": {
     "oemCodes": "OEM-коды",

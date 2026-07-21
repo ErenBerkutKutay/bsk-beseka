@@ -105,7 +105,18 @@
     "searchAriaLabel": "Rechercher des produits",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "support moteur",
-    "exampleBootBellows": "soufflet d'amortisseur"
+    "exampleBootBellows": "soufflet d'amortisseur",
+    "colProduct": "PRODUIT",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & AUTRES REF.",
+    "colMakeModel": "MARQUE / MODÈLE",
+    "colModelYear": "ANNÉE MODÈLE",
+    "showDetail": "VOIR DÉTAIL",
+    "resultsDisclaimer": "Les codes OEM sont fournis à titre de comparaison uniquement. Vérifiez la ref Beseka pour la compatibilité.",
+    "resultsShowing": "{shown} produits affichés sur {total}",
+    "selectedFilters": "Filtres sélectionnés",
+    "clearAll": "Tout effacer",
+    "startSearch": "Lancer la recherche"
   },
   "product": {
     "oemCodes": "Codes OEM",

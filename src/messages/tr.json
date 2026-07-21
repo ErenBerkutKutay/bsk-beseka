@@ -105,7 +105,18 @@
     "searchAriaLabel": "Ürün ara",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "motor takozu",
-    "exampleBootBellows": "amortisör körüğü"
+    "exampleBootBellows": "amortisör körüğü",
+    "colProduct": "ÜRÜN",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & DİĞER REF.",
+    "colMakeModel": "MARKA / MODEL",
+    "colModelYear": "MODEL YILI",
+    "showDetail": "DETAY GÖSTER",
+    "resultsDisclaimer": "OEM kodları sadece karşılaştırma amaçlıdır. Ürün uyumluluğu için lütfen Beseka Ref kodunu kontrol edin.",
+    "resultsShowing": "{shown} adet üründen, {total} adedi gösteriliyor",
+    "selectedFilters": "Seçili Filtreler",
+    "clearAll": "Tümünü Temizle",
+    "startSearch": "Aramayı Başlat"
   },
   "product": {
     "oemCodes": "OEM Kodları",

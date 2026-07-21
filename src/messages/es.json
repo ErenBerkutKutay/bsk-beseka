@@ -105,7 +105,18 @@
     "searchAriaLabel": "Buscar productos",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "soporte motor",
-    "exampleBootBellows": "fuelle amortiguador"
+    "exampleBootBellows": "fuelle amortiguador",
+    "colProduct": "PRODUCTO",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & OTRAS REF.",
+    "colMakeModel": "MARCA / MODELO",
+    "colModelYear": "AÑO MODELO",
+    "showDetail": "VER DETALLE",
+    "resultsDisclaimer": "Los códigos OEM son solo para comparación. Verifique la ref Beseka para compatibilidad.",
+    "resultsShowing": "Mostrando {shown} de {total} productos",
+    "selectedFilters": "Filtros seleccionados",
+    "clearAll": "Borrar todo",
+    "startSearch": "Iniciar búsqueda"
   },
   "product": {
     "oemCodes": "Códigos OEM",

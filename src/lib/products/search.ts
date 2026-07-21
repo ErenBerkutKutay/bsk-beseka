@@ -167,10 +167,29 @@ export async function searchProducts(params: ProductSearchParams) {
       where,
       include: {
         category: true,
-        oemCodes: codeMatchFilter ? { where: codeMatchFilter, take: 3 } : { take: 3 },
+        oemCodes: codeMatchFilter ? { where: codeMatchFilter, take: 12 } : { take: 12 },
         crossCodes: codeMatchFilter
-          ? { where: codeMatchFilter as Prisma.CrossCodeWhereInput, take: 3 }
-          : { take: 3 },
+          ? { where: codeMatchFilter as Prisma.CrossCodeWhereInput, take: 12 }
+          : { take: 12 },
+        fitments: {
+          take: 8,
+          orderBy: [{ make: "asc" }, { model: "asc" }],
+        },
+        vehicleTypes: {
+          take: 8,
+          include: {
+            vehicleType: {
+              select: {
+                make: true,
+                modelSeries: true,
+                typeName: true,
+                yearFrom: true,
+                yearTo: true,
+              },
+            },
+          },
+          orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],
+        },
       },
       orderBy: [{ isNew: "desc" }, { createdAt: "desc" }],
       skip,

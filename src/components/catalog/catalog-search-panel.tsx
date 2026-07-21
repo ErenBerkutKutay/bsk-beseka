@@ -3,21 +3,10 @@
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
-import {
-  Car,
-  ChevronDown,
-  Hash,
-  Loader2,
-  Search,
-  Sparkles,
-  Wrench,
-  X,
-  AlignLeft,
-} from "lucide-react";
+import { useEffect, useMemo, useState, useTransition, type ReactNode } from "react";
+import { Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { normalizeOEM } from "@/lib/oem/normalize";
+import { Input, Label } from "@/components/ui/input";
 import { resolveCategoryLabel } from "@/lib/categories/product-groups";
 import { buildCatalogSearchUrl } from "@/lib/catalog/navigation";
 
@@ -31,9 +20,7 @@ type Category = {
 
 type VehicleOption = { id: string; name: string };
 
-type SearchMode = "oem" | "sku" | "vehicle" | "text";
-
-export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
+function useCatalogSearch(categories: Category[]) {
   const t = useTranslations("catalog");
   const locale = useLocale();
   const router = useRouter();
@@ -42,7 +29,6 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const [makes, setMakes] = useState<VehicleOption[]>([]);
   const [models, setModels] = useState<VehicleOption[]>([]);
   const [subModels, setSubModels] = useState<VehicleOption[]>([]);
-  const [showVehicleFilters, setShowVehicleFilters] = useState(false);
 
   const [sku, setSku] = useState(searchParams.get("sku") || "");
   const [q, setQ] = useState(searchParams.get("q") || "");
@@ -50,13 +36,6 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
   const [model, setModel] = useState(searchParams.get("model") || "");
   const [subModel, setSubModel] = useState(searchParams.get("subModel") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "");
-
-  const initialMode: SearchMode = searchParams.get("sku")
-    ? "sku"
-    : searchParams.get("make") || searchParams.get("model")
-      ? "vehicle"
-      : "text";
-  const [mode, setMode] = useState<SearchMode>(initialMode);
 
   useEffect(() => {
     fetch("/api/vehicles")
@@ -88,23 +67,6 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
       .then(setSubModels)
       .catch(() => setSubModels([]));
   }, [make, model]);
-
-  useEffect(() => {
-    if (make || model || subModel) setShowVehicleFilters(true);
-  }, [make, model, subModel]);
-
-  const exampleSearches = useMemo(
-    () =>
-      [
-        { label: t("exampleMotorMount"), value: "motor takozu", type: "text" as const },
-        { label: t("exampleBootBellows"), value: "amortisör körüğü", type: "text" as const },
-        { label: "B8376", value: "B8376", type: "sku" as const },
-        { label: "12 34-56.78", value: "12 34-56.78", type: "oem" as const },
-      ] as const,
-    [t],
-  );
-
-  const normalizedPreview = useMemo(() => (q.trim() ? normalizeOEM(q) : ""), [q]);
 
   const activeFilters = useMemo(() => {
     const chips: { key: string; label: string; clear: () => void }[] = [];
@@ -147,7 +109,8 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     });
   }
 
-  function applyFilters() {
+  function applyFilters(e?: React.FormEvent) {
+    e?.preventDefault();
     pushFilters();
   }
 
@@ -165,15 +128,8 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     const next = { sku, q, make, model, subModel, category };
     if (key === "sku") next.sku = "";
     if (key === "q") next.q = "";
-    if (key === "make") {
-      next.make = "";
-      next.model = "";
-      next.subModel = "";
-    }
-    if (key === "model") {
-      next.model = "";
-      next.subModel = "";
-    }
+    if (key === "make") { next.make = ""; next.model = ""; next.subModel = ""; }
+    if (key === "model") { next.model = ""; next.subModel = ""; }
     if (key === "subModel") next.subModel = "";
     if (key === "category") next.category = "";
 
@@ -186,351 +142,326 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
     pushFilters(next);
   }
 
-  function applyExample(example: (typeof exampleSearches)[number]) {
-    if (example.type === "sku") {
-      setSku(example.value);
-      setQ("");
-      setMode("sku");
-      pushFilters({ sku: example.value, q: "", make: "", model: "", subModel: "" });
-    } else if (example.type === "text") {
-      setQ(example.value);
-      setSku("");
-      setMode("text");
-      pushFilters({ q: example.value, sku: "", make: "", model: "", subModel: "" });
-    } else {
-      setQ(example.value);
-      setSku("");
-      setMode("oem");
-      pushFilters({ q: example.value, sku: "", make: "", model: "", subModel: "" });
-    }
-  }
+  return {
+    t,
+    locale,
+    isPending,
+    makes,
+    models,
+    subModels,
+    sku,
+    setSku,
+    q,
+    setQ,
+    make,
+    setMake,
+    model,
+    setModel,
+    subModel,
+    setSubModel,
+    category,
+    setCategory,
+    activeFilters,
+    applyFilters,
+    clearFilters,
+    removeFilter,
+  };
+}
 
-  const tabs: { id: SearchMode; label: string; icon: typeof Hash }[] = [
-    { id: "text", label: t("tabGeneral"), icon: AlignLeft },
-    { id: "oem", label: t("tabOemCross"), icon: Wrench },
-    { id: "sku", label: t("tabBesekaRef"), icon: Hash },
-    { id: "vehicle", label: t("tabByVehicle"), icon: Car },
-  ];
+type SearchFieldsProps = ReturnType<typeof useCatalogSearch> & {
+  categories: Category[];
+  variant: "hero" | "sidebar";
+};
 
-  const inputClass =
-    "h-14 border-2 border-white/30 bg-white pl-12 text-base text-brand-brown-dark shadow-sm placeholder:text-muted/55 focus-visible:border-brand-cream focus-visible:ring-2 focus-visible:ring-brand-cream/50";
+function CatalogSearchFields({
+  categories,
+  variant,
+  t,
+  isPending,
+  makes,
+  models,
+  subModels,
+  sku,
+  setSku,
+  q,
+  setQ,
+  make,
+  setMake,
+  model,
+  setModel,
+  subModel,
+  setSubModel,
+  category,
+  setCategory,
+  activeFilters,
+  applyFilters,
+  clearFilters,
+  removeFilter,
+  locale,
+}: SearchFieldsProps) {
+  const isSidebar = variant === "sidebar";
 
-  const selectClass =
-    "h-11 w-full rounded-lg border-2 border-white/30 bg-white px-3 text-sm text-brand-brown-dark shadow-sm focus:border-brand-cream focus:outline-none focus:ring-2 focus:ring-brand-cream/40 disabled:cursor-not-allowed disabled:bg-white/60 disabled:text-muted/60";
+  const inputClass = isSidebar
+    ? "h-10 border-zinc-300 bg-white text-sm"
+    : "h-11 border-brand-cream-dark/80 bg-white text-sm shadow-sm";
+
+  const selectClass = isSidebar
+    ? "catalog-sidebar-select h-10 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 text-sm text-white focus:border-brand-brown focus:outline-none focus:ring-1 focus:ring-brand-brown disabled:cursor-not-allowed disabled:opacity-50"
+    : "h-11 w-full rounded-md border border-brand-cream-dark/80 bg-white px-3 text-sm text-brand-brown-dark shadow-sm focus:border-brand-brown focus:outline-none focus:ring-2 focus:ring-brand-brown/20 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-muted";
+
+  const labelClass = isSidebar
+    ? "text-xs font-bold uppercase tracking-wide text-brand-brown-dark"
+    : "text-xs font-bold uppercase tracking-wide text-brand-brown";
+
+  const fieldBlock = (label: string, children: ReactNode) => (
+    <div>
+      <Label className={labelClass}>{label}</Label>
+      <div className="mt-1.5">{children}</div>
+    </div>
+  );
 
   return (
-    <div className="relative overflow-hidden catalog-search-hero text-white">
-      <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-12">
-        <div className="mb-8 max-w-2xl">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand-cream">
-            {t("kicker")}
-          </p>
-          <h1 className="text-2xl font-bold tracking-tight text-white md:text-4xl">{t("title")}</h1>
-          <p className="mt-3 text-sm leading-relaxed text-white/85 md:text-base">
-            {t("subtitle")}
-          </p>
-        </div>
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            applyFilters();
-          }}
-          className="rounded-2xl border-2 border-white/20 bg-black/25 p-5 shadow-2xl shadow-black/30 backdrop-blur-sm md:p-7"
-        >
-          {/* Sekmeler */}
-          <div className="mb-6 flex flex-wrap gap-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = mode === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setMode(tab.id)}
-                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-                    isActive
-                      ? "bg-brand-cream text-brand-brown-dark shadow-lg shadow-black/25"
-                      : "border border-white/30 bg-white/10 text-white hover:border-white/50 hover:bg-white/20"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Ana arama alanı */}
-          {mode === "text" && (
-            <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
-                {t("generalSearchLabel")}
-              </label>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
-                <Input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder={t("generalSearchPlaceholder")}
-                  className={inputClass}
-                  autoFocus
-                />
-              </div>
-              <p className="text-xs text-white/75">
-                {t("generalSearchHint")}
-              </p>
-            </div>
-          )}
-
-          {mode === "oem" && (
-            <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
-                {t("oemSearch")}
-              </label>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
-                <Input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder={t("oemPlaceholder")}
-                  className={inputClass}
-                  autoFocus
-                />
-              </div>
-              {normalizedPreview && (
-                <div className="flex flex-wrap items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm">
-                  <Sparkles className="h-4 w-4 shrink-0 text-brand-cream" />
-                  <span className="text-white/80">{t("normalizedSearch")}</span>
-                  <code className="rounded-md bg-brand-brown-dark px-2 py-0.5 font-mono text-white">
-                    {normalizedPreview}
-                  </code>
-                  <span className="text-xs text-white/60">
-                    {t("normalizedHint")}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {mode === "sku" && (
-            <div className="space-y-3">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-white/90">
-                {t("skuSearch")}
-              </label>
-              <div className="relative">
-                <Hash className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-brown-dark/45" />
-                <Input
-                  value={sku}
-                  onChange={(e) => setSku(e.target.value.toUpperCase())}
-                  placeholder={t("skuPlaceholder")}
-                  className={`${inputClass} font-mono uppercase`}
-                  autoFocus
-                />
-              </div>
-            </div>
-          )}
-
-          {mode === "vehicle" && (
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
-                  {t("manufacturer")}
-                </label>
-                <select
-                  className={selectClass}
-                  value={make}
-                  onChange={(e) => {
-                    setMake(e.target.value);
-                    setModel("");
-                    setSubModel("");
-                  }}
-                >
-                  <option value="">{t("selectManufacturer")}</option>
-                  {makes.map((v) => (
-                    <option key={v.id} value={v.name}>{v.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
-                  {t("model")}
-                </label>
-                <select
-                  className={selectClass}
-                  value={model}
-                  onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
-                  disabled={!make}
-                >
-                  <option value="">{make ? t("model") : t("selectManufacturer")}</option>
-                  {models.map((m) => (
-                    <option key={m.id} value={m.name}>{m.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/90">
-                  {t("subModel")}
-                </label>
-                <select
-                  className={selectClass}
-                  value={subModel}
-                  onChange={(e) => setSubModel(e.target.value)}
-                  disabled={!model}
-                >
-                  <option value="">{model ? t("subModel") : t("selectModel")}</option>
-                  {subModels.map((s) => (
-                    <option key={s.id} value={s.name}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-
-          {/* Gelişmiş filtreler */}
-          <div className="mt-5 border-t border-white/20 pt-5">
-            <button
-              type="button"
-              onClick={() => setShowVehicleFilters(!showVehicleFilters)}
-              className="flex w-full items-center justify-between text-sm font-medium text-white/90 transition hover:text-white"
+    <form onSubmit={applyFilters} className={isSidebar ? "space-y-3" : "space-y-4"}>
+      {isSidebar ? (
+        <>
+          {fieldBlock(
+            t("manufacturer"),
+            <select
+              className={selectClass}
+              value={make}
+              onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
             >
-              <span>{t("advancedFilters")}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${showVehicleFilters ? "rotate-180" : ""}`} />
-            </button>
-
-            {showVehicleFilters && (
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {mode !== "vehicle" && (
-                  <>
-                    <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
-                        {t("manufacturer")}
-                      </label>
-                      <select
-                        className={selectClass}
-                        value={make}
-                        onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
-                      >
-                        <option value="">{t("selectManufacturer")}</option>
-                        {makes.map((v) => (
-                          <option key={v.id} value={v.name}>{v.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
-                        {t("model")}
-                      </label>
-                      <select
-                        className={selectClass}
-                        value={model}
-                        onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
-                        disabled={!make}
-                      >
-                        <option value="">{make ? t("model") : "—"}</option>
-                        {models.map((m) => (
-                          <option key={m.id} value={m.name}>{m.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
-                        {t("subModel")}
-                      </label>
-                      <select
-                        className={selectClass}
-                        value={subModel}
-                        onChange={(e) => setSubModel(e.target.value)}
-                        disabled={!model}
-                      >
-                        <option value="">{model ? t("subModel") : "—"}</option>
-                        {subModels.map((s) => (
-                          <option key={s.id} value={s.name}>{s.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                )}
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/80">
-                    {t("productGroup")}
-                  </label>
-                  <select
-                    className={selectClass}
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="">{t("allGroups")}</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.slug}>
-                        {resolveCategoryLabel(cat.slug, locale, cat.name)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+              <option value="">{t("selectManufacturer")}</option>
+              {makes.map((v) => (
+                <option key={v.id} value={v.name}>{v.name}</option>
+              ))}
+            </select>,
+          )}
+          {fieldBlock(
+            t("model"),
+            <select
+              className={selectClass}
+              value={model}
+              onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
+              disabled={!make}
+            >
+              <option value="">{make ? t("model") : t("selectManufacturer")}</option>
+              {models.map((m) => (
+                <option key={m.id} value={m.name}>{m.name}</option>
+              ))}
+            </select>,
+          )}
+          {fieldBlock(
+            t("subModel"),
+            <select
+              className={selectClass}
+              value={subModel}
+              onChange={(e) => setSubModel(e.target.value)}
+              disabled={!model}
+            >
+              <option value="">{model ? t("subModel") : t("selectModel")}</option>
+              {subModels.map((s) => (
+                <option key={s.id} value={s.name}>{s.name}</option>
+              ))}
+            </select>,
+          )}
+          {fieldBlock(
+            t("productGroup"),
+            <select
+              className={selectClass}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">{t("allGroups")}</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.slug}>
+                  {resolveCategoryLabel(cat.slug, locale, cat.name)}
+                </option>
+              ))}
+            </select>,
+          )}
+          {fieldBlock(
+            t("generalSearchLabel"),
+            <Input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t("generalSearchPlaceholder")}
+              className={inputClass}
+            />,
+          )}
+          {fieldBlock(
+            t("skuSearch"),
+            <Input
+              value={sku}
+              onChange={(e) => setSku(e.target.value.toUpperCase())}
+              placeholder={t("skuPlaceholder")}
+              className={`${inputClass} font-mono uppercase`}
+            />,
+          )}
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="mt-2 w-full bg-brand-brown py-6 text-sm font-bold uppercase tracking-wide hover:bg-brand-brown-dark"
+          >
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t("startSearch")}
+          </Button>
+        </>
+      ) : (
+        <>
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+            {fieldBlock(
+              t("skuSearch"),
+              <Input
+                value={sku}
+                onChange={(e) => setSku(e.target.value.toUpperCase())}
+                placeholder={t("skuPlaceholder")}
+                className={`${inputClass} font-mono uppercase`}
+              />,
             )}
+            {fieldBlock(
+              t("oemSearch"),
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder={t("oemPlaceholder")}
+                className={inputClass}
+              />,
+            )}
+            {fieldBlock(
+              t("manufacturer"),
+              <select
+                className={selectClass}
+                value={make}
+                onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
+              >
+                <option value="">{t("selectManufacturer")}</option>
+                {makes.map((v) => (
+                  <option key={v.id} value={v.name}>{v.name}</option>
+                ))}
+              </select>,
+            )}
+            <Button
+              type="submit"
+              disabled={isPending}
+              size="lg"
+              className="h-11 w-full bg-brand-brown px-8 text-sm font-bold uppercase tracking-wide hover:bg-brand-brown-dark lg:w-auto"
+            >
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t("searchSubmit")}
+            </Button>
           </div>
 
-          {/* Örnek aramalar */}
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-white/70">{t("examplesLabel")}</span>
-            {exampleSearches.map((ex) => (
-              <button
-                key={ex.value}
-                type="button"
-                onClick={() => applyExample(ex)}
-                className="rounded-full border border-white/35 bg-white/10 px-3 py-1 font-mono text-xs text-white transition hover:border-brand-cream hover:bg-brand-cream/20 hover:text-brand-cream"
+          <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+            {fieldBlock(
+              t("model"),
+              <select
+                className={selectClass}
+                value={model}
+                onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
+                disabled={!make}
               >
-                {ex.label}
+                <option value="">{make ? t("model") : t("selectManufacturer")}</option>
+                {models.map((m) => (
+                  <option key={m.id} value={m.name}>{m.name}</option>
+                ))}
+              </select>,
+            )}
+            {fieldBlock(
+              t("subModel"),
+              <select
+                className={selectClass}
+                value={subModel}
+                onChange={(e) => setSubModel(e.target.value)}
+                disabled={!model}
+              >
+                <option value="">{model ? t("subModel") : t("selectModel")}</option>
+                {subModels.map((s) => (
+                  <option key={s.id} value={s.name}>{s.name}</option>
+                ))}
+              </select>,
+            )}
+            {fieldBlock(
+              t("productGroup"),
+              <select
+                className={selectClass}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">{t("allGroups")}</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.slug}>
+                    {resolveCategoryLabel(cat.slug, locale, cat.name)}
+                  </option>
+                ))}
+              </select>,
+            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={clearFilters}
+              className="h-11 w-full border-zinc-900 bg-zinc-900 px-6 text-sm font-bold uppercase tracking-wide text-white hover:bg-zinc-800 lg:w-auto"
+            >
+              {t("clearFilters")}
+            </Button>
+          </div>
+        </>
+      )}
+
+      {activeFilters.length > 0 && (
+        <div className={`pt-2 ${isSidebar ? "border-t border-border" : ""}`}>
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-brand-brown-dark">
+            {t("selectedFilters")}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {activeFilters.map((chip) => (
+              <button
+                key={chip.key}
+                type="button"
+                onClick={() => removeFilter(chip.key)}
+                className="inline-flex items-center gap-1.5 rounded bg-brand-cream px-2.5 py-1 text-xs font-semibold text-brand-brown-dark transition hover:bg-brand-cream-light"
+              >
+                {chip.label}
+                <X className="h-3 w-3 opacity-60" />
               </button>
             ))}
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="rounded bg-zinc-900 px-2.5 py-1 text-xs font-semibold text-white transition hover:bg-zinc-800"
+            >
+              {t("clearAll")}
+            </button>
           </div>
+        </div>
+      )}
+    </form>
+  );
+}
 
-          {/* Butonlar */}
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Button type="submit" disabled={isPending} size="lg" className="min-w-[160px] gap-2">
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Search className="h-4 w-4" />
-              )}
-              {isPending ? t("searching") : t("searchSubmit")}
-            </Button>
-            {activeFilters.length > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                onClick={clearFilters}
-                className="gap-2 border-white/40 bg-transparent text-white hover:bg-white/15"
-              >
-                <X className="h-4 w-4" />
-                {t("clearFilters")}
-              </Button>
-            )}
-          </div>
+export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
+  const t = useTranslations("catalog");
+  const search = useCatalogSearch(categories);
 
-          {/* Aktif filtreler */}
-          {activeFilters.length > 0 && (
-            <div className="mt-5 flex flex-wrap gap-2 border-t border-white/20 pt-5">
-              <span className="self-center text-xs font-medium text-white/70">{t("activeFilters")}</span>
-              {activeFilters.map((chip) => (
-                <button
-                  key={chip.key}
-                  type="button"
-                  onClick={() => removeFilter(chip.key)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-brown-dark transition hover:bg-white"
-                >
-                  {chip.label}
-                  <X className="h-3 w-3 opacity-60" />
-                </button>
-              ))}
-            </div>
-          )}
-        </form>
+  return (
+    <section className="catalog-search-ytt border-b border-brand-cream-dark/50 bg-white py-8 md:py-10">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-brand-brown-dark md:text-3xl">{t("title")}</h1>
+          <p className="mt-2 text-sm text-muted">{t("landingHint")}</p>
+        </div>
+        <CatalogSearchFields {...search} categories={categories} variant="hero" />
       </div>
-    </div>
+    </section>
+  );
+}
+
+export function CatalogSearchSidebar({ categories }: { categories: Category[] }) {
+  const search = useCatalogSearch(categories);
+
+  return (
+    <aside className="catalog-search-sidebar rounded-lg border border-border bg-white p-4 shadow-sm lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
+      <CatalogSearchFields {...search} categories={categories} variant="sidebar" />
+    </aside>
   );
 }
 
@@ -553,13 +484,13 @@ export function CatalogCategoryTiles({
   }
 
   return (
-    <div className="catalog-category-strip border-b py-8">
+    <div className="catalog-category-ytt border-b border-border bg-brand-cream-light/30 py-8">
       <div className="mx-auto max-w-7xl px-4">
         <p className="mb-1 text-sm font-bold uppercase tracking-wider text-brand-brown">
           {t("categoryBrowseTitle")}
         </p>
         <p className="mb-5 text-sm text-brand-brown-dark/80">{t("categoryBrowseHint")}</p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-4 md:gap-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           {categories.map((cat) => {
             const isActive = activeCategory === cat.slug;
             const imageSrc = cat.displayImage || cat.image;
@@ -569,10 +500,8 @@ export function CatalogCategoryTiles({
                 key={cat.id}
                 type="button"
                 onClick={() => selectCategory(cat.slug)}
-                className={`category-hover-card group flex flex-col overflow-hidden rounded-xl border text-center transition-colors ${
-                  isActive
-                    ? "border-brand-brown bg-brand-brown text-white shadow-lg shadow-brand-brown/30 scale-[1.02]"
-                    : "border-brand-cream-dark/50 bg-white text-brand-brown-dark hover:border-brand-brown hover:bg-brand-brown hover:text-white hover:shadow-lg hover:shadow-brand-brown/25"
+                className={`group flex flex-col overflow-hidden rounded-md border border-border bg-white text-left shadow-sm transition hover:shadow-md ${
+                  isActive ? "ring-2 ring-brand-brown" : ""
                 }`}
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-white">
@@ -581,15 +510,15 @@ export function CatalogCategoryTiles({
                       src={imageSrc}
                       alt={categoryName}
                       fill
-                      className="category-image object-contain p-2 transition duration-500 group-hover:scale-105"
-                      sizes="(max-width:640px) 50vw, 160px"
+                      className="object-contain p-3 transition duration-300 group-hover:scale-105"
+                      sizes="(max-width:640px) 50vw, 200px"
                     />
                   ) : (
                     <span className="flex h-full items-center justify-center text-3xl">📦</span>
                   )}
                 </div>
-                <div className="category-label flex min-h-[4.5rem] items-center justify-center border-t border-border px-2 py-2 md:min-h-[4.75rem]">
-                  <span className="line-clamp-3 text-[10px] font-semibold leading-snug sm:text-[11px] md:text-xs">
+                <div className="flex min-h-[3.25rem] items-center justify-center bg-zinc-700 px-2 py-2 text-center">
+                  <span className="line-clamp-2 text-[10px] font-bold uppercase leading-snug text-white sm:text-[11px] md:text-xs">
                     {categoryName}
                   </span>
                 </div>

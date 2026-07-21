@@ -105,7 +105,18 @@
     "searchAriaLabel": "البحث عن المنتجات",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "دعامة محرك",
-    "exampleBootBellows": "غطاء مطاطي للممتص"
+    "exampleBootBellows": "غطاء مطاطي للممتص",
+    "colProduct": "المنتج",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & مراجع أخرى",
+    "colMakeModel": "العلامة / الطراز",
+    "colModelYear": "سنة الطراز",
+    "showDetail": "عرض التفاصيل",
+    "resultsDisclaimer": "رموز OEM للمقارنة فقط. يرجى التحقق من ref Beseka للتوافق.",
+    "resultsShowing": "عرض {shown} من {total} منتج",
+    "selectedFilters": "الفلاتر المحددة",
+    "clearAll": "مسح الكل",
+    "startSearch": "بدء البحث"
   },
   "product": {
     "oemCodes": "رموز OEM",

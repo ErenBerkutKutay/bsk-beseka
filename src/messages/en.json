@@ -105,7 +105,18 @@
     "searchAriaLabel": "Search products",
     "oemWidgetPlaceholder": "12 34-56.78",
     "exampleMotorMount": "engine mount",
-    "exampleBootBellows": "boot bellows"
+    "exampleBootBellows": "boot bellows",
+    "colProduct": "PRODUCT",
+    "colBesekaRef": "BESEKA REF",
+    "colOemOtherRef": "OEM & OTHER REF.",
+    "colMakeModel": "MAKE / MODEL",
+    "colModelYear": "MODEL YEAR",
+    "showDetail": "SHOW DETAIL",
+    "resultsDisclaimer": "OEM codes are for comparison purposes only. Please verify Beseka Ref for product compatibility.",
+    "resultsShowing": "Showing {shown} of {total} products",
+    "selectedFilters": "Selected Filters",
+    "clearAll": "Clear All",
+    "startSearch": "Start Search"
   },
   "product": {
     "oemCodes": "OEM Codes",
