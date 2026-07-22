@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { Search, SearchX } from "lucide-react";
+import { Check, Search, SearchX } from "lucide-react";
 import { Badge } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { buildVehicleDisplayRows } from "@/lib/catalog/fitment-display";
-import { getLocalizedText } from "@/lib/utils";
+import { getLocalizedText, cn } from "@/lib/utils";
+import { useCatalogSelection } from "@/components/catalog/catalog-selection-context";
 
 export type CatalogResultProduct = {
   id: string;
@@ -40,6 +41,7 @@ export function CatalogResultsTable({
   const locale = useLocale();
   const t = useTranslations("catalog");
   const tCommon = useTranslations("common");
+  const { toggleProduct, isSelected } = useCatalogSelection();
 
   if (!products.length) {
     return (
@@ -142,7 +144,7 @@ export function CatalogResultsTable({
                 )}
               </div>
 
-              <div className="flex items-start justify-center lg:pt-2">
+              <div className="flex flex-col items-center gap-2 lg:pt-2">
                 <Link href={`/${locale}/urunler/${product.slug}`}>
                   <Button
                     variant="outline"
@@ -153,6 +155,20 @@ export function CatalogResultsTable({
                     {t("showDetail")}
                   </Button>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => toggleProduct(product.id)}
+                  aria-pressed={isSelected(product.id)}
+                  aria-label={t("selectForExport")}
+                  className={cn(
+                    "flex h-9 w-9 items-center justify-center rounded-md border-2 transition-colors",
+                    isSelected(product.id)
+                      ? "border-brand-red bg-brand-red text-white shadow-sm"
+                      : "border-zinc-300 bg-white text-transparent hover:border-brand-red/60",
+                  )}
+                >
+                  <Check className="h-4 w-4" strokeWidth={3} />
+                </button>
               </div>
             </li>
           );

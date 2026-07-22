@@ -125,6 +125,8 @@
     "exportExcel": "Create Excel",
     "exportPdf": "Create PDF",
     "exportHint": "Download catalog for {total} products in these results",
+    "exportHintSelected": "Download catalog for {selected} selected products",
+    "selectForExport": "Add to export",
     "exportImageQuestion": "Include product images in the catalog?",
     "exportWithoutImages": "Create Without Images",
     "exportWithImages": "Create With Images",

@@ -30,9 +30,18 @@ export async function GET(request: NextRequest) {
   const { format, includeImages, ...searchParams } = parseSearchParams(url);
 
   try {
+    const idsParam = url.searchParams.get("ids");
+    const productIds = idsParam
+      ? idsParam
+          .split(",")
+          .map((id) => id.trim())
+          .filter(Boolean)
+      : undefined;
+
     const { products, total, exported, capped } = await fetchProductsForExport(
       searchParams,
       includeImages,
+      productIds,
     );
 
     if (!products.length) {

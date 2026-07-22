@@ -125,6 +125,8 @@
     "exportExcel": "Excel Oluştur",
     "exportPdf": "PDF Oluştur",
     "exportHint": "Arama sonucundaki {total} ürünün kataloğunu indirin",
+    "exportHintSelected": "Seçili {selected} ürünün kataloğunu indirin",
+    "selectForExport": "Dışa aktarmaya ekle",
     "exportImageQuestion": "Kataloga ürün görselleri eklensin mi?",
     "exportWithoutImages": "Görselsiz Oluştur",
     "exportWithImages": "Görselli Oluştur",

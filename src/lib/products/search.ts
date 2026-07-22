@@ -222,7 +222,46 @@ export async function searchProducts(params: ProductSearchParams) {
 const EXPORT_MAX = 5000;
 const EXPORT_IMAGE_MAX = 400;
 
-export async function fetchProductsForExport(params: ProductSearchParams, includeImages: boolean) {
+const exportProductInclude = {
+  category: true,
+  oemCodes: true,
+  crossCodes: true,
+  vehicleTypes: {
+    where: { vehicleType: { tipNo: { gt: 0 } } },
+    include: {
+      vehicleType: {
+        select: vehicleTypeSelect,
+      },
+    },
+    orderBy: [{ vehicleType: { make: "asc" as const } }, { vehicleType: { modelSeries: "asc" as const } }],
+  },
+};
+
+export async function fetchProductsForExport(
+  params: ProductSearchParams,
+  includeImages: boolean,
+  productIds?: string[],
+) {
+  if (productIds?.length) {
+    const uniqueIds = [...new Set(productIds)];
+    const products = await db.product.findMany({
+      where: { id: { in: uniqueIds }, isActive: true },
+      include: exportProductInclude,
+    });
+
+    const byId = new Map(products.map((product) => [product.id, product]));
+    const ordered = uniqueIds
+      .map((id) => byId.get(id))
+      .filter((product): product is (typeof products)[number] => Boolean(product));
+
+    return {
+      products: ordered,
+      total: ordered.length,
+      exported: ordered.length,
+      capped: false,
+    };
+  }
+
   const limit = includeImages ? EXPORT_IMAGE_MAX : EXPORT_MAX;
   const { products, total } = await searchProducts({ ...params, page: 1, limit });
   return { products, total, exported: products.length, capped: total > products.length };

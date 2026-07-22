@@ -5,11 +5,17 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { FileSpreadsheet, FileText, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCatalogSelection } from "@/components/catalog/catalog-selection-context";
 
 type ExportFormat = "excel" | "pdf";
 type DialogStep = "choose" | "warn";
 
-function buildExportQuery(searchParams: URLSearchParams, format: ExportFormat, includeImages: boolean) {
+function buildExportQuery(
+  searchParams: URLSearchParams,
+  format: ExportFormat,
+  includeImages: boolean,
+  selectedIds: string[],
+) {
   const params = new URLSearchParams();
   for (const key of [
     "q",
@@ -27,12 +33,16 @@ function buildExportQuery(searchParams: URLSearchParams, format: ExportFormat, i
   }
   params.set("format", format);
   params.set("includeImages", includeImages ? "1" : "0");
+  if (selectedIds.length) {
+    params.set("ids", selectedIds.join(","));
+  }
   return params.toString();
 }
 
 export function CatalogExportBar({ total }: { total: number }) {
   const t = useTranslations("catalog");
   const searchParams = useSearchParams();
+  const { selectedIds, selectedCount } = useCatalogSelection();
   const [loading, setLoading] = useState<ExportFormat | null>(null);
   const [pendingFormat, setPendingFormat] = useState<ExportFormat | null>(null);
   const [dialogStep, setDialogStep] = useState<DialogStep | null>(null);
@@ -53,7 +63,12 @@ export function CatalogExportBar({ total }: { total: number }) {
     setLoading(format);
 
     try {
-      const query = buildExportQuery(searchParams, format, includeImages);
+      const query = buildExportQuery(
+        searchParams,
+        format,
+        includeImages,
+        selectedCount ? [...selectedIds] : [],
+      );
       const res = await fetch(`/api/catalog/export?${query}`);
 
       if (!res.ok) {
@@ -88,7 +103,11 @@ export function CatalogExportBar({ total }: { total: number }) {
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-white px-4 py-3 shadow-sm">
-        <p className="text-sm text-muted">{t("exportHint", { total })}</p>
+        <p className="text-sm text-muted">
+          {selectedCount
+            ? t("exportHintSelected", { selected: selectedCount })
+            : t("exportHint", { total })}
+        </p>
         <div className="flex flex-wrap gap-2">
           <Button
             type="button"

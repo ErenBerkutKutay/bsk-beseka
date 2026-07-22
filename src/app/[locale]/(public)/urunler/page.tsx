@@ -8,10 +8,8 @@ import {
   CatalogSearchSidebar,
   CatalogCategoryTiles,
 } from "@/components/catalog/catalog-search-panel";
-import { CatalogResultsTable } from "@/components/catalog/catalog-results-table";
 import { CatalogScrollToResults } from "@/components/catalog/catalog-scroll-to-results";
-import { CatalogExportBar } from "@/components/catalog/catalog-export-bar";
-import { CatalogPagination } from "@/components/catalog/catalog-pagination";
+import { CatalogResultsClient } from "@/components/catalog/catalog-results-client";
 import { CATALOG_RESULTS_ID, hasActiveCatalogSearch } from "@/lib/catalog/navigation";
 
 function CatalogResultsSkeleton() {
@@ -56,15 +54,12 @@ async function CatalogResults({
         <h1 className="mb-4 text-2xl font-bold text-brand-brown-dark">{t("allProductsTitle")}</h1>
       )}
 
-      <Suspense fallback={<div className="mb-4 h-14 animate-pulse rounded-lg bg-brand-cream" />}>
-        <CatalogExportBar total={total} />
-      </Suspense>
-
-      <CatalogResultsTable products={products as never[]} total={total} />
-
-      <Suspense fallback={null}>
-        <CatalogPagination page={page} totalPages={totalPages} />
-      </Suspense>
+      <CatalogResultsClient
+        products={products as never[]}
+        total={total}
+        page={page}
+        totalPages={totalPages}
+      />
     </div>
   );
 }
