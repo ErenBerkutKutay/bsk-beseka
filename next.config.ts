@@ -36,6 +36,10 @@ const nextConfig: NextConfig = {
       "./node_modules/pg-cloudflare/dist/**",
       "./node_modules/pg-cloudflare/esm/**",
     ],
+    "/api/catalog/export": [
+      "./node_modules/dejavu-fonts-ttf/ttf/DejaVuSans.ttf",
+      "./node_modules/dejavu-fonts-ttf/ttf/DejaVuSans-Bold.ttf",
+    ],
   },
 };
 

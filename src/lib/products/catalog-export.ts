@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { getLocalizedText } from "@/lib/utils";
 import { buildVehicleDisplayRows } from "@/lib/catalog/fitment-display";
+import { registerTurkishPdfFont, TURKISH_PDF_FONT, turkishPdfTableFont } from "@/lib/pdf/turkish-pdf-font";
 
 export type CatalogExportProduct = {
   sku: string;
@@ -99,11 +100,14 @@ export async function buildCatalogPdfBuffer(
   options: { includeImages: boolean; origin: string },
 ): Promise<Buffer> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  registerTurkishPdfFont(doc);
   const generatedAt = new Date().toLocaleString("tr-TR");
 
   doc.setFontSize(16);
+  doc.setFont(TURKISH_PDF_FONT, "bold");
   doc.text("Beseka Ürün Kataloğu", 14, 16);
   doc.setFontSize(9);
+  doc.setFont(TURKISH_PDF_FONT, "normal");
   doc.setTextColor(100);
   doc.text(`Oluşturulma: ${generatedAt} · ${products.length} ürün`, 14, 22);
   doc.setTextColor(0);
@@ -118,8 +122,8 @@ export async function buildCatalogPdfBuffer(
       startY: 28,
       head: [["Ref", "Ürün Adı", "Kategori", "OEM", "Cross"]],
       body,
-      styles: { fontSize: 7, cellPadding: 1.5 },
-      headStyles: { fillColor: [139, 69, 19] },
+      styles: { ...turkishPdfTableFont, fontSize: 7, cellPadding: 1.5 },
+      headStyles: { ...turkishPdfTableFont, fillColor: [139, 69, 19] },
       margin: { left: 10, right: 10 },
     });
   } else {
@@ -146,13 +150,14 @@ export async function buildCatalogPdfBuffer(
       } else {
         doc.rect(margin, y, 28, 28);
         doc.setFontSize(8);
+        doc.setFont(TURKISH_PDF_FONT, "normal");
         doc.text(product.sku.slice(0, 8), margin + 4, y + 16);
       }
 
       doc.setFontSize(10);
-      doc.setFont("helvetica", "bold");
+      doc.setFont(TURKISH_PDF_FONT, "bold");
       doc.text(`${row.Ref} — ${row["Ürün Adı"].slice(0, 70)}`, margin + 32, y + 6);
-      doc.setFont("helvetica", "normal");
+      doc.setFont(TURKISH_PDF_FONT, "normal");
       doc.setFontSize(8);
       const lines = doc.splitTextToSize(
         `Kategori: ${row.Kategori || "—"}\nOEM: ${row["OEM Kodları"] || "—"}\nCross: ${row["Cross Kodları"] || "—"}`,
