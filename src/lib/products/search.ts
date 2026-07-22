@@ -219,6 +219,15 @@ export async function searchProducts(params: ProductSearchParams) {
   return { products, total, page, limit };
 }
 
+const EXPORT_MAX = 5000;
+const EXPORT_IMAGE_MAX = 400;
+
+export async function fetchProductsForExport(params: ProductSearchParams, includeImages: boolean) {
+  const limit = includeImages ? EXPORT_IMAGE_MAX : EXPORT_MAX;
+  const { products, total } = await searchProducts({ ...params, page: 1, limit });
+  return { products, total, exported: products.length, capped: total > products.length };
+}
+
 export async function getProductBySlug(slug: string) {
   return db.product.findUnique({
     where: { slug, isActive: true },

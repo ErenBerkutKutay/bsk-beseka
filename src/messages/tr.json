@@ -118,7 +118,21 @@
     "resultsShowing": "{shown} adet üründen, {total} adedi gösteriliyor",
     "selectedFilters": "Seçili Filtreler",
     "clearAll": "Tümünü Temizle",
-    "startSearch": "Aramayı Başlat"
+    "startSearch": "Aramayı Başlat",
+    "sideTabLabel": "Ürün kataloğunu aç",
+    "sideTabText": "Katalog",
+    "allProductsTitle": "Tüm Ürünler",
+    "exportExcel": "Excel Oluştur",
+    "exportPdf": "PDF Oluştur",
+    "exportHint": "Arama sonucundaki {total} ürünün kataloğunu indirin",
+    "exportImageQuestion": "Kataloga ürün görselleri eklensin mi?",
+    "exportImageYesNo": "Tamam = Evet, İptal = Hayır",
+    "exportImageWarning": "Görsel eklenirse dosya boyutu büyür ve indirme uzun sürebilir.",
+    "exportImageProceed": "Yine de devam edilsin mi?",
+    "exportFailed": "Katalog oluşturulamadı. Lütfen tekrar deneyin.",
+    "prevPage": "Önceki",
+    "nextPage": "Sonraki",
+    "pageOf": "Sayfa {page} / {total}"
   },
   "product": {
     "oemCodes": "OEM Kodları",

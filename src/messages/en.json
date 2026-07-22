@@ -118,7 +118,21 @@
     "resultsShowing": "Showing {shown} of {total} products",
     "selectedFilters": "Selected Filters",
     "clearAll": "Clear All",
-    "startSearch": "Start Search"
+    "startSearch": "Start Search",
+    "sideTabLabel": "Open product catalog",
+    "sideTabText": "Catalogue",
+    "allProductsTitle": "All Products",
+    "exportExcel": "Create Excel",
+    "exportPdf": "Create PDF",
+    "exportHint": "Download catalog for {total} products in these results",
+    "exportImageQuestion": "Include product images in the catalog?",
+    "exportImageYesNo": "OK = Yes, Cancel = No",
+    "exportImageWarning": "Including images increases file size and may take longer to download.",
+    "exportImageProceed": "Continue anyway?",
+    "exportFailed": "Could not create catalog. Please try again.",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "pageOf": "Page {page} / {total}"
   },
   "product": {
     "oemCodes": "OEM Codes",
