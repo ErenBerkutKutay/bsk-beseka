@@ -1,4 +1,4 @@
-import { routing } from "@/i18n/routing";
+import "./globals.css";
 
 import type { Metadata } from "next";
 import { besekaAssets } from "@/lib/beseka/assets";
@@ -21,8 +21,4 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return children;
-}
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
 }

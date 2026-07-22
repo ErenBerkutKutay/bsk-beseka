@@ -5,7 +5,6 @@ import { routing } from "@/i18n/routing";
 import { rtlLocales } from "@/i18n/locales";
 import { Providers } from "@/components/providers";
 import { Inter } from "next/font/google";
-import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
