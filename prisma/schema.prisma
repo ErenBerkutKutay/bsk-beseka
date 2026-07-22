@@ -52,8 +52,8 @@ model Product {
   slug        String           @unique
   name        Json
   description Json?
-  categoryId  String
-  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images      String[]
   weightKg    Decimal?         @db.Decimal(10, 3)
   gtip        String?

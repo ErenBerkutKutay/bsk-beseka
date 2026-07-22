@@ -12,7 +12,7 @@ export const adminProductSchema = z.object({
   sku: z.string().min(1),
   name: localizedNameSchema,
   description: localizedDescriptionSchema.optional(),
-  categoryId: z.string().min(1),
+  categoryId: z.string().optional(),
   images: z.array(z.string()).default([]),
   weightKg: z.union([z.number(), z.string(), z.null()]).optional(),
   gtip: z.string().optional(),
@@ -55,7 +55,7 @@ export function productWriteData(
   slug: string;
   name: Prisma.InputJsonValue;
   description: PrismaTypes.InputJsonValue | typeof Prisma.DbNull;
-  categoryId: string;
+  categoryId: string | null;
   images: string[];
   weightKg: number | null;
   gtip: string | null;
@@ -71,7 +71,7 @@ export function productWriteData(
     slug: buildProductSlug(sku, nameTr),
     name,
     description: buildOptionalLocalizedJson(data.description ?? {}) ?? Prisma.DbNull,
-    categoryId: data.categoryId,
+    categoryId: data.categoryId?.trim() || null,
     images: data.images,
     weightKg: parseWeightKg(data.weightKg),
     gtip: parseGtip(data.gtip),

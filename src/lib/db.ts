@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 /** Şema değişince artır — dev ortamında eski client cache'ini temizler. */
-const PRISMA_CLIENT_SCHEMA_VERSION = 2;
+const PRISMA_CLIENT_SCHEMA_VERSION = 3;
 
 type CachedPrisma = PrismaClient & { __schemaVersion?: number };
 

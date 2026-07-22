@@ -267,9 +267,8 @@ export default function ProductFormPage() {
                   className="mt-1.5 flex h-10 w-full rounded-lg border border-border bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-brown"
                   value={form.categoryId}
                   onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                  required
                 >
-                  <option value="">Seçin</option>
+                  <option value="">—</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name.tr}

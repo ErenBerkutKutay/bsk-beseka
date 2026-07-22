@@ -71,36 +71,17 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "id gerekli" }, { status: 400 });
   }
 
-  const category = await db.category.findUnique({
-    where: { id },
-    include: {
-      _count: {
-        select: { products: true, children: true },
-      },
-    },
-  });
+  const category = await db.category.findUnique({ where: { id } });
 
   if (!category) {
     return NextResponse.json({ error: "Kategori bulunamadı" }, { status: 404 });
   }
 
-  if (category._count.products > 0) {
-    return NextResponse.json(
-      {
-        error: `Bu kategoride ${category._count.products} ürün var. Önce ürünleri başka gruba taşıyın veya silin.`,
-      },
-      { status: 400 },
-    );
-  }
-
-  if (category._count.children > 0) {
-    return NextResponse.json(
-      { error: "Alt kategorisi olan bir grup silinemez." },
-      { status: 400 },
-    );
-  }
-
-  await db.category.delete({ where: { id } });
+  await db.$transaction([
+    db.product.updateMany({ where: { categoryId: id }, data: { categoryId: null } }),
+    db.category.updateMany({ where: { parentId: id }, data: { parentId: null } }),
+    db.category.delete({ where: { id } }),
+  ]);
 
   return NextResponse.json({ success: true });
 }
