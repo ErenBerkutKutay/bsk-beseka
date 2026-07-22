@@ -7,7 +7,7 @@ async function main() {
   const fileArg = process.argv[2];
   const filePath = resolve(
     process.cwd(),
-    fileArg || "BinekMotorlu Araç Listesi.xlsx",
+    fileArg || "data/data.xlsx",
   );
 
   console.log(`Reading ${filePath}...`);

@@ -13,7 +13,16 @@ import { CatalogScrollToResults } from "@/components/catalog/catalog-scroll-to-r
 import { CATALOG_RESULTS_ID } from "@/lib/catalog/navigation";
 
 function hasActiveSearch(params: Record<string, string | undefined>) {
-  return !!(params.q || params.sku || params.make || params.model || params.subModel || params.category);
+  return !!(
+    params.q ||
+    params.sku ||
+    params.make ||
+    params.model ||
+    params.engineInfo ||
+    params.subModel ||
+    params.vehicleId ||
+    params.category
+  );
 }
 
 function CatalogResultsSkeleton() {
@@ -39,7 +48,9 @@ async function CatalogResults({
     sku: searchParams.sku,
     make: searchParams.make,
     model: searchParams.model,
+    engineInfo: searchParams.engineInfo,
     subModel: searchParams.subModel,
+    vehicleId: searchParams.vehicleId,
     category: searchParams.category,
   });
 

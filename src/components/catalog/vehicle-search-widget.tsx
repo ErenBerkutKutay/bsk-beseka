@@ -5,8 +5,16 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { formatEngineOptionLabel } from "@/lib/catalog/vehicle-options";
 
 type VehicleOption = { id: string; name: string };
+type EngineOption = VehicleOption & {
+  tipNo: number;
+  yearFrom?: number | null;
+  yearTo?: number | null;
+  kw?: number | null;
+  hp?: number | null;
+};
 
 export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) {
   const t = useTranslations("home");
@@ -16,10 +24,11 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
   const router = useRouter();
   const [makes, setMakes] = useState<VehicleOption[]>([]);
   const [models, setModels] = useState<VehicleOption[]>([]);
-  const [subModels, setSubModels] = useState<VehicleOption[]>([]);
+  const [engines, setEngines] = useState<EngineOption[]>([]);
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
-  const [subModel, setSubModel] = useState("");
+  const [engineInfo, setEngineInfo] = useState("");
+  const [vehicleId, setVehicleId] = useState("");
   const [oem, setOem] = useState("");
 
   useEffect(() => {
@@ -37,21 +46,31 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
     fetch(`/api/vehicles?make=${encodeURIComponent(make)}`)
       .then((res) => res.json())
       .then(setModels)
-      .catch(() => setModels([]));
+      .catch(() => setMakes([]));
   }, [make]);
 
   useEffect(() => {
     if (!make || !model) {
-      setSubModels([]);
+      setEngines([]);
       return;
     }
     fetch(
       `/api/vehicles?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`,
     )
       .then((res) => res.json())
-      .then(setSubModels)
-      .catch(() => setSubModels([]));
+      .then(setEngines)
+      .catch(() => setEngines([]));
   }, [make, model]);
+
+  function selectEngine(option: EngineOption | null) {
+    if (!option?.tipNo) {
+      setVehicleId("");
+      setEngineInfo("");
+      return;
+    }
+    setVehicleId(String(option.tipNo));
+    setEngineInfo(option.name);
+  }
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -59,7 +78,8 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
     if (oem) params.set("q", oem);
     if (make) params.set("make", make);
     if (model) params.set("model", model);
-    if (subModel) params.set("subModel", subModel);
+    if (engineInfo) params.set("engineInfo", engineInfo);
+    if (vehicleId) params.set("vehicleId", vehicleId);
     router.push(`/${locale}/urunler?${params.toString()}`);
   }
 
@@ -86,7 +106,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
             onChange={(e) => {
               setMake(e.target.value);
               setModel("");
-              setSubModel("");
+              selectEngine(null);
             }}
           >
             <option value="">{tc("selectManufacturer")}</option>
@@ -104,7 +124,7 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
             value={model}
             onChange={(e) => {
               setModel(e.target.value);
-              setSubModel("");
+              selectEngine(null);
             }}
             disabled={!make}
           >
@@ -117,17 +137,21 @@ export function VehicleSearchWidget({ compact = false }: { compact?: boolean }) 
           </select>
         </div>
         <div>
-          <Label>{tc("subModel")}</Label>
+          <Label>{tc("engineInfo")}</Label>
           <select
             className="flex h-10 w-full rounded-md border border-zinc-300 px-3 text-sm"
-            value={subModel}
-            onChange={(e) => setSubModel(e.target.value)}
+            value={vehicleId || engineInfo}
+            onChange={(e) => {
+              const selected = engines.find((item) => item.id === e.target.value);
+              if (selected) selectEngine(selected);
+              else selectEngine(null);
+            }}
             disabled={!model}
           >
-            <option value="">{model ? tc("subModel") : tc("selectModel")}</option>
-            {subModels.map((s) => (
-              <option key={s.id} value={s.name}>
-                {s.name}
+            <option value="">{model ? tc("engineInfo") : tc("selectModel")}</option>
+            {engines.map((engine) => (
+              <option key={engine.id} value={engine.id}>
+                {formatEngineOptionLabel(engine)}
               </option>
             ))}
           </select>

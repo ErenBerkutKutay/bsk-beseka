@@ -139,6 +139,7 @@ model VehicleType {
   bodyType       String?
   driveType      String?
   engineVolumeL  Decimal? @db.Decimal(8, 3)
+  engineVolumeCcm Int?
   fuelType       String?
   kw             Int?
   hp             Int?

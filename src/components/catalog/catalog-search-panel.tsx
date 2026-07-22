@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { resolveCategoryLabel } from "@/lib/categories/product-groups";
 import { buildCatalogSearchUrl } from "@/lib/catalog/navigation";
+import { formatEngineOptionLabel } from "@/lib/catalog/vehicle-options";
 
 type Category = {
   id: string;
@@ -20,6 +21,12 @@ type Category = {
 
 type VehicleOption = { id: string; name: string };
 
+type EngineOption = VehicleOption & {
+  tipNo: number;
+  yearFrom?: number | null;
+  yearTo?: number | null;
+};
+
 function useCatalogSearch(categories: Category[]) {
   const t = useTranslations("catalog");
   const locale = useLocale();
@@ -28,13 +35,16 @@ function useCatalogSearch(categories: Category[]) {
   const [isPending, startTransition] = useTransition();
   const [makes, setMakes] = useState<VehicleOption[]>([]);
   const [models, setModels] = useState<VehicleOption[]>([]);
-  const [subModels, setSubModels] = useState<VehicleOption[]>([]);
+  const [engines, setEngines] = useState<EngineOption[]>([]);
 
   const [sku, setSku] = useState(searchParams.get("sku") || "");
   const [q, setQ] = useState(searchParams.get("q") || "");
   const [make, setMake] = useState(searchParams.get("make") || "");
   const [model, setModel] = useState(searchParams.get("model") || "");
-  const [subModel, setSubModel] = useState(searchParams.get("subModel") || "");
+  const [engineInfo, setEngineInfo] = useState(
+    searchParams.get("engineInfo") || searchParams.get("subModel") || "",
+  );
+  const [vehicleId, setVehicleId] = useState(searchParams.get("vehicleId") || "");
   const [category, setCategory] = useState(searchParams.get("category") || "");
 
   useEffect(() => {
@@ -57,24 +67,54 @@ function useCatalogSearch(categories: Category[]) {
 
   useEffect(() => {
     if (!make || !model) {
-      setSubModels([]);
+      setEngines([]);
       return;
     }
     fetch(
       `/api/vehicles?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`,
     )
       .then((res) => res.json())
-      .then(setSubModels)
-      .catch(() => setSubModels([]));
+      .then(setEngines)
+      .catch(() => setEngines([]));
   }, [make, model]);
 
   const activeFilters = useMemo(() => {
     const chips: { key: string; label: string; clear: () => void }[] = [];
     if (sku) chips.push({ key: "sku", label: t("filterRef", { value: sku }), clear: () => setSku("") });
     if (q) chips.push({ key: "q", label: t("filterQuery", { value: q }), clear: () => setQ("") });
-    if (make) chips.push({ key: "make", label: make, clear: () => { setMake(""); setModel(""); setSubModel(""); } });
-    if (model) chips.push({ key: "model", label: model, clear: () => { setModel(""); setSubModel(""); } });
-    if (subModel) chips.push({ key: "subModel", label: subModel, clear: () => setSubModel("") });
+    if (make) {
+      chips.push({
+        key: "make",
+        label: make,
+        clear: () => {
+          setMake("");
+          setModel("");
+          setEngineInfo("");
+          setVehicleId("");
+        },
+      });
+    }
+    if (model) {
+      chips.push({
+        key: "model",
+        label: model,
+        clear: () => {
+          setModel("");
+          setEngineInfo("");
+          setVehicleId("");
+        },
+      });
+    }
+    if (engineInfo) {
+      chips.push({
+        key: "engineInfo",
+        label: engineInfo,
+        clear: () => {
+          setEngineInfo("");
+          setVehicleId("");
+        },
+      });
+    }
     if (category) {
       const cat = categories.find((c) => c.slug === category);
       chips.push({
@@ -84,24 +124,32 @@ function useCatalogSearch(categories: Category[]) {
       });
     }
     return chips;
-  }, [sku, q, make, model, subModel, category, categories, locale, t]);
+  }, [sku, q, make, model, engineInfo, category, categories, locale, t]);
 
   function pushFilters(overrides?: Partial<{
-    sku: string; q: string; make: string; model: string; subModel: string; category: string;
+    sku: string;
+    q: string;
+    make: string;
+    model: string;
+    engineInfo: string;
+    vehicleId: string;
+    category: string;
   }>) {
     const params = new URLSearchParams();
     const nextSku = overrides?.sku ?? sku;
     const nextQ = overrides?.q ?? q;
     const nextMake = overrides?.make ?? make;
     const nextModel = overrides?.model ?? model;
-    const nextSubModel = overrides?.subModel ?? subModel;
+    const nextEngineInfo = overrides?.engineInfo ?? engineInfo;
+    const nextVehicleId = overrides?.vehicleId ?? vehicleId;
     const nextCategory = overrides?.category ?? category;
 
     if (nextQ) params.set("q", nextQ);
     if (nextSku) params.set("sku", nextSku);
     if (nextMake) params.set("make", nextMake);
     if (nextModel) params.set("model", nextModel);
-    if (nextSubModel) params.set("subModel", nextSubModel);
+    if (nextEngineInfo) params.set("engineInfo", nextEngineInfo);
+    if (nextVehicleId) params.set("vehicleId", nextVehicleId);
     if (nextCategory) params.set("category", nextCategory);
 
     startTransition(() => {
@@ -119,27 +167,51 @@ function useCatalogSearch(categories: Category[]) {
     setSku("");
     setMake("");
     setModel("");
-    setSubModel("");
+    setEngineInfo("");
+    setVehicleId("");
     setCategory("");
     startTransition(() => router.push(`/${locale}/urunler`));
   }
 
   function removeFilter(key: string) {
-    const next = { sku, q, make, model, subModel, category };
+    const next = { sku, q, make, model, engineInfo, vehicleId, category };
     if (key === "sku") next.sku = "";
     if (key === "q") next.q = "";
-    if (key === "make") { next.make = ""; next.model = ""; next.subModel = ""; }
-    if (key === "model") { next.model = ""; next.subModel = ""; }
-    if (key === "subModel") next.subModel = "";
+    if (key === "make") {
+      next.make = "";
+      next.model = "";
+      next.engineInfo = "";
+      next.vehicleId = "";
+    }
+    if (key === "model") {
+      next.model = "";
+      next.engineInfo = "";
+      next.vehicleId = "";
+    }
+    if (key === "engineInfo") {
+      next.engineInfo = "";
+      next.vehicleId = "";
+    }
     if (key === "category") next.category = "";
 
     setSku(next.sku);
     setQ(next.q);
     setMake(next.make);
     setModel(next.model);
-    setSubModel(next.subModel);
+    setEngineInfo(next.engineInfo);
+    setVehicleId(next.vehicleId);
     setCategory(next.category);
     pushFilters(next);
+  }
+
+  function selectEngine(option: EngineOption | null) {
+    if (!option?.tipNo) {
+      setVehicleId("");
+      setEngineInfo("");
+      return;
+    }
+    setVehicleId(String(option.tipNo));
+    setEngineInfo(option.name);
   }
 
   return {
@@ -148,7 +220,7 @@ function useCatalogSearch(categories: Category[]) {
     isPending,
     makes,
     models,
-    subModels,
+    engines,
     sku,
     setSku,
     q,
@@ -157,8 +229,9 @@ function useCatalogSearch(categories: Category[]) {
     setMake,
     model,
     setModel,
-    subModel,
-    setSubModel,
+    engineInfo,
+    vehicleId,
+    selectEngine,
     category,
     setCategory,
     activeFilters,
@@ -180,7 +253,7 @@ function CatalogSearchFields({
   isPending,
   makes,
   models,
-  subModels,
+  engines,
   sku,
   setSku,
   q,
@@ -189,8 +262,9 @@ function CatalogSearchFields({
   setMake,
   model,
   setModel,
-  subModel,
-  setSubModel,
+  engineInfo,
+  vehicleId,
+  selectEngine,
   category,
   setCategory,
   activeFilters,
@@ -229,7 +303,11 @@ function CatalogSearchFields({
             <select
               className={selectClass}
               value={make}
-              onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
+              onChange={(e) => {
+                setMake(e.target.value);
+                setModel("");
+                selectEngine(null);
+              }}
             >
               <option value="">{t("selectManufacturer")}</option>
               {makes.map((v) => (
@@ -242,7 +320,10 @@ function CatalogSearchFields({
             <select
               className={selectClass}
               value={model}
-              onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
+              onChange={(e) => {
+                setModel(e.target.value);
+                selectEngine(null);
+              }}
               disabled={!make}
             >
               <option value="">{make ? t("model") : t("selectManufacturer")}</option>
@@ -252,16 +333,22 @@ function CatalogSearchFields({
             </select>,
           )}
           {fieldBlock(
-            t("subModel"),
+            t("engineInfo"),
             <select
               className={selectClass}
-              value={subModel}
-              onChange={(e) => setSubModel(e.target.value)}
+              value={vehicleId || engineInfo}
+              onChange={(e) => {
+                const selected = engines.find((item) => item.id === e.target.value);
+                if (selected) selectEngine(selected);
+                else selectEngine(null);
+              }}
               disabled={!model}
             >
-              <option value="">{model ? t("subModel") : t("selectModel")}</option>
-              {subModels.map((s) => (
-                <option key={s.id} value={s.name}>{s.name}</option>
+              <option value="">{model ? t("engineInfo") : t("selectModel")}</option>
+              {engines.map((engine) => (
+                <option key={engine.id} value={engine.id}>
+                  {formatEngineOptionLabel(engine)}
+                </option>
               ))}
             </select>,
           )}
@@ -332,7 +419,11 @@ function CatalogSearchFields({
               <select
                 className={selectClass}
                 value={make}
-                onChange={(e) => { setMake(e.target.value); setModel(""); setSubModel(""); }}
+                onChange={(e) => {
+                  setMake(e.target.value);
+                  setModel("");
+                  selectEngine(null);
+                }}
               >
                 <option value="">{t("selectManufacturer")}</option>
                 {makes.map((v) => (
@@ -356,7 +447,10 @@ function CatalogSearchFields({
               <select
                 className={selectClass}
                 value={model}
-                onChange={(e) => { setModel(e.target.value); setSubModel(""); }}
+                onChange={(e) => {
+                  setModel(e.target.value);
+                  selectEngine(null);
+                }}
                 disabled={!make}
               >
                 <option value="">{make ? t("model") : t("selectManufacturer")}</option>
@@ -366,16 +460,22 @@ function CatalogSearchFields({
               </select>,
             )}
             {fieldBlock(
-              t("subModel"),
+              t("engineInfo"),
               <select
                 className={selectClass}
-                value={subModel}
-                onChange={(e) => setSubModel(e.target.value)}
+                value={vehicleId || engineInfo}
+                onChange={(e) => {
+                  const selected = engines.find((item) => item.id === e.target.value);
+                  if (selected) selectEngine(selected);
+                  else selectEngine(null);
+                }}
                 disabled={!model}
               >
-                <option value="">{model ? t("subModel") : t("selectModel")}</option>
-                {subModels.map((s) => (
-                  <option key={s.id} value={s.name}>{s.name}</option>
+                <option value="">{model ? t("engineInfo") : t("selectModel")}</option>
+                {engines.map((engine) => (
+                  <option key={engine.id} value={engine.id}>
+                    {formatEngineOptionLabel(engine)}
+                  </option>
                 ))}
               </select>,
             )}

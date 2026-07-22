@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { importVehicleTypesFromBuffer } from "@/lib/vehicles/import-vehicle-types";
 import { z } from "zod";
 
-const bulkSchema = z.object({
-  tipNos: z.array(z.number().int().positive()).min(1),
+const syncSchema = z.object({
+  tipNos: z.array(z.number().int().positive()),
   replace: z.boolean().optional(),
 });
 
@@ -20,7 +19,7 @@ export async function GET(
 
   const { id } = await params;
   const links = await db.productVehicleType.findMany({
-    where: { productId: id },
+    where: { productId: id, tipNo: { gt: 0 } },
     include: {
       vehicleType: {
         select: {
@@ -52,15 +51,16 @@ export async function POST(
   const { id: productId } = await params;
   const body = await request.json();
 
-  if (body.bulk) {
-    const raw = String(body.bulk)
-      .split(/[\n,;]+/)
-      .map((part: string) => part.trim())
-      .filter(Boolean);
+  if (Array.isArray(body.tipNos)) {
+    const data = syncSchema.parse(body);
+    const tipNos = [...new Set(data.tipNos)];
 
-    const tipNos = [...new Set(raw.map((part) => parseInt(part, 10)).filter((n) => Number.isFinite(n)))];
+    if (data.replace) {
+      await db.productVehicleType.deleteMany({ where: { productId } });
+    }
+
     if (!tipNos.length) {
-      return NextResponse.json({ error: "Geçerli tip no bulunamadı" }, { status: 400 });
+      return NextResponse.json({ linked: 0, missing: [], total: 0 });
     }
 
     const existingTypes = await db.vehicleType.findMany({
@@ -68,11 +68,6 @@ export async function POST(
       select: { tipNo: true },
     });
     const validTipNos = existingTypes.map((t) => t.tipNo);
-    const missing = tipNos.filter((tip) => !validTipNos.includes(tip));
-
-    if (body.replace === true) {
-      await db.productVehicleType.deleteMany({ where: { productId } });
-    }
 
     if (validTipNos.length) {
       await db.productVehicleType.createMany({
@@ -83,34 +78,47 @@ export async function POST(
 
     return NextResponse.json({
       linked: validTipNos.length,
-      missing,
+      missing: tipNos.filter((tip) => !validTipNos.includes(tip)),
       total: tipNos.length,
     });
   }
 
-  const data = bulkSchema.parse(body);
+  if (body.bulk) {
+    const raw = String(body.bulk)
+      .split(/[\n,;]+/)
+      .map((part: string) => part.trim())
+      .filter(Boolean);
 
-  if (data.replace) {
-    await db.productVehicleType.deleteMany({ where: { productId } });
-  }
+    const tipNos = [...new Set(raw.map((part) => parseInt(part, 10)).filter((n) => Number.isFinite(n) && n > 0))];
+    if (!tipNos.length) {
+      return NextResponse.json({ error: "Geçerli Id bulunamadı" }, { status: 400 });
+    }
 
-  const existingTypes = await db.vehicleType.findMany({
-    where: { tipNo: { in: data.tipNos } },
-    select: { tipNo: true },
-  });
-  const validTipNos = existingTypes.map((t) => t.tipNo);
+    if (body.replace === true) {
+      await db.productVehicleType.deleteMany({ where: { productId } });
+    }
 
-  if (validTipNos.length) {
-    await db.productVehicleType.createMany({
-      data: validTipNos.map((tipNo) => ({ productId, tipNo })),
-      skipDuplicates: true,
+    const existingTypes = await db.vehicleType.findMany({
+      where: { tipNo: { in: tipNos } },
+      select: { tipNo: true },
+    });
+    const validTipNos = existingTypes.map((t) => t.tipNo);
+
+    if (validTipNos.length) {
+      await db.productVehicleType.createMany({
+        data: validTipNos.map((tipNo) => ({ productId, tipNo })),
+        skipDuplicates: true,
+      });
+    }
+
+    return NextResponse.json({
+      linked: validTipNos.length,
+      missing: tipNos.filter((tip) => !validTipNos.includes(tip)),
+      total: tipNos.length,
     });
   }
 
-  return NextResponse.json({
-    linked: validTipNos.length,
-    missing: data.tipNos.filter((tip) => !validTipNos.includes(tip)),
-  });
+  return NextResponse.json({ error: "Geçersiz istek" }, { status: 400 });
 }
 
 export async function DELETE(

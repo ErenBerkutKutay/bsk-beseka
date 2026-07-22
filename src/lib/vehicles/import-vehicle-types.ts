@@ -12,8 +12,46 @@ export type VehicleTypeImportResult = {
   total: number;
   imported: number;
   failed: number;
+  purged: number;
   errors: string[];
 };
+
+export async function purgeStaleVehicleTypes(validTipNos: number[]) {
+  if (!validTipNos.length) {
+    return { deleted: 0 };
+  }
+
+  const validSet = new Set(validTipNos);
+  let deleted = 0;
+  let cursor: number | undefined;
+
+  while (true) {
+    const rows = await db.vehicleType.findMany({
+      select: { tipNo: true },
+      orderBy: { tipNo: "asc" },
+      take: 1000,
+      ...(cursor !== undefined ? { where: { tipNo: { gt: cursor } } } : {}),
+    });
+
+    if (!rows.length) break;
+
+    const staleTipNos = rows
+      .map((row) => row.tipNo)
+      .filter((tipNo) => !validSet.has(tipNo));
+
+    for (let i = 0; i < staleTipNos.length; i += 500) {
+      const chunk = staleTipNos.slice(i, i + 500);
+      const result = await db.vehicleType.deleteMany({
+        where: { tipNo: { in: chunk } },
+      });
+      deleted += result.count;
+    }
+
+    cursor = rows[rows.length - 1]?.tipNo;
+  }
+
+  return { deleted };
+}
 
 function upsertVehicleType(item: ParsedVehicleType) {
   const data = toVehicleTypeCreateInput(item);
@@ -32,6 +70,7 @@ function upsertVehicleType(item: ParsedVehicleType) {
       bodyType: data.bodyType,
       driveType: data.driveType,
       engineVolumeL: data.engineVolumeL,
+      engineVolumeCcm: data.engineVolumeCcm,
       fuelType: data.fuelType,
       kw: data.kw,
       hp: data.hp,
@@ -52,13 +91,19 @@ async function upsertBatch(batch: ParsedVehicleType[]) {
 
 export async function importVehicleTypesFromBuffer(
   buffer: ArrayBuffer,
-  options?: { importedBy?: string; fileName?: string },
+  options?: {
+    importedBy?: string;
+    fileName?: string;
+    purgeStale?: boolean;
+    skipLog?: boolean;
+  },
 ): Promise<VehicleTypeImportResult> {
   const rows = parseVehicleTypesFromExcelBuffer(buffer);
   const result: VehicleTypeImportResult = {
     total: rows.length,
     imported: 0,
     failed: 0,
+    purged: 0,
     errors: [],
   };
 
@@ -93,16 +138,26 @@ export async function importVehicleTypesFromBuffer(
     }
   }
 
-  await db.fitmentImportLog.create({
-    data: {
-      fileName: options?.fileName || "vehicle-types-import",
-      rowCount: result.total,
-      successCount: result.imported,
-      errorCount: result.failed,
-      errors: result.errors.length ? result.errors.slice(0, 50) : undefined,
-      importedBy: options?.importedBy || null,
-    },
-  });
+  if (options?.purgeStale !== false) {
+    const { deleted } = await purgeStaleVehicleTypes(rows.map((row) => row.tipNo));
+    result.purged = deleted;
+    if (deleted > 0) {
+      console.log(`Eski katalog kayıtları temizlendi: ${deleted}`);
+    }
+  }
+
+  if (!options?.skipLog) {
+    await db.fitmentImportLog.create({
+      data: {
+        fileName: options?.fileName || "vehicle-types-import",
+        rowCount: result.total,
+        successCount: result.imported,
+        errorCount: result.failed,
+        errors: result.errors.length ? result.errors.slice(0, 50) : undefined,
+        importedBy: options?.importedBy || null,
+      },
+    });
+  }
 
   return result;
 }

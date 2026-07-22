@@ -14,6 +14,7 @@ export type ParsedVehicleType = {
   bodyType: string | null;
   driveType: string | null;
   engineVolumeL: number | null;
+  engineVolumeCcm: number | null;
   fuelType: string | null;
   kw: number | null;
   hp: number | null;
@@ -37,7 +38,7 @@ function parseDecimalOrNull(value: unknown): number | null {
 
 function excelSerialToYear(value: unknown): number | null {
   if (value === "" || value === null || value === undefined) return null;
-  if (typeof value === "number" && value > 1000) {
+  if (typeof value === "number" && value > 1000 && value < 100000) {
     const d = XLSX.SSF.parse_date_code(value);
     return d?.y ?? null;
   }
@@ -50,13 +51,29 @@ function cleanText(value: unknown): string | null {
   return text || null;
 }
 
+function readTipNo(row: Record<string, unknown>): number | null {
+  return parseIntOrNull(row["Id"] ?? row["Tip no."]);
+}
+
+function readMake(row: Record<string, unknown>): string | null {
+  return cleanText(row["Marka"] ?? row["Üretici"]);
+}
+
+function readModel(row: Record<string, unknown>): string | null {
+  return cleanText(row["Model"] ?? row["Model Serisi"]);
+}
+
+function readTypeName(row: Record<string, unknown>): string | null {
+  return cleanText(row["Motor Bilgisi"] ?? row["Tip"]);
+}
+
 export function parseVehicleTypeRow(row: Record<string, unknown>): ParsedVehicleType | null {
-  const tipNo = parseIntOrNull(row["Tip no."]);
+  const tipNo = readTipNo(row);
   if (!tipNo) return null;
 
-  const make = cleanText(row["Üretici"]);
-  const modelSeries = cleanText(row["Model Serisi"]);
-  const typeName = cleanText(row["Tip"]);
+  const make = readMake(row);
+  const modelSeries = readModel(row);
+  const typeName = readTypeName(row);
   if (!make || !modelSeries || !typeName) return null;
 
   return {
@@ -72,6 +89,7 @@ export function parseVehicleTypeRow(row: Record<string, unknown>): ParsedVehicle
     bodyType: cleanText(row["Gövde Tipi"]),
     driveType: cleanText(row["Tahrik Tipi"]),
     engineVolumeL: parseDecimalOrNull(row["Motor Hacmi(l)"]),
+    engineVolumeCcm: parseIntOrNull(row["Motor Hacmi(ccm tekn.)"]),
     fuelType: cleanText(row["Yakıt Tipi"]),
     kw: parseIntOrNull(row["kW"]),
     hp: parseIntOrNull(row["HP"]),
@@ -121,6 +139,7 @@ export function toVehicleTypeCreateInput(
     bodyType: item.bodyType,
     driveType: item.driveType,
     engineVolumeL: item.engineVolumeL,
+    engineVolumeCcm: item.engineVolumeCcm,
     fuelType: item.fuelType,
     kw: item.kw,
     hp: item.hp,

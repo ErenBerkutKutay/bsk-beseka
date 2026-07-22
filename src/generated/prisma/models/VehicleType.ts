@@ -31,6 +31,7 @@ export type VehicleTypeAvgAggregateOutputType = {
   yearFrom: number | null
   yearTo: number | null
   engineVolumeL: runtime.Decimal | null
+  engineVolumeCcm: number | null
   kw: number | null
   hp: number | null
 }
@@ -40,6 +41,7 @@ export type VehicleTypeSumAggregateOutputType = {
   yearFrom: number | null
   yearTo: number | null
   engineVolumeL: runtime.Decimal | null
+  engineVolumeCcm: number | null
   kw: number | null
   hp: number | null
 }
@@ -58,6 +60,7 @@ export type VehicleTypeMinAggregateOutputType = {
   bodyType: string | null
   driveType: string | null
   engineVolumeL: runtime.Decimal | null
+  engineVolumeCcm: number | null
   fuelType: string | null
   kw: number | null
   hp: number | null
@@ -83,6 +86,7 @@ export type VehicleTypeMaxAggregateOutputType = {
   bodyType: string | null
   driveType: string | null
   engineVolumeL: runtime.Decimal | null
+  engineVolumeCcm: number | null
   fuelType: string | null
   kw: number | null
   hp: number | null
@@ -108,6 +112,7 @@ export type VehicleTypeCountAggregateOutputType = {
   bodyType: number
   driveType: number
   engineVolumeL: number
+  engineVolumeCcm: number
   fuelType: number
   kw: number
   hp: number
@@ -126,6 +131,7 @@ export type VehicleTypeAvgAggregateInputType = {
   yearFrom?: true
   yearTo?: true
   engineVolumeL?: true
+  engineVolumeCcm?: true
   kw?: true
   hp?: true
 }
@@ -135,6 +141,7 @@ export type VehicleTypeSumAggregateInputType = {
   yearFrom?: true
   yearTo?: true
   engineVolumeL?: true
+  engineVolumeCcm?: true
   kw?: true
   hp?: true
 }
@@ -153,6 +160,7 @@ export type VehicleTypeMinAggregateInputType = {
   bodyType?: true
   driveType?: true
   engineVolumeL?: true
+  engineVolumeCcm?: true
   fuelType?: true
   kw?: true
   hp?: true
@@ -178,6 +186,7 @@ export type VehicleTypeMaxAggregateInputType = {
   bodyType?: true
   driveType?: true
   engineVolumeL?: true
+  engineVolumeCcm?: true
   fuelType?: true
   kw?: true
   hp?: true
@@ -203,6 +212,7 @@ export type VehicleTypeCountAggregateInputType = {
   bodyType?: true
   driveType?: true
   engineVolumeL?: true
+  engineVolumeCcm?: true
   fuelType?: true
   kw?: true
   hp?: true
@@ -315,6 +325,7 @@ export type VehicleTypeGroupByOutputType = {
   bodyType: string | null
   driveType: string | null
   engineVolumeL: runtime.Decimal | null
+  engineVolumeCcm: number | null
   fuelType: string | null
   kw: number | null
   hp: number | null
@@ -363,6 +374,7 @@ export type VehicleTypeWhereInput = {
   bodyType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   driveType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   engineVolumeL?: Prisma.DecimalNullableFilter<"VehicleType"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.IntNullableFilter<"VehicleType"> | number | null
   fuelType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   kw?: Prisma.IntNullableFilter<"VehicleType"> | number | null
   hp?: Prisma.IntNullableFilter<"VehicleType"> | number | null
@@ -389,6 +401,7 @@ export type VehicleTypeOrderByWithRelationInput = {
   bodyType?: Prisma.SortOrderInput | Prisma.SortOrder
   driveType?: Prisma.SortOrderInput | Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrderInput | Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrderInput | Prisma.SortOrder
   fuelType?: Prisma.SortOrderInput | Prisma.SortOrder
   kw?: Prisma.SortOrderInput | Prisma.SortOrder
   hp?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -418,6 +431,7 @@ export type VehicleTypeWhereUniqueInput = Prisma.AtLeast<{
   bodyType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   driveType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   engineVolumeL?: Prisma.DecimalNullableFilter<"VehicleType"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.IntNullableFilter<"VehicleType"> | number | null
   fuelType?: Prisma.StringNullableFilter<"VehicleType"> | string | null
   kw?: Prisma.IntNullableFilter<"VehicleType"> | number | null
   hp?: Prisma.IntNullableFilter<"VehicleType"> | number | null
@@ -444,6 +458,7 @@ export type VehicleTypeOrderByWithAggregationInput = {
   bodyType?: Prisma.SortOrderInput | Prisma.SortOrder
   driveType?: Prisma.SortOrderInput | Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrderInput | Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrderInput | Prisma.SortOrder
   fuelType?: Prisma.SortOrderInput | Prisma.SortOrder
   kw?: Prisma.SortOrderInput | Prisma.SortOrder
   hp?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -477,6 +492,7 @@ export type VehicleTypeScalarWhereWithAggregatesInput = {
   bodyType?: Prisma.StringNullableWithAggregatesFilter<"VehicleType"> | string | null
   driveType?: Prisma.StringNullableWithAggregatesFilter<"VehicleType"> | string | null
   engineVolumeL?: Prisma.DecimalNullableWithAggregatesFilter<"VehicleType"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.IntNullableWithAggregatesFilter<"VehicleType"> | number | null
   fuelType?: Prisma.StringNullableWithAggregatesFilter<"VehicleType"> | string | null
   kw?: Prisma.IntNullableWithAggregatesFilter<"VehicleType"> | number | null
   hp?: Prisma.IntNullableWithAggregatesFilter<"VehicleType"> | number | null
@@ -502,6 +518,7 @@ export type VehicleTypeCreateInput = {
   bodyType?: string | null
   driveType?: string | null
   engineVolumeL?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: number | null
   fuelType?: string | null
   kw?: number | null
   hp?: number | null
@@ -528,6 +545,7 @@ export type VehicleTypeUncheckedCreateInput = {
   bodyType?: string | null
   driveType?: string | null
   engineVolumeL?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: number | null
   fuelType?: string | null
   kw?: number | null
   hp?: number | null
@@ -554,6 +572,7 @@ export type VehicleTypeUpdateInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -580,6 +599,7 @@ export type VehicleTypeUncheckedUpdateInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -606,6 +626,7 @@ export type VehicleTypeCreateManyInput = {
   bodyType?: string | null
   driveType?: string | null
   engineVolumeL?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: number | null
   fuelType?: string | null
   kw?: number | null
   hp?: number | null
@@ -631,6 +652,7 @@ export type VehicleTypeUpdateManyMutationInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -656,6 +678,7 @@ export type VehicleTypeUncheckedUpdateManyInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -681,6 +704,7 @@ export type VehicleTypeCountOrderByAggregateInput = {
   bodyType?: Prisma.SortOrder
   driveType?: Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrder
   fuelType?: Prisma.SortOrder
   kw?: Prisma.SortOrder
   hp?: Prisma.SortOrder
@@ -697,6 +721,7 @@ export type VehicleTypeAvgOrderByAggregateInput = {
   yearFrom?: Prisma.SortOrder
   yearTo?: Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrder
   kw?: Prisma.SortOrder
   hp?: Prisma.SortOrder
 }
@@ -715,6 +740,7 @@ export type VehicleTypeMaxOrderByAggregateInput = {
   bodyType?: Prisma.SortOrder
   driveType?: Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrder
   fuelType?: Prisma.SortOrder
   kw?: Prisma.SortOrder
   hp?: Prisma.SortOrder
@@ -740,6 +766,7 @@ export type VehicleTypeMinOrderByAggregateInput = {
   bodyType?: Prisma.SortOrder
   driveType?: Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrder
   fuelType?: Prisma.SortOrder
   kw?: Prisma.SortOrder
   hp?: Prisma.SortOrder
@@ -756,6 +783,7 @@ export type VehicleTypeSumOrderByAggregateInput = {
   yearFrom?: Prisma.SortOrder
   yearTo?: Prisma.SortOrder
   engineVolumeL?: Prisma.SortOrder
+  engineVolumeCcm?: Prisma.SortOrder
   kw?: Prisma.SortOrder
   hp?: Prisma.SortOrder
 }
@@ -801,6 +829,7 @@ export type VehicleTypeCreateWithoutProductLinksInput = {
   bodyType?: string | null
   driveType?: string | null
   engineVolumeL?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: number | null
   fuelType?: string | null
   kw?: number | null
   hp?: number | null
@@ -826,6 +855,7 @@ export type VehicleTypeUncheckedCreateWithoutProductLinksInput = {
   bodyType?: string | null
   driveType?: string | null
   engineVolumeL?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: number | null
   fuelType?: string | null
   kw?: number | null
   hp?: number | null
@@ -867,6 +897,7 @@ export type VehicleTypeUpdateWithoutProductLinksInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -892,6 +923,7 @@ export type VehicleTypeUncheckedUpdateWithoutProductLinksInput = {
   bodyType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   driveType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   engineVolumeL?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  engineVolumeCcm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   fuelType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kw?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   hp?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -948,6 +980,7 @@ export type VehicleTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   bodyType?: boolean
   driveType?: boolean
   engineVolumeL?: boolean
+  engineVolumeCcm?: boolean
   fuelType?: boolean
   kw?: boolean
   hp?: boolean
@@ -975,6 +1008,7 @@ export type VehicleTypeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   bodyType?: boolean
   driveType?: boolean
   engineVolumeL?: boolean
+  engineVolumeCcm?: boolean
   fuelType?: boolean
   kw?: boolean
   hp?: boolean
@@ -1000,6 +1034,7 @@ export type VehicleTypeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   bodyType?: boolean
   driveType?: boolean
   engineVolumeL?: boolean
+  engineVolumeCcm?: boolean
   fuelType?: boolean
   kw?: boolean
   hp?: boolean
@@ -1025,6 +1060,7 @@ export type VehicleTypeSelectScalar = {
   bodyType?: boolean
   driveType?: boolean
   engineVolumeL?: boolean
+  engineVolumeCcm?: boolean
   fuelType?: boolean
   kw?: boolean
   hp?: boolean
@@ -1036,7 +1072,7 @@ export type VehicleTypeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VehicleTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tipNo" | "vehicleClass" | "linkTargetType" | "make" | "modelSeries" | "typeName" | "modelSeriesNo" | "yearFrom" | "yearTo" | "bodyType" | "driveType" | "engineVolumeL" | "fuelType" | "kw" | "hp" | "engineCodes" | "motorNumbers" | "manufacturerNo" | "dateGeneral" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicleType"]>
+export type VehicleTypeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tipNo" | "vehicleClass" | "linkTargetType" | "make" | "modelSeries" | "typeName" | "modelSeriesNo" | "yearFrom" | "yearTo" | "bodyType" | "driveType" | "engineVolumeL" | "engineVolumeCcm" | "fuelType" | "kw" | "hp" | "engineCodes" | "motorNumbers" | "manufacturerNo" | "dateGeneral" | "createdAt" | "updatedAt", ExtArgs["result"]["vehicleType"]>
 export type VehicleTypeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   productLinks?: boolean | Prisma.VehicleType$productLinksArgs<ExtArgs>
   _count?: boolean | Prisma.VehicleTypeCountOutputTypeDefaultArgs<ExtArgs>
@@ -1063,6 +1099,7 @@ export type $VehicleTypePayload<ExtArgs extends runtime.Types.Extensions.Interna
     bodyType: string | null
     driveType: string | null
     engineVolumeL: runtime.Decimal | null
+    engineVolumeCcm: number | null
     fuelType: string | null
     kw: number | null
     hp: number | null
@@ -1509,6 +1546,7 @@ export interface VehicleTypeFieldRefs {
   readonly bodyType: Prisma.FieldRef<"VehicleType", 'String'>
   readonly driveType: Prisma.FieldRef<"VehicleType", 'String'>
   readonly engineVolumeL: Prisma.FieldRef<"VehicleType", 'Decimal'>
+  readonly engineVolumeCcm: Prisma.FieldRef<"VehicleType", 'Int'>
   readonly fuelType: Prisma.FieldRef<"VehicleType", 'String'>
   readonly kw: Prisma.FieldRef<"VehicleType", 'Int'>
   readonly hp: Prisma.FieldRef<"VehicleType", 'Int'>

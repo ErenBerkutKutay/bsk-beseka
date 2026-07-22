@@ -202,6 +202,7 @@ export const VehicleTypeScalarFieldEnum = {
   bodyType: 'bodyType',
   driveType: 'driveType',
   engineVolumeL: 'engineVolumeL',
+  engineVolumeCcm: 'engineVolumeCcm',
   fuelType: 'fuelType',
   kw: 'kw',
   hp: 'hp',

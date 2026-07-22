@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getVehicleCatalogStats, importVehicleTypesFromBuffer } from "@/lib/vehicles/import-vehicle-types";
+import { syncVehicleCatalog } from "@/lib/vehicles/sync-vehicle-catalog";
 
 export async function GET() {
   const session = await auth();
@@ -19,6 +20,22 @@ export async function POST(request: NextRequest) {
   }
 
   const formData = await request.formData();
+  const syncBundled = formData.get("syncBundled") === "true";
+
+  if (syncBundled) {
+    const result = await syncVehicleCatalog({
+      importedBy: session.user.email || undefined,
+      purgeStale: true,
+      skipLog: true,
+    });
+
+    if (result.skipped) {
+      return NextResponse.json({ error: "data/data.xlsx bulunamadı" }, { status: 404 });
+    }
+
+    return NextResponse.json(result);
+  }
+
   const file = formData.get("file") as File | null;
 
   if (!file) {
@@ -29,6 +46,7 @@ export async function POST(request: NextRequest) {
   const result = await importVehicleTypesFromBuffer(buffer, {
     fileName: file.name,
     importedBy: session.user.email || undefined,
+    purgeStale: true,
   });
 
   return NextResponse.json(result);

@@ -86,24 +86,73 @@ function buildUnifiedSearchConditions(q: string): Prisma.ProductWhereInput[] {
   ];
 }
 
+function buildVehicleFilter(params: {
+  make: string;
+  model: string;
+  engineInfo: string;
+  vehicleId?: number;
+}): Prisma.ProductWhereInput | undefined {
+  const { make, model, engineInfo, vehicleId } = params;
+  if (!make && !model && !engineInfo && !vehicleId) return undefined;
+
+  if (vehicleId) {
+    return {
+      vehicleTypes: {
+        some: { tipNo: vehicleId },
+      },
+    };
+  }
+
+  return {
+    vehicleTypes: {
+      some: {
+        vehicleType: {
+          tipNo: { gt: 0 },
+          ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
+          ...(model ? { modelSeries: { equals: model, mode: "insensitive" } } : {}),
+          ...(engineInfo ? { typeName: { equals: engineInfo, mode: "insensitive" } } : {}),
+        },
+      },
+    },
+  };
+}
+
 export type ProductSearchParams = {
   q?: string;
   sku?: string;
   make?: string;
   model?: string;
+  engineInfo?: string;
   subModel?: string;
+  vehicleId?: string;
   category?: string;
   isNew?: boolean;
   page?: number;
   limit?: number;
 };
 
+const vehicleTypeSelect = {
+  tipNo: true,
+  make: true,
+  modelSeries: true,
+  typeName: true,
+  yearFrom: true,
+  yearTo: true,
+  fuelType: true,
+  engineVolumeL: true,
+  engineVolumeCcm: true,
+  kw: true,
+  hp: true,
+  engineCodes: true,
+} as const;
+
 export async function searchProducts(params: ProductSearchParams) {
   const q = params.q?.trim() || "";
   const sku = params.sku?.trim() || "";
   const make = params.make?.trim() || "";
   const model = params.model?.trim() || "";
-  const subModel = params.subModel?.trim() || "";
+  const engineInfo = (params.engineInfo || params.subModel)?.trim() || "";
+  const vehicleId = params.vehicleId ? parseInt(params.vehicleId, 10) : undefined;
   const category = params.category?.trim()
     ? LEGACY_CATEGORY_SLUG_MAP[params.category.trim()] || params.category.trim()
     : "";
@@ -112,49 +161,27 @@ export async function searchProducts(params: ProductSearchParams) {
   const limit = Math.min(50, Math.max(1, params.limit || 24));
   const skip = (page - 1) * limit;
 
+  const vehicleFilter = buildVehicleFilter({
+    make,
+    model,
+    engineInfo,
+    vehicleId: Number.isFinite(vehicleId) ? vehicleId : undefined,
+  });
+
+  const andConditions: Prisma.ProductWhereInput[] = [];
+  if (vehicleFilter) andConditions.push(vehicleFilter);
+  if (q) {
+    andConditions.push({ OR: buildUnifiedSearchConditions(q) });
+    void trackSearchTerm(q);
+  }
+
   const where: Prisma.ProductWhereInput = {
     isActive: true,
     ...(isNew ? { isNew: true } : {}),
     ...(sku ? { sku: { contains: sku, mode: "insensitive" } } : {}),
     ...(category ? { category: { slug: category } } : {}),
-    ...(make || model || subModel
-      ? {
-          OR: [
-            {
-              vehicleTypes: {
-                some: {
-                  vehicleType: {
-                    ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
-                    ...(model
-                      ? { modelSeries: { equals: model, mode: "insensitive" } }
-                      : {}),
-                    ...(subModel
-                      ? { typeName: { equals: subModel, mode: "insensitive" } }
-                      : {}),
-                  },
-                },
-              },
-            },
-            {
-              fitments: {
-                some: {
-                  ...(make ? { make: { equals: make, mode: "insensitive" } } : {}),
-                  ...(model ? { model: { equals: model, mode: "insensitive" } } : {}),
-                  ...(subModel
-                    ? { subModel: { equals: subModel, mode: "insensitive" } }
-                    : {}),
-                },
-              },
-            },
-          ],
-        }
-      : {}),
+    ...(andConditions.length ? { AND: andConditions } : {}),
   };
-
-  if (q) {
-    where.OR = buildUnifiedSearchConditions(q);
-    void trackSearchTerm(q);
-  }
 
   if (sku) {
     void trackSearchTerm(sku);
@@ -171,21 +198,12 @@ export async function searchProducts(params: ProductSearchParams) {
         crossCodes: codeMatchFilter
           ? { where: codeMatchFilter as Prisma.CrossCodeWhereInput, take: 12 }
           : { take: 12 },
-        fitments: {
-          take: 8,
-          orderBy: [{ make: "asc" }, { model: "asc" }],
-        },
         vehicleTypes: {
+          where: { vehicleType: { tipNo: { gt: 0 } } },
           take: 8,
           include: {
             vehicleType: {
-              select: {
-                make: true,
-                modelSeries: true,
-                typeName: true,
-                yearFrom: true,
-                yearTo: true,
-              },
+              select: vehicleTypeSelect,
             },
           },
           orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],
@@ -208,20 +226,11 @@ export async function getProductBySlug(slug: string) {
       category: true,
       oemCodes: true,
       crossCodes: true,
-      fitments: { orderBy: [{ make: "asc" }, { model: "asc" }] },
       vehicleTypes: {
+        where: { vehicleType: { tipNo: { gt: 0 } } },
         include: {
           vehicleType: {
-            select: {
-              tipNo: true,
-              make: true,
-              modelSeries: true,
-              typeName: true,
-              yearFrom: true,
-              yearTo: true,
-              fuelType: true,
-              engineCodes: true,
-            },
+            select: vehicleTypeSelect,
           },
         },
         orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],

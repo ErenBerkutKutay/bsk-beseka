@@ -13,6 +13,10 @@ import {
   ProductPreview,
   PreviewButton,
 } from "@/components/admin/admin-preview-modal";
+import {
+  VehicleCrossPicker,
+  type SelectedVehicleLink,
+} from "@/components/admin/vehicle-cross-picker";
 import { LocalizedTextFields } from "@/components/admin/localized-text-fields";
 import type { AppLocale } from "@/i18n/routing";
 import {
@@ -35,6 +39,7 @@ export default function ProductFormPage() {
   const [skuError, setSkuError] = useState("");
   const [success, setSuccess] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [selectedVehicles, setSelectedVehicles] = useState<SelectedVehicleLink[]>([]);
   const [form, setForm] = useState({
     sku: "",
     name: emptyLocalizedContent(),
@@ -48,9 +53,6 @@ export default function ProductFormPage() {
     isActive: true,
     oemCodes: "",
     crossCodes: "",
-    fitmentsBulk: "",
-    tipNosBulk: "",
-    replaceTipNos: false,
   });
 
   useEffect(() => {
@@ -59,6 +61,8 @@ export default function ProductFormPage() {
       .then(setCategories);
 
     if (productId) {
+      setLoading(true);
+
       fetch(`/api/admin/products/${productId}`)
         .then((res) => {
           if (!res.ok) throw new Error("Not found");
@@ -78,12 +82,26 @@ export default function ProductFormPage() {
             isActive: product.isActive,
             oemCodes: product.oemCodes.map((c: { code: string }) => c.code).join("\n"),
             crossCodes: product.crossCodes.map((c: { code: string }) => c.code).join("\n"),
-            fitmentsBulk: "",
-            tipNosBulk: "",
-            replaceTipNos: false,
           });
         })
-        .catch(() => setError("Ürün yüklenemedi."))
+        .catch(() => setError("Ürün yüklenemedi."));
+
+      fetch(`/api/admin/products/${productId}/vehicle-types`)
+        .then((res) => (res.ok ? res.json() : []))
+        .then((links: { vehicleType: SelectedVehicleLink }[]) => {
+          setSelectedVehicles(
+            links.map((link) => ({
+              tipNo: link.vehicleType.tipNo,
+              make: link.vehicleType.make,
+              modelSeries: link.vehicleType.modelSeries,
+              typeName: link.vehicleType.typeName,
+              yearFrom: link.vehicleType.yearFrom,
+              yearTo: link.vehicleType.yearTo,
+              fuelType: link.vehicleType.fuelType,
+            })),
+          );
+        })
+        .catch(() => setSelectedVehicles([]))
         .finally(() => setLoading(false));
     }
   }, [productId]);
@@ -180,24 +198,14 @@ export default function ProductFormPage() {
 
       const saved = await res.json();
 
-      if (form.fitmentsBulk.trim()) {
-        await fetch(`/api/admin/products/${saved.id}/fitments`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bulk: form.fitmentsBulk }),
-        });
-      }
-
-      if (form.tipNosBulk.trim()) {
-        await fetch(`/api/admin/products/${saved.id}/vehicle-types`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bulk: form.tipNosBulk,
-            replace: form.replaceTipNos,
-          }),
-        });
-      }
+      await fetch(`/api/admin/products/${saved.id}/vehicle-types`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipNos: selectedVehicles.map((item) => item.tipNo),
+          replace: true,
+        }),
+      });
 
       setSuccess(true);
       setTimeout(() => router.push(`/${locale}/admin/urunler`), 800);
@@ -416,45 +424,17 @@ export default function ProductFormPage() {
           </CardContent>
         </Card>
 
-        {/* Tip no crosslama */}
+        {/* Id crosslama */}
         <Card>
           <CardContent className="space-y-4 pt-6">
-            <h2 className="font-semibold text-brand-brown-dark">Tip No Crosslama</h2>
+            <h2 className="font-semibold text-brand-brown-dark">Araç Crosslama</h2>
             <p className="text-xs text-muted">
-              Araç kataloğundaki benzersiz tip numaralarını ürüne bağlayın. Her satıra bir tip no
-              yazın (ör. 14219). Excel kataloğundaki &quot;Tip no.&quot; sütunu kullanılır.
+              Marka, model ve motor bilgisini seçerek ürüne bağlayın. Seçili araçların Id değerleri
+              kayıt sırasında ürüne crosslanır.
             </p>
-            <Textarea
-              value={form.tipNosBulk}
-              onChange={(e) => setForm({ ...form, tipNosBulk: e.target.value })}
-              placeholder={"14219\n117699\n103833"}
-              rows={5}
-              className="font-mono text-sm"
-            />
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={form.replaceTipNos}
-                onChange={(e) => setForm({ ...form, replaceTipNos: e.target.checked })}
-              />
-              Mevcut tip no eşleşmelerinin üzerine yaz
-            </label>
-          </CardContent>
-        </Card>
-
-        {/* Araç uyumluluk */}
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <h2 className="font-semibold text-brand-brown-dark">Araç Uyumluluğu</h2>
-            <p className="text-xs text-muted">
-              CSV formatı: marka;model;altModel;yılBaş;yılBit;motor
-            </p>
-            <Textarea
-              value={form.fitmentsBulk}
-              onChange={(e) => setForm({ ...form, fitmentsBulk: e.target.value })}
-              placeholder={"Renault;Clio;IV;2012;2019;1.5 dCi"}
-              rows={4}
-              className="font-mono text-sm"
+            <VehicleCrossPicker
+              selected={selectedVehicles}
+              onChange={setSelectedVehicles}
             />
           </CardContent>
         </Card>

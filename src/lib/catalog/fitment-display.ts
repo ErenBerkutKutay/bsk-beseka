@@ -1,5 +1,6 @@
 export type VehicleDisplayRow = {
   key: string;
+  tipNo: number;
   makeModel: string;
   yearLabel: string;
 };
@@ -11,17 +12,14 @@ export function formatYearRange(yearFrom?: number | null, yearTo?: number | null
   return "—";
 }
 
+export function isValidVehicleTipNo(tipNo?: number | null): tipNo is number {
+  return typeof tipNo === "number" && Number.isFinite(tipNo) && tipNo > 0;
+}
+
 export function buildVehicleDisplayRows(product: {
-  fitments?: {
-    id: string;
-    make: string;
-    model: string;
-    subModel?: string | null;
-    yearFrom?: number | null;
-    yearTo?: number | null;
-  }[];
   vehicleTypes?: {
     vehicleType: {
+      tipNo?: number | null;
       make: string;
       modelSeries: string;
       typeName: string;
@@ -31,33 +29,19 @@ export function buildVehicleDisplayRows(product: {
   }[];
 }): VehicleDisplayRow[] {
   const rows: VehicleDisplayRow[] = [];
-  const seen = new Set<string>();
-
-  for (const fitment of product.fitments ?? []) {
-    const makeModel = [fitment.make, fitment.model, fitment.subModel].filter(Boolean).join(" / ");
-    const key = `f-${fitment.id}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      rows.push({
-        key,
-        makeModel,
-        yearLabel: formatYearRange(fitment.yearFrom, fitment.yearTo),
-      });
-    }
-  }
+  const seen = new Set<number>();
 
   for (const link of product.vehicleTypes ?? []) {
     const vt = link.vehicleType;
-    const makeModel = [vt.make, vt.modelSeries, vt.typeName].filter(Boolean).join(" / ");
-    const key = `v-${makeModel}-${vt.yearFrom ?? ""}-${vt.yearTo ?? ""}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      rows.push({
-        key,
-        makeModel,
-        yearLabel: formatYearRange(vt.yearFrom, vt.yearTo),
-      });
-    }
+    if (!isValidVehicleTipNo(vt.tipNo) || seen.has(vt.tipNo)) continue;
+
+    seen.add(vt.tipNo);
+    rows.push({
+      key: `v-${vt.tipNo}`,
+      tipNo: vt.tipNo,
+      makeModel: [vt.make, vt.modelSeries, vt.typeName].filter(Boolean).join(" / "),
+      yearLabel: formatYearRange(vt.yearFrom, vt.yearTo),
+    });
   }
 
   return rows;

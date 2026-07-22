@@ -1,10 +1,11 @@
 import "dotenv/config";
 import { PRODUCT_GROUPS } from "../src/lib/categories/product-groups";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../src/generated/prisma/client";
 import { Pool } from "pg";
 import bcrypt from "bcryptjs";
 import { buildOEMEntries } from "../src/lib/oem/normalize";
-import { PRODUCT_GROUPS } from "../src/lib/categories/product-groups";
+import { syncVehicleCatalog } from "../src/lib/vehicles/sync-vehicle-catalog";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -479,6 +480,7 @@ async function main() {
   }
 
   console.log("Seed completed.");
+  await syncVehicleCatalog({ importedBy: "seed", skipLog: true });
   console.log("Admin: admin@beseka.com / admin123");
   console.log("B2B: b2b@beseka.com / b2b123");
 }

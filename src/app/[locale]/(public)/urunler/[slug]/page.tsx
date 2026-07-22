@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getProductBySlug } from "@/lib/products/search";
 import { trackProductView } from "@/lib/analytics";
+import { formatYearRange } from "@/lib/catalog/fitment-display";
 import { Badge } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
 
@@ -14,7 +15,11 @@ export default async function ProductDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const product = await getProductBySlug(slug);
+  const [product, t] = await Promise.all([
+    getProductBySlug(slug),
+    getTranslations({ locale, namespace: "product" }),
+  ]);
+
   if (!product) notFound();
 
   void trackProductView(product.id);
@@ -50,9 +55,11 @@ export default async function ProductDetailPage({
             <dl className="mt-6 grid gap-4 rounded-xl border border-border bg-brand-cream-light/40 p-4 text-sm sm:grid-cols-2">
               {product.weightKg != null && (
                 <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Ağırlık</dt>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
+                    {t("weight")}
+                  </dt>
                   <dd className="mt-1 font-medium text-brand-brown-dark">
-                    {Number(product.weightKg).toLocaleString("tr-TR", {
+                    {Number(product.weightKg).toLocaleString(locale, {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 3,
                     })}{" "}
@@ -70,7 +77,7 @@ export default async function ProductDetailPage({
           )}
 
           <div className="mt-8">
-            <h2 className="font-bold text-brand-brown-dark">OEM Kodları</h2>
+            <h2 className="font-bold text-brand-brown-dark">{t("oemCodes")}</h2>
             <div className="mt-2 flex flex-wrap gap-2">
               {product.oemCodes.map((code) => (
                 <span
@@ -85,7 +92,7 @@ export default async function ProductDetailPage({
 
           {product.crossCodes.length > 0 && (
             <div className="mt-6">
-              <h2 className="font-bold text-brand-brown-dark">Cross Kodları</h2>
+              <h2 className="font-bold text-brand-brown-dark">{t("crossCodes")}</h2>
               <div className="mt-2 flex flex-wrap gap-2">
                 {product.crossCodes.map((code) => (
                   <span
@@ -101,53 +108,56 @@ export default async function ProductDetailPage({
         </div>
       </div>
 
-      {(product.vehicleTypes.length > 0 || product.fitments.length > 0) && (
+      {product.vehicleTypes.some((link) => link.vehicleType.tipNo > 0) && (
         <div className="mt-12">
-          <h2 className="mb-4 text-xl font-bold text-brand-brown-dark">Uyumlu Araçlar</h2>
+          <h2 className="mb-4 text-xl font-bold text-brand-brown-dark">{t("compatibleVehicles")}</h2>
           <div className="overflow-x-auto rounded-xl border border-border shadow-sm">
             <table className="min-w-full text-sm">
               <thead className="bg-brand-brown text-brand-cream">
                 <tr>
-                  <th className="px-4 py-3 text-left">Tip No</th>
-                  <th className="px-4 py-3 text-left">Marka</th>
-                  <th className="px-4 py-3 text-left">Model Serisi</th>
-                  <th className="px-4 py-3 text-left">Tip</th>
-                  <th className="px-4 py-3 text-left">Yıl</th>
-                  <th className="px-4 py-3 text-left">Yakıt</th>
+                  <th className="px-4 py-3 text-left">{t("vehicleId")}</th>
+                  <th className="px-4 py-3 text-left">{t("make")}</th>
+                  <th className="px-4 py-3 text-left">{t("model")}</th>
+                  <th className="px-4 py-3 text-left">{t("engineInfo")}</th>
+                  <th className="px-4 py-3 text-left">{t("year")}</th>
+                  <th className="px-4 py-3 text-left">{t("engineVolumeL")}</th>
+                  <th className="px-4 py-3 text-left">{t("engineVolumeCcm")}</th>
+                  <th className="px-4 py-3 text-left">{t("fuelType")}</th>
+                  <th className="px-4 py-3 text-left">{t("power")}</th>
+                  <th className="px-4 py-3 text-left">{t("engineCodes")}</th>
                 </tr>
               </thead>
               <tbody>
-                {product.vehicleTypes.map((link) => (
-                  <tr
-                    key={link.id}
-                    className="border-t border-border even:bg-brand-cream-light/50"
-                  >
-                    <td className="px-4 py-3 font-mono">{link.vehicleType.tipNo}</td>
-                    <td className="px-4 py-3">{link.vehicleType.make}</td>
-                    <td className="px-4 py-3">{link.vehicleType.modelSeries}</td>
-                    <td className="px-4 py-3">{link.vehicleType.typeName}</td>
-                    <td className="px-4 py-3">
-                      {link.vehicleType.yearFrom || link.vehicleType.yearTo
-                        ? `${link.vehicleType.yearFrom || "?"} - ${link.vehicleType.yearTo || "?"}`
-                        : "-"}
-                    </td>
-                    <td className="px-4 py-3">{link.vehicleType.fuelType || "-"}</td>
-                  </tr>
-                ))}
-                {product.fitments.map((fitment) => (
-                  <tr key={fitment.id} className="border-t border-border even:bg-brand-cream-light/50">
-                    <td className="px-4 py-3">—</td>
-                    <td className="px-4 py-3">{fitment.make}</td>
-                    <td className="px-4 py-3">{fitment.model}</td>
-                    <td className="px-4 py-3">{fitment.subModel || "-"}</td>
-                    <td className="px-4 py-3">
-                      {fitment.yearFrom || fitment.yearTo
-                        ? `${fitment.yearFrom || "?"} - ${fitment.yearTo || "?"}`
-                        : "-"}
-                    </td>
-                    <td className="px-4 py-3">{fitment.engine || "-"}</td>
-                  </tr>
-                ))}
+                {product.vehicleTypes
+                  .filter((link) => link.vehicleType.tipNo > 0)
+                  .map((link) => {
+                  const vt = link.vehicleType;
+                  const power = [vt.kw ? `${vt.kw} kW` : null, vt.hp ? `${vt.hp} HP` : null]
+                    .filter(Boolean)
+                    .join(" / ");
+
+                  return (
+                    <tr
+                      key={link.id}
+                      className="border-t border-border even:bg-brand-cream-light/50"
+                    >
+                      <td className="px-4 py-3 font-mono">{vt.tipNo}</td>
+                      <td className="px-4 py-3">{vt.make}</td>
+                      <td className="px-4 py-3">{vt.modelSeries}</td>
+                      <td className="px-4 py-3">{vt.typeName}</td>
+                      <td className="px-4 py-3">
+                        {formatYearRange(vt.yearFrom, vt.yearTo)}
+                      </td>
+                      <td className="px-4 py-3">
+                        {vt.engineVolumeL != null ? Number(vt.engineVolumeL) : "—"}
+                      </td>
+                      <td className="px-4 py-3">{vt.engineVolumeCcm ?? "—"}</td>
+                      <td className="px-4 py-3">{vt.fuelType || "—"}</td>
+                      <td className="px-4 py-3">{power || "—"}</td>
+                      <td className="px-4 py-3 font-mono text-xs">{vt.engineCodes || "—"}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

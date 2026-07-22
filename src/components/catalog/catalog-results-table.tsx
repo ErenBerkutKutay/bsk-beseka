@@ -18,16 +18,9 @@ export type CatalogResultProduct = {
   isNew: boolean;
   oemCodes?: { code: string }[];
   crossCodes?: { code: string }[];
-  fitments?: {
-    id: string;
-    make: string;
-    model: string;
-    subModel?: string | null;
-    yearFrom?: number | null;
-    yearTo?: number | null;
-  }[];
   vehicleTypes?: {
     vehicleType: {
+      tipNo: number;
       make: string;
       modelSeries: string;
       typeName: string;
