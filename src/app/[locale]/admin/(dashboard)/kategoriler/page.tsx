@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
-import { ImageIcon, Pencil, Loader2, Upload } from "lucide-react";
+import { ImageIcon, Pencil, Loader2, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Card, CardContent } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/admin/image-upload";
@@ -39,6 +39,7 @@ export default function AdminCategoriesPage() {
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState<Category | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
 
   async function load() {
@@ -78,6 +79,40 @@ export default function AdminCategoriesPage() {
     setForm(emptyForm);
     setSaving(false);
     load();
+  }
+
+  async function handleDelete(category: Category) {
+    if (
+      !confirm(
+        `"${category.name.tr}" kategorisi silinsin mi? Bu işlem geri alınamaz.`,
+      )
+    ) {
+      return;
+    }
+
+    setDeletingId(category.id);
+
+    try {
+      const res = await fetch(
+        `/api/admin/categories?id=${encodeURIComponent(category.id)}`,
+        { method: "DELETE" },
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Kategori silinemedi.");
+        return;
+      }
+
+      if (editing?.id === category.id) {
+        setEditing(null);
+        setForm(emptyForm);
+      }
+
+      load();
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   return (
@@ -197,6 +232,19 @@ export default function AdminCategoriesPage() {
               }}
             >
               <Pencil className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={deletingId === cat.id}
+              onClick={() => handleDelete(cat)}
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+            >
+              {deletingId === cat.id ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
             </Button>
           </li>
         ))}
