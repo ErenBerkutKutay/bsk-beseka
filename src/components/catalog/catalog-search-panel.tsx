@@ -559,7 +559,7 @@ export function CatalogSearchSidebar({ categories }: { categories: Category[] })
   const search = useCatalogSearch(categories);
 
   return (
-    <aside className="catalog-search-sidebar rounded-lg border border-border bg-white p-4 shadow-sm lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
+    <aside className="catalog-search-sidebar rounded-lg border border-border bg-white p-4 shadow-sm">
       <CatalogSearchFields {...search} categories={categories} variant="sidebar" />
     </aside>
   );
