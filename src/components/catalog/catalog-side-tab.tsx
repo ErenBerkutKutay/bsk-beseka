@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { shouldShowCatalogSideTab } from "@/lib/catalog/navigation";
 
 export function CatalogSideTab() {
   const locale = useLocale();
   const t = useTranslations("catalog");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  if (!shouldShowCatalogSideTab(pathname, searchParams)) {
+    return null;
+  }
 
   return (
     <Link
@@ -24,7 +32,7 @@ export function CatalogSideTab() {
         />
       </span>
       <span className="hidden whitespace-nowrap text-sm font-bold tracking-tight sm:inline">
-        — {t("sideTabText")}
+        {t("sideTabText")}
       </span>
     </Link>
   );

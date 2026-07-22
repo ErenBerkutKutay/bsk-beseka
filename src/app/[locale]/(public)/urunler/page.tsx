@@ -12,21 +12,7 @@ import { CatalogResultsTable } from "@/components/catalog/catalog-results-table"
 import { CatalogScrollToResults } from "@/components/catalog/catalog-scroll-to-results";
 import { CatalogExportBar } from "@/components/catalog/catalog-export-bar";
 import { CatalogPagination } from "@/components/catalog/catalog-pagination";
-import { CATALOG_RESULTS_ID } from "@/lib/catalog/navigation";
-
-function hasActiveSearch(params: Record<string, string | undefined>) {
-  return !!(
-    params.q ||
-    params.sku ||
-    params.make ||
-    params.model ||
-    params.engineInfo ||
-    params.subModel ||
-    params.vehicleId ||
-    params.category ||
-    params.catalog === "1"
-  );
-}
+import { CATALOG_RESULTS_ID, hasActiveCatalogSearch } from "@/lib/catalog/navigation";
 
 function CatalogResultsSkeleton() {
   return (
@@ -100,7 +86,7 @@ export default async function CatalogPage({
   });
 
   const categories = enrichCategoriesWithImages(categoriesRaw);
-  const isSearching = hasActiveSearch(filters);
+  const isSearching = hasActiveCatalogSearch(filters);
 
   return (
     <div className="catalog-page-bg min-h-screen">
