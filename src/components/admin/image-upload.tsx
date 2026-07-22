@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ImagePlus, Link2, Loader2, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -19,6 +19,20 @@ export async function uploadAdminImage(file: File, folder?: string): Promise<str
     throw new Error("Sunucu geçerli bir görsel adresi döndürmedi.");
   }
   return data.url;
+}
+
+export function extractImageUrlsFromHtml(html: string): string[] {
+  if (!html.trim()) return [];
+
+  const urls: string[] = [];
+  const imgRegex = /<img[^>]+src=["']([^"']+)["']/gi;
+
+  for (const match of html.matchAll(imgRegex)) {
+    const src = match[1]?.trim();
+    if (src) urls.push(src);
+  }
+
+  return [...new Set(urls)];
 }
 
 type ImageUploadFieldProps = {
@@ -224,6 +238,8 @@ export function RichContentEditor({
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [uploading, setUploading] = useState(false);
+  const contentImages = useMemo(() => extractImageUrlsFromHtml(value), [value]);
+  const renderedHtml = useMemo(() => renderPageContent(value), [value]);
 
   function insertAtCursor(snippet: string) {
     const el = textareaRef.current;
@@ -293,6 +309,34 @@ export function RichContentEditor({
         required={required}
         className="flex w-full rounded-lg border border-border bg-white px-3 py-2 font-mono text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-brand-brown"
       />
+
+      {contentImages.length > 0 && (
+        <div className="mt-3 rounded-xl border border-border bg-brand-cream-light/30 p-3">
+          <p className="text-xs font-medium text-brand-brown-dark">
+            İçerikteki görseller ({contentImages.length})
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {contentImages.map((url) => (
+              <div
+                key={url}
+                className="relative h-24 w-24 overflow-hidden rounded-lg border border-border bg-white"
+              >
+                <Image src={url} alt="" fill className="object-cover" sizes="96px" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {value.trim() && (
+        <div className="mt-3 rounded-xl border border-border bg-white p-4">
+          <p className="mb-2 text-xs font-medium text-brand-brown-dark">İçerik önizlemesi</p>
+          <div
+            className="prose-content max-h-80 overflow-y-auto text-sm"
+            dangerouslySetInnerHTML={{ __html: renderedHtml }}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -68,6 +68,7 @@ export const ModelName = {
   Media: 'Media',
   HomeBanner: 'HomeBanner',
   HomeStat: 'HomeStat',
+  HomeIntro: 'HomeIntro',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -331,6 +332,26 @@ export const HomeStatScalarFieldEnum = {
 } as const
 
 export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
+
+
+export const HomeIntroScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  eyebrow: 'eyebrow',
+  title: 'title',
+  body: 'body',
+  subtitle: 'subtitle',
+  image: 'image',
+  primaryLabel: 'primaryLabel',
+  primaryHref: 'primaryHref',
+  secondaryLabel: 'secondaryLabel',
+  secondaryHref: 'secondaryHref',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeIntroScalarFieldEnum = (typeof HomeIntroScalarFieldEnum)[keyof typeof HomeIntroScalarFieldEnum]
 
 
 export const AnalyticsSearchTermScalarFieldEnum = {

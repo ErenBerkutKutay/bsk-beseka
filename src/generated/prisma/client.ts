@@ -127,6 +127,11 @@ export type HomeBanner = Prisma.HomeBannerModel
  */
 export type HomeStat = Prisma.HomeStatModel
 /**
+ * Model HomeIntro
+ * 
+ */
+export type HomeIntro = Prisma.HomeIntroModel
+/**
  * Model AnalyticsSearchTerm
  * 
  */

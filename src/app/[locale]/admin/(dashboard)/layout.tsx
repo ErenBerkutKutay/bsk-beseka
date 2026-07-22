@@ -13,6 +13,7 @@ const adminNav = [
   { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/kategoriler/gorseller", label: "Toplu Grup Görseli" },
   { href: "/admin/bannerlar", label: "Bannerlar" },
+  { href: "/admin/ana-sayfa-bilgilendirme", label: "Ana Sayfa Bilgilendirme" },
   { href: "/admin/istatistikler", label: "İstatistikler" },
   { href: "/admin/blog", label: "Blog (Bizden Haberler)" },
   { href: "/admin/sayfalar", label: "Sayfalar" },

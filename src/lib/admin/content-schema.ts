@@ -42,6 +42,19 @@ export const adminPageUpdateSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const adminHomeIntroSchema = z.object({
+  eyebrow: localizedNameSchema,
+  title: localizedNameSchema,
+  body: localizedNameSchema,
+  subtitle: localizedNameSchema,
+  image: z.string().min(1),
+  primaryLabel: localizedNameSchema,
+  primaryHref: z.string().min(1),
+  secondaryLabel: localizedNameSchema,
+  secondaryHref: z.string().min(1),
+  isActive: z.boolean().default(true),
+});
+
 export type AdminCategoryInput = z.infer<typeof adminCategorySchema>;
 export type AdminBlogInput = z.infer<typeof adminBlogSchema>;
 export type AdminPageUpdateInput = z.infer<typeof adminPageUpdateSchema>;

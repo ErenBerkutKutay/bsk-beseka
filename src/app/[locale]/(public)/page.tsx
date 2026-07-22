@@ -5,17 +5,16 @@ import { db } from "@/lib/db";
 import { HeroCategories } from "@/components/home/hero-categories";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { HomeCatalogSearch } from "@/components/home/home-catalog-search";
+import { HomeIntroSection } from "@/components/home/home-intro-section";
 import { HomeStatsBar } from "@/components/home/home-stats-bar";
 import { NewProductsMarquee } from "@/components/home/new-products-marquee";
 import { Button } from "@/components/ui/button";
 import { getLocalizedText } from "@/lib/utils";
 import { resolveCategoryLabel } from "@/lib/categories/product-groups";
-import { besekaAssets } from "@/lib/beseka/assets";
 import { fallbackHomeBanners } from "@/lib/beseka/home-banners";
 import { resolveCategoryImage } from "@/lib/categories/display-image";
 import { getActiveHomeBanners } from "@/lib/banners";
 import { getActiveHomeStats } from "@/lib/home-stats";
-import { ArrowRight } from "lucide-react";
 
 export default async function HomePage({
   params,
@@ -74,47 +73,7 @@ export default async function HomePage({
         sectionTitle={tCatalog("categoryBrowseTitle")}
       />
 
-      {/* Kurumsal tanıtım */}
-      <section className="bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-brown-mid">
-                Beseka Otomotiv
-              </p>
-              <h2 className="mt-2 text-2xl font-bold text-brand-brown-dark md:text-3xl">
-                {t("heroTitle")}
-              </h2>
-              <p className="mt-4 leading-relaxed text-muted">
-                Beseka Otomotiv, yedek parça sektörünün önde gelen üreticilerinden biridir. Aynı
-                üretim tesisinde motor takozu, amortisör takozu, körük ve salıncak burçları ile
-                dünya genelindeki müşterilerine hizmet sunmaktadır.
-              </p>
-              <p className="mt-3 leading-relaxed text-muted">{t("heroSubtitle")}</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href={`/${locale}/kurumsal/hakkimizda`}>
-                  <Button variant="outline">Hakkımızda</Button>
-                </Link>
-                <Link href={`/${locale}/urunler`}>
-                  <Button variant="secondary" className="gap-2">
-                    Online Katalog
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border bg-brand-cream-light shadow-lg">
-              <Image
-                src={besekaAssets.hero[0]}
-                alt="Beseka üretim"
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeIntroSection locale={locale} />
 
       <HomeStatsBar stats={homeStats} />
 

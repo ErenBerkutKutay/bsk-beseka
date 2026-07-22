@@ -260,6 +260,23 @@ model HomeStat {
   updatedAt DateTime @updatedAt
 }
 
+model HomeIntro {
+  id             String   @id @default(cuid())
+  slug           String   @unique @default("default")
+  eyebrow        Json
+  title          Json
+  body           Json
+  subtitle       Json
+  image          String
+  primaryLabel   Json
+  primaryHref    String   @default("/kurumsal/hakkimizda")
+  secondaryLabel Json
+  secondaryHref  String   @default("/urunler")
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
 model AnalyticsSearchTerm {
   id     String   @id @default(cuid())
   term   String   @unique

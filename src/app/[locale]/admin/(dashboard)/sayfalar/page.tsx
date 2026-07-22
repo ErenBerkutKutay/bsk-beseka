@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
 import {
+  extractImageUrlsFromHtml,
   ImageGalleryField,
   ImageUploadField,
 } from "@/components/admin/image-upload";
@@ -22,6 +23,7 @@ import type { AppLocale } from "@/i18n/routing";
 import {
   emptyLocalizedContent,
   parseLocalizedContent,
+  contentLocales,
 } from "@/lib/i18n/localized-content";
 
 type Page = {
@@ -32,6 +34,14 @@ type Page = {
   heroImage?: string | null;
   images: string[];
 };
+
+function pageHasVisuals(page: Page): boolean {
+  if (page.heroImage || (page.images?.length ?? 0) > 0) return true;
+  return contentLocales.some((locale) => {
+    const text = page.content?.[locale];
+    return typeof text === "string" && extractImageUrlsFromHtml(text).length > 0;
+  });
+}
 
 export default function AdminPagesPage() {
   const [pages, setPages] = useState<Page[]>([]);
@@ -107,7 +117,7 @@ export default function AdminPagesPage() {
                 }`}
               >
                 {getLocalizedText(page.title, "tr")}
-                {(page.heroImage || page.images?.length > 0) && (
+                {(pageHasVisuals(page)) && (
                   <span className="mt-1 block text-xs text-muted">📷 Görsel var</span>
                 )}
               </button>

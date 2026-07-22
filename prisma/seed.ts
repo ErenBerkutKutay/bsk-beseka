@@ -6,6 +6,7 @@ import { Pool } from "pg";
 import bcrypt from "bcryptjs";
 import { buildOEMEntries } from "../src/lib/oem/normalize";
 import { syncVehicleCatalog } from "../src/lib/vehicles/sync-vehicle-catalog";
+import { fallbackHomeIntro } from "../src/lib/beseka/home-intro";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -414,6 +415,24 @@ async function main() {
       create: { ...page, sortOrder: index },
     });
   }
+
+  await db.homeIntro.upsert({
+    where: { slug: "default" },
+    update: {},
+    create: {
+      slug: "default",
+      eyebrow: fallbackHomeIntro.eyebrow,
+      title: fallbackHomeIntro.title,
+      body: fallbackHomeIntro.body,
+      subtitle: fallbackHomeIntro.subtitle,
+      image: fallbackHomeIntro.image,
+      primaryLabel: fallbackHomeIntro.primaryLabel,
+      primaryHref: fallbackHomeIntro.primaryHref,
+      secondaryLabel: fallbackHomeIntro.secondaryLabel,
+      secondaryHref: fallbackHomeIntro.secondaryHref,
+      isActive: fallbackHomeIntro.isActive,
+    },
+  });
 
   await db.blogPost.upsert({
     where: { slug: "automechanika-frankfurt-2026" },

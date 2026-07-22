@@ -401,6 +401,7 @@ export const ModelName = {
   Media: 'Media',
   HomeBanner: 'HomeBanner',
   HomeStat: 'HomeStat',
+  HomeIntro: 'HomeIntro',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat" | "analyticsSearchTerm" | "analyticsProductView"
+    modelProps: "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat" | "homeIntro" | "analyticsSearchTerm" | "analyticsProductView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1680,6 +1681,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HomeIntro: {
+      payload: Prisma.$HomeIntroPayload<ExtArgs>
+      fields: Prisma.HomeIntroFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HomeIntroFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HomeIntroFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        findFirst: {
+          args: Prisma.HomeIntroFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HomeIntroFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        findMany: {
+          args: Prisma.HomeIntroFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>[]
+        }
+        create: {
+          args: Prisma.HomeIntroCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        createMany: {
+          args: Prisma.HomeIntroCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HomeIntroCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>[]
+        }
+        delete: {
+          args: Prisma.HomeIntroDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        update: {
+          args: Prisma.HomeIntroUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        deleteMany: {
+          args: Prisma.HomeIntroDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HomeIntroUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HomeIntroUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>[]
+        }
+        upsert: {
+          args: Prisma.HomeIntroUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeIntroPayload>
+        }
+        aggregate: {
+          args: Prisma.HomeIntroAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHomeIntro>
+        }
+        groupBy: {
+          args: Prisma.HomeIntroGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeIntroGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HomeIntroCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeIntroCountAggregateOutputType> | number
+        }
+      }
+    }
     AnalyticsSearchTerm: {
       payload: Prisma.$AnalyticsSearchTermPayload<ExtArgs>
       fields: Prisma.AnalyticsSearchTermFieldRefs
@@ -2112,6 +2187,26 @@ export const HomeStatScalarFieldEnum = {
 export type HomeStatScalarFieldEnum = (typeof HomeStatScalarFieldEnum)[keyof typeof HomeStatScalarFieldEnum]
 
 
+export const HomeIntroScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  eyebrow: 'eyebrow',
+  title: 'title',
+  body: 'body',
+  subtitle: 'subtitle',
+  image: 'image',
+  primaryLabel: 'primaryLabel',
+  primaryHref: 'primaryHref',
+  secondaryLabel: 'secondaryLabel',
+  secondaryHref: 'secondaryHref',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeIntroScalarFieldEnum = (typeof HomeIntroScalarFieldEnum)[keyof typeof HomeIntroScalarFieldEnum]
+
+
 export const AnalyticsSearchTermScalarFieldEnum = {
   id: 'id',
   term: 'term',
@@ -2445,6 +2540,7 @@ export type GlobalOmitConfig = {
   media?: Prisma.MediaOmit
   homeBanner?: Prisma.HomeBannerOmit
   homeStat?: Prisma.HomeStatOmit
+  homeIntro?: Prisma.HomeIntroOmit
   analyticsSearchTerm?: Prisma.AnalyticsSearchTermOmit
   analyticsProductView?: Prisma.AnalyticsProductViewOmit
 }
