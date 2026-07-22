@@ -95,10 +95,10 @@ export default async function CatalogPage({
       </Suspense>
 
       {isSearching ? (
-        <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 py-6 md:px-6 md:py-8">
           <div
             id={CATALOG_RESULTS_ID}
-            className="grid scroll-mt-28 gap-6 lg:grid-cols-[280px_1fr] lg:items-start"
+            className="grid scroll-mt-28 gap-6 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)] lg:items-start"
           >
             <Suspense fallback={<div className="h-96 animate-pulse rounded-lg bg-brand-cream" />}>
               <CatalogSearchSidebar categories={categories as never[]} />

@@ -544,7 +544,7 @@ export function CatalogSearchPanel({ categories }: { categories: Category[] }) {
 
   return (
     <section className="catalog-search-ytt border-b border-brand-cream-dark/50 bg-white py-8 md:py-10">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-brand-brown-dark md:text-3xl">{t("title")}</h1>
           <p className="mt-2 text-sm text-muted">{t("landingHint")}</p>
@@ -585,7 +585,7 @@ export function CatalogCategoryTiles({
 
   return (
     <div className="catalog-category-ytt border-b border-border bg-brand-cream-light/30 py-8">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-6">
         <p className="mb-1 text-sm font-bold uppercase tracking-wider text-brand-brown">
           {t("categoryBrowseTitle")}
         </p>

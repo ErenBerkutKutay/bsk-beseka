@@ -55,7 +55,7 @@ export function CatalogResultsTable({
 
   return (
     <div className="catalog-results-table overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-      <div className="hidden grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] gap-3 bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid">
+      <div className="hidden gap-3 bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px]">
         <span>{t("colProduct")}</span>
         <span>{t("colBesekaRef")}</span>
         <span>{t("colOemOtherRef")}</span>
@@ -76,7 +76,7 @@ export function CatalogResultsTable({
           return (
             <li
               key={product.id}
-              className="grid gap-4 px-4 py-4 lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] lg:items-start lg:gap-3"
+              className="grid gap-4 px-4 py-4 lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px] lg:items-start lg:gap-3"
             >
               <div className="product-image-frame relative mx-auto h-20 w-20 shrink-0 overflow-hidden rounded border border-border bg-white lg:mx-0">
                 {product.images[0] ? (
