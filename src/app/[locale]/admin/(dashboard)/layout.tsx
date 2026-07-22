@@ -14,7 +14,7 @@ const adminNav = [
   { href: "/admin/kategoriler/gorseller", label: "Toplu Grup Görseli" },
   { href: "/admin/bannerlar", label: "Bannerlar" },
   { href: "/admin/istatistikler", label: "İstatistikler" },
-  { href: "/admin/blog", label: "Blog" },
+  { href: "/admin/blog", label: "Blog (Bizden Haberler)" },
   { href: "/admin/sayfalar", label: "Sayfalar" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
   { href: "/admin/arac-import", label: "Araç Kataloğu" },
