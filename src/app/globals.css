@@ -270,6 +270,10 @@ html.lenis body {
   border-color: rgba(122, 16, 32, 0.12);
 }
 
+.catalog-results-table-head {
+  box-shadow: 0 4px 12px rgba(122, 16, 32, 0.15);
+}
+
 .catalog-sidebar-select option {
   background: #18181b;
   color: #fff;

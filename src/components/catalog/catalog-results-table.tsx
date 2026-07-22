@@ -54,8 +54,8 @@ export function CatalogResultsTable({
   }
 
   return (
-    <div className="catalog-results-table overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-      <div className="hidden gap-3 bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px]">
+    <div className="catalog-results-table rounded-lg border border-border bg-white shadow-sm">
+      <div className="catalog-results-table-head sticky top-28 z-30 hidden gap-3 rounded-t-lg bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px]">
         <span>{t("colProduct")}</span>
         <span>{t("colBesekaRef")}</span>
         <span>{t("colOemOtherRef")}</span>
@@ -159,7 +159,7 @@ export function CatalogResultsTable({
         })}
       </ul>
 
-      <div className="border-t border-border bg-brand-cream-light/40 px-4 py-3 text-center text-xs text-muted">
+      <div className="rounded-b-lg border-t border-border bg-brand-cream-light/40 px-4 py-3 text-center text-xs text-muted">
         <p>{t("resultsDisclaimer")}</p>
         <p className="mt-1 font-medium text-brand-brown-dark">
           {t("resultsShowing", { shown: products.length, total })}
