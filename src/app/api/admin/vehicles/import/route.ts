@@ -46,8 +46,13 @@ export async function POST(request: NextRequest) {
   const result = await importVehicleTypesFromBuffer(buffer, {
     fileName: file.name,
     importedBy: session.user.email || undefined,
-    purgeStale: true,
+    purgeStale: false,
+    rejectExistingIds: true,
   });
+
+  if (result.duplicateIds.length) {
+    return NextResponse.json(result, { status: 400 });
+  }
 
   return NextResponse.json(result);
 }

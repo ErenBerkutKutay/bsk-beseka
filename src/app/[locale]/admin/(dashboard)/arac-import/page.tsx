@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FileSpreadsheet, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, Label } from "@/components/ui/input";
+import { VehicleManualForm } from "@/components/admin/vehicle-manual-form";
 
 type CatalogStats = {
   totalTypes: number;
@@ -16,7 +17,9 @@ type ImportResult = {
   imported: number;
   failed: number;
   purged?: number;
+  duplicateIds?: number[];
   errors: string[];
+  error?: string;
 };
 
 type ImportLog = {
@@ -66,8 +69,18 @@ export default function VehicleCatalogImportPage() {
     });
 
     const data = await res.json();
-    setResult(data);
     setLoading(false);
+
+    if (!res.ok) {
+      setResult({
+        ...data,
+        imported: 0,
+        error: data.errors?.[0] || "Import başarısız",
+      });
+    } else {
+      setResult(data);
+    }
+
     loadMeta();
   }
 
@@ -156,6 +169,19 @@ export default function VehicleCatalogImportPage() {
 
       <Card className="mb-8">
         <CardContent className="space-y-4 pt-6">
+          <div>
+            <h2 className="font-semibold text-brand-brown-dark">Manuel Araç Ekle</h2>
+            <p className="mt-1 text-xs text-muted">
+              Tek bir araç kaydını Excel yüklemeden ekleyin. Id katalogda varsa mükerrer hatası
+              verilir.
+            </p>
+          </div>
+          <VehicleManualForm onSuccess={loadMeta} />
+        </CardContent>
+      </Card>
+
+      <Card className="mb-8">
+        <CardContent className="space-y-4 pt-6">
           <Label>Excel Dosyası</Label>
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-brand-cream-light/30 px-6 py-10 transition hover:border-brand-brown">
             {loading ? (
@@ -179,8 +205,9 @@ export default function VehicleCatalogImportPage() {
             />
           </label>
           <p className="text-xs text-muted">
-            Ürün düzenleme sayfasında Id ile crosslama yapabilirsiniz. Katalog aramasında marka /
-            model / motor bilgisi filtreleri bu katalogdan gelir.
+            Yeni araç eklerken Excel&apos;deki Id değerleri katalogda zaten varsa import
+            durdurulur ve mükerrer Id listesi gösterilir. Tam katalog güncellemesi için
+            &quot;Eski Kataloğu Temizle&quot; butonunu kullanın.
           </p>
           <Button
             type="button"
@@ -202,9 +229,24 @@ export default function VehicleCatalogImportPage() {
       </Card>
 
       {result && (
-        <Card className="mb-8 border-green-200 bg-green-50/30">
+        <Card
+          className={`mb-8 ${
+            result.error || result.duplicateIds?.length
+              ? "border-red-200 bg-red-50/30"
+              : "border-green-200 bg-green-50/30"
+          }`}
+        >
           <CardContent className="pt-6">
-            <h2 className="font-semibold text-brand-brown-dark">Import tamamlandı</h2>
+            <h2 className="font-semibold text-brand-brown-dark">
+              {result.error || result.duplicateIds?.length
+                ? "Import başarısız"
+                : "Import tamamlandı"}
+            </h2>
+            {(result.error || result.errors[0]) && (
+              <p className="mt-2 text-sm font-medium text-red-700">
+                {result.error || result.errors[0]}
+              </p>
+            )}
             <div className="mt-4 grid gap-3 sm:grid-cols-4">
               <div className="rounded-lg bg-white p-4 text-center shadow-sm">
                 <div className="text-2xl font-bold">{result.total.toLocaleString("tr-TR")}</div>
