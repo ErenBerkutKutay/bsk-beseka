@@ -21,7 +21,8 @@ export const PageType = {
   CORPORATE: 'CORPORATE',
   PRODUCTION: 'PRODUCTION',
   RD: 'RD',
-  LEGAL: 'LEGAL'
+  LEGAL: 'LEGAL',
+  CONTACT: 'CONTACT'
 } as const
 
 export type PageType = (typeof PageType)[keyof typeof PageType]

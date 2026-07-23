@@ -1,0 +1,16 @@
+ALTER TYPE "PageType" ADD VALUE IF NOT EXISTS 'CONTACT';
+ALTER TABLE "Page" ADD COLUMN IF NOT EXISTS "metadata" JSONB;
+
+CREATE TABLE IF NOT EXISTS "ContactTeamMember" (
+  "id" TEXT NOT NULL,
+  "name" TEXT NOT NULL,
+  "email" TEXT NOT NULL,
+  "phone" TEXT,
+  "role" JSONB,
+  "photo" TEXT,
+  "sortOrder" INTEGER NOT NULL DEFAULT 0,
+  "isActive" BOOLEAN NOT NULL DEFAULT true,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "ContactTeamMember_pkey" PRIMARY KEY ("id")
+);

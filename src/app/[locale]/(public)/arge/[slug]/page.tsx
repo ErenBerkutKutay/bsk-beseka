@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { db } from "@/lib/db";
 import { getLocalizedText } from "@/lib/utils";
+import { CmsPageContent } from "@/components/cms/page-content";
 
 const rdSlugs = ["arge-surecleri", "muhendislik", "kalite-kontrol"];
 
@@ -23,20 +24,15 @@ export default async function RDPage({
 
   if (!page) notFound();
 
+  const title = getLocalizedText(page.title as { tr: string }, locale);
+  const content = getLocalizedText(page.content as { tr: string }, locale);
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-3xl font-bold">
-        {getLocalizedText(page.title as { tr: string }, locale)}
-      </h1>
-      <div
-        className="prose-content mt-8"
-        dangerouslySetInnerHTML={{
-          __html: getLocalizedText(page.content as { tr: string }, locale).replace(
-            /\n/g,
-            "<br/>",
-          ),
-        }}
-      />
-    </div>
+    <CmsPageContent
+      title={title}
+      content={content}
+      heroImage={page.heroImage}
+      images={page.images}
+    />
   );
 }

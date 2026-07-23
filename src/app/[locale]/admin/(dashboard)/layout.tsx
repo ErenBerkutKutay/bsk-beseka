@@ -17,6 +17,8 @@ const adminNav = [
   { href: "/admin/istatistikler", label: "İstatistikler" },
   { href: "/admin/blog", label: "Blog (Bizden Haberler)" },
   { href: "/admin/sayfalar", label: "Sayfalar" },
+  { href: "/admin/iletisim-sayfalari", label: "İletişim Sayfaları" },
+  { href: "/admin/kalite-sayfasi", label: "Kalite Sayfası" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
   { href: "/admin/arac-import", label: "Araç Kataloğu" },
 ];

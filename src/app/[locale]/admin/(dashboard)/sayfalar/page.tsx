@@ -56,7 +56,8 @@ export default function AdminPagesPage() {
 
   async function load() {
     const res = await fetch("/api/admin/pages");
-    setPages(await res.json());
+    const data: (Page & { type?: string })[] = await res.json();
+    setPages(data.filter((page) => page.type !== "CONTACT"));
   }
 
   useEffect(() => {

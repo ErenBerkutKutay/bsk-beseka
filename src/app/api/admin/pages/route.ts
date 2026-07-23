@@ -4,14 +4,16 @@ import { db } from "@/lib/db";
 import { z } from "zod";
 import {
   adminPageUpdateSchema,
+  buildMetadataJson,
   buildRequiredLocalizedJson,
 } from "@/lib/admin/content-schema";
 
 const pageSchema = z.object({
   slug: z.string().min(1),
-  type: z.enum(["CORPORATE", "PRODUCTION", "RD", "LEGAL"]),
+  type: z.enum(["CORPORATE", "PRODUCTION", "RD", "LEGAL", "CONTACT"]),
   title: adminPageUpdateSchema.shape.title,
   content: adminPageUpdateSchema.shape.content,
+  metadata: z.record(z.string(), z.unknown()).optional(),
   heroImage: z.string().optional(),
   images: z.array(z.string()).default([]),
   sortOrder: z.number().default(0),
@@ -21,7 +23,7 @@ const pageSchema = z.object({
 export async function GET(request: NextRequest) {
   const type = request.nextUrl.searchParams.get("type");
   const pages = await db.page.findMany({
-    where: type ? { type: type as "CORPORATE" | "PRODUCTION" | "RD" | "LEGAL" } : undefined,
+    where: type ? { type: type as "CORPORATE" | "PRODUCTION" | "RD" | "LEGAL" | "CONTACT" } : undefined,
     orderBy: [{ sortOrder: "asc" }, { slug: "asc" }],
   });
   return NextResponse.json(pages);
@@ -42,6 +44,7 @@ export async function POST(request: NextRequest) {
       type: data.type,
       title: buildRequiredLocalizedJson(data.title),
       content: buildRequiredLocalizedJson(data.content),
+      metadata: buildMetadataJson(data.metadata),
       heroImage: data.heroImage || null,
       images: data.images,
       sortOrder: data.sortOrder,
@@ -66,6 +69,7 @@ export async function PUT(request: NextRequest) {
     data: {
       title: buildRequiredLocalizedJson(data.title),
       content: buildRequiredLocalizedJson(data.content),
+      metadata: buildMetadataJson(data.metadata),
       heroImage: data.heroImage || null,
       images: data.images ?? [],
       isActive: data.isActive,
@@ -74,4 +78,24 @@ export async function PUT(request: NextRequest) {
   });
 
   return NextResponse.json(page);
+}
+
+export async function DELETE(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const id = request.nextUrl.searchParams.get("id");
+  if (!id) {
+    return NextResponse.json({ error: "id gerekli" }, { status: 400 });
+  }
+
+  const page = await db.page.findUnique({ where: { id } });
+  if (!page) {
+    return NextResponse.json({ error: "Sayfa bulunamadı" }, { status: 404 });
+  }
+
+  await db.page.delete({ where: { id } });
+  return NextResponse.json({ ok: true });
 }

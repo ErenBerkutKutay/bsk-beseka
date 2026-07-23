@@ -10,6 +10,10 @@ import { BESEKA_B2B_URL } from "@/lib/beseka/links";
 import { ProductSearchForm } from "@/components/catalog/product-search-form";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { SocialFollowLinks } from "@/components/layout/social-follow-links";
+import {
+  ContactMobileLinks,
+  ContactNavDropdown,
+} from "@/components/contact/contact-nav-dropdown";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -103,8 +107,9 @@ export function SiteHeader() {
             <NavDropdown title={t("corporate")} links={corporateLinks} prefix={prefix} />
             <NavDropdown title={t("catalog")} links={catalogLinks} prefix={prefix} />
             <NavDropdown title={t("production")} links={productionLinks} prefix={prefix} />
+            <NavLink href={`${prefix}/arge/kalite-kontrol`}>{t("quality")}</NavLink>
             <NavLink href={`${prefix}/blog`}>{t("blog")}</NavLink>
-            <NavLink href={`${prefix}/iletisim`}>{t("contact")}</NavLink>
+            <ContactNavDropdown prefix={prefix} />
             <LanguageSwitcher />
           </nav>
 
@@ -137,12 +142,13 @@ export function SiteHeader() {
           <MobileLink href={`${prefix}/yeni-urunler`} onClick={() => setOpen(false)}>
             {t("newProducts")}
           </MobileLink>
+          <MobileLink href={`${prefix}/arge/kalite-kontrol`} onClick={() => setOpen(false)}>
+            {t("quality")}
+          </MobileLink>
           <MobileLink href={`${prefix}/blog`} onClick={() => setOpen(false)}>
             {t("blog")}
           </MobileLink>
-          <MobileLink href={`${prefix}/iletisim`} onClick={() => setOpen(false)}>
-            {t("contact")}
-          </MobileLink>
+          <ContactMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <LanguageSwitcher variant="mobile" className="mt-2 px-3" />
           <a
             href={BESEKA_B2B_URL}

@@ -62,6 +62,7 @@ export type PageCountAggregateOutputType = {
   type: number
   title: number
   content: number
+  metadata: number
   heroImage: number
   images: number
   metaTitle: number
@@ -109,6 +110,7 @@ export type PageCountAggregateInputType = {
   type?: true
   title?: true
   content?: true
+  metadata?: true
   heroImage?: true
   images?: true
   metaTitle?: true
@@ -211,6 +213,7 @@ export type PageGroupByOutputType = {
   type: $Enums.PageType
   title: runtime.JsonValue
   content: runtime.JsonValue
+  metadata: runtime.JsonValue | null
   heroImage: string | null
   images: string[]
   metaTitle: runtime.JsonValue | null
@@ -249,6 +252,7 @@ export type PageWhereInput = {
   type?: Prisma.EnumPageTypeFilter<"Page"> | $Enums.PageType
   title?: Prisma.JsonFilter<"Page">
   content?: Prisma.JsonFilter<"Page">
+  metadata?: Prisma.JsonNullableFilter<"Page">
   heroImage?: Prisma.StringNullableFilter<"Page"> | string | null
   images?: Prisma.StringNullableListFilter<"Page">
   metaTitle?: Prisma.JsonNullableFilter<"Page">
@@ -264,6 +268,7 @@ export type PageOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   heroImage?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
   metaTitle?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -282,6 +287,7 @@ export type PageWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumPageTypeFilter<"Page"> | $Enums.PageType
   title?: Prisma.JsonFilter<"Page">
   content?: Prisma.JsonFilter<"Page">
+  metadata?: Prisma.JsonNullableFilter<"Page">
   heroImage?: Prisma.StringNullableFilter<"Page"> | string | null
   images?: Prisma.StringNullableListFilter<"Page">
   metaTitle?: Prisma.JsonNullableFilter<"Page">
@@ -297,6 +303,7 @@ export type PageOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   heroImage?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
   metaTitle?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -320,6 +327,7 @@ export type PageScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumPageTypeWithAggregatesFilter<"Page"> | $Enums.PageType
   title?: Prisma.JsonWithAggregatesFilter<"Page">
   content?: Prisma.JsonWithAggregatesFilter<"Page">
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"Page">
   heroImage?: Prisma.StringNullableWithAggregatesFilter<"Page"> | string | null
   images?: Prisma.StringNullableListFilter<"Page">
   metaTitle?: Prisma.JsonNullableWithAggregatesFilter<"Page">
@@ -335,6 +343,7 @@ export type PageCreateInput = {
   type?: $Enums.PageType
   title: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: string | null
   images?: Prisma.PageCreateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -350,6 +359,7 @@ export type PageUncheckedCreateInput = {
   type?: $Enums.PageType
   title: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: string | null
   images?: Prisma.PageCreateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -365,6 +375,7 @@ export type PageUpdateInput = {
   type?: Prisma.EnumPageTypeFieldUpdateOperationsInput | $Enums.PageType
   title?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.PageUpdateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -380,6 +391,7 @@ export type PageUncheckedUpdateInput = {
   type?: Prisma.EnumPageTypeFieldUpdateOperationsInput | $Enums.PageType
   title?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.PageUpdateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -395,6 +407,7 @@ export type PageCreateManyInput = {
   type?: $Enums.PageType
   title: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: string | null
   images?: Prisma.PageCreateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -410,6 +423,7 @@ export type PageUpdateManyMutationInput = {
   type?: Prisma.EnumPageTypeFieldUpdateOperationsInput | $Enums.PageType
   title?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.PageUpdateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -425,6 +439,7 @@ export type PageUncheckedUpdateManyInput = {
   type?: Prisma.EnumPageTypeFieldUpdateOperationsInput | $Enums.PageType
   title?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   heroImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.PageUpdateimagesInput | string[]
   metaTitle?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -440,6 +455,7 @@ export type PageCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   heroImage?: Prisma.SortOrder
   images?: Prisma.SortOrder
   metaTitle?: Prisma.SortOrder
@@ -500,6 +516,7 @@ export type PageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   type?: boolean
   title?: boolean
   content?: boolean
+  metadata?: boolean
   heroImage?: boolean
   images?: boolean
   metaTitle?: boolean
@@ -515,6 +532,7 @@ export type PageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   type?: boolean
   title?: boolean
   content?: boolean
+  metadata?: boolean
   heroImage?: boolean
   images?: boolean
   metaTitle?: boolean
@@ -530,6 +548,7 @@ export type PageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   type?: boolean
   title?: boolean
   content?: boolean
+  metadata?: boolean
   heroImage?: boolean
   images?: boolean
   metaTitle?: boolean
@@ -545,6 +564,7 @@ export type PageSelectScalar = {
   type?: boolean
   title?: boolean
   content?: boolean
+  metadata?: boolean
   heroImage?: boolean
   images?: boolean
   metaTitle?: boolean
@@ -554,7 +574,7 @@ export type PageSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "content" | "heroImage" | "images" | "metaTitle" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["page"]>
+export type PageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "type" | "title" | "content" | "metadata" | "heroImage" | "images" | "metaTitle" | "isActive" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["page"]>
 
 export type $PagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Page"
@@ -565,6 +585,7 @@ export type $PagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     type: $Enums.PageType
     title: runtime.JsonValue
     content: runtime.JsonValue
+    metadata: runtime.JsonValue | null
     heroImage: string | null
     images: string[]
     metaTitle: runtime.JsonValue | null
@@ -1000,6 +1021,7 @@ export interface PageFieldRefs {
   readonly type: Prisma.FieldRef<"Page", 'PageType'>
   readonly title: Prisma.FieldRef<"Page", 'Json'>
   readonly content: Prisma.FieldRef<"Page", 'Json'>
+  readonly metadata: Prisma.FieldRef<"Page", 'Json'>
   readonly heroImage: Prisma.FieldRef<"Page", 'String'>
   readonly images: Prisma.FieldRef<"Page", 'String[]'>
   readonly metaTitle: Prisma.FieldRef<"Page", 'Json'>

@@ -36,6 +36,7 @@ export const adminPageUpdateSchema = z.object({
   id: z.string().min(1),
   title: localizedNameSchema,
   content: localizedNameSchema,
+  metadata: z.record(z.string(), z.unknown()).optional(),
   heroImage: z.string().optional(),
   images: z.array(z.string()).default([]),
   sortOrder: z.number().default(0),
@@ -67,4 +68,10 @@ export function buildOptionalLocalizedField(
   values: z.infer<typeof localizedDescriptionSchema> | undefined,
 ): PrismaTypes.InputJsonValue | typeof Prisma.DbNull {
   return buildOptionalLocalizedJson(values ?? {}) ?? Prisma.DbNull;
+}
+
+export function buildMetadataJson(
+  metadata: Record<string, unknown> | undefined,
+): PrismaTypes.InputJsonValue | undefined {
+  return metadata as PrismaTypes.InputJsonValue | undefined;
 }
