@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import { localeOptions } from "@/i18n/locales";
@@ -11,14 +12,16 @@ type LanguageSwitcherProps = {
   variant?: "nav" | "mobile";
 };
 
-function LocaleFlag({ flag, className = "" }: { flag: string; className?: string }) {
+function LocaleFlag({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
-    <span
-      className={`inline-flex shrink-0 items-center justify-center text-[1.1em] leading-none ${className}`}
+    <Image
+      src={src}
+      alt={alt}
+      width={20}
+      height={15}
+      className={`shrink-0 rounded-sm object-cover shadow-sm ring-1 ring-black/10 ${className}`}
       aria-hidden
-    >
-      {flag}
-    </span>
+    />
   );
 }
 
@@ -55,7 +58,7 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
                     : "bg-brand-cream-light text-brand-brown-dark hover:bg-brand-cream"
                 }`}
               >
-                <LocaleFlag flag={option.flag} />
+                <LocaleFlag src={option.flagSrc} alt={option.label} />
                 {option.label}
               </button>
             );
@@ -73,7 +76,7 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
         aria-haspopup="listbox"
         className="nav-hover flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-brown-dark hover:text-white"
       >
-        <LocaleFlag flag={current.flag} />
+        <LocaleFlag src={current.flagSrc} alt={current.label} />
         {current.label}
         <ChevronDown className="h-4 w-4 opacity-70 transition-transform group-hover:rotate-180" />
       </button>
@@ -95,7 +98,7 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
                     : "text-brand-brown-dark hover:bg-brand-cream-light"
                 }`}
               >
-                <LocaleFlag flag={option.flag} />
+                <LocaleFlag src={option.flagSrc} alt={option.label} />
                 {option.label}
               </button>
             </li>
