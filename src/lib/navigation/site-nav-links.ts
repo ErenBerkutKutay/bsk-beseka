@@ -42,3 +42,11 @@ export function getMediaNavLinks(t: NavTranslator) {
     { slug: "indirme-merkezi", href: "/medya/indirme-merkezi", label: t("downloadCenter") },
   ];
 }
+
+export function getQualityNavLinks(t: NavTranslator) {
+  return [
+    { slug: "kalite-yonetimi", href: "/arge/kalite-yonetimi", label: t("qualityManagement") },
+    { slug: "belgelendirme", href: "/arge/belgelendirme", label: t("certification") },
+    { slug: "omur-testleri", href: "/arge/omur-testleri", label: t("lifeTests") },
+  ];
+}

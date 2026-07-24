@@ -236,6 +236,8 @@ export function PagePreview(props: {
   content: string;
   heroImage?: string;
   images?: string[];
+  documents?: import("@/lib/quality/page-metadata").QualityPageDocument[];
+  videos?: import("@/lib/quality/page-metadata").QualityPageVideo[];
 }) {
   return (
     <CmsPageContent
@@ -243,6 +245,8 @@ export function PagePreview(props: {
       content={props.content}
       heroImage={props.heroImage}
       images={props.images}
+      documents={props.documents}
+      videos={props.videos}
     />
   );
 }

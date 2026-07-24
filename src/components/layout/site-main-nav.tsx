@@ -10,6 +10,7 @@ import {
   getCorporateNavLinks,
   getMediaNavLinks,
   getProductionNavLinks,
+  getQualityNavLinks,
 } from "@/lib/navigation/site-nav-links";
 
 type NavLinkItem = { href: string; label: string };
@@ -102,6 +103,33 @@ function ContactNavDropdown({ prefix }: { prefix: string }) {
   );
 }
 
+function QualityNavDropdown({ prefix }: { prefix: string }) {
+  const t = useTranslations("nav");
+  const links = getQualityNavLinks(t);
+
+  return (
+    <div className="group relative">
+      <button
+        type="button"
+        className="nav-hover rounded-lg px-3 py-2 text-base font-semibold text-brand-brown-dark hover:text-white"
+      >
+        {t("quality")}
+      </button>
+      <div className="invisible absolute left-0 top-full z-50 min-w-[240px] translate-y-2 rounded-xl border border-border bg-white py-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+        {links.map((link) => (
+          <Link
+            key={link.slug}
+            href={`${prefix}${link.href}`}
+            className="nav-hover mx-1 block rounded-lg px-4 py-2.5 text-sm text-brand-brown-dark hover:text-white"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function MediaNavDropdown({ prefix }: { prefix: string }) {
   const t = useTranslations("nav");
   const links = getMediaNavLinks(t);
@@ -159,7 +187,7 @@ export function SiteFooterNav({ className = "" }: { className?: string }) {
       title: `${t("production")} & ${t("quality")}`,
       links: [
         ...getProductionNavLinks(t),
-        { href: "/arge/kalite-kontrol", label: t("quality") },
+        ...getQualityNavLinks(t).map((link) => ({ href: link.href, label: link.label })),
       ],
     },
     {
@@ -236,7 +264,7 @@ export function SiteMainNav({
       <NavDropdown title={t("corporate")} links={corporateLinks} prefix={prefix} />
       <NavDropdown title={t("catalog")} links={catalogLinks} prefix={prefix} />
       <NavDropdown title={t("production")} links={productionLinks} prefix={prefix} />
-      <NavLink href={`${prefix}/arge/kalite-kontrol`}>{t("quality")}</NavLink>
+      <QualityNavDropdown prefix={prefix} />
       <MediaNavDropdown prefix={prefix} />
       <ContactNavDropdown prefix={prefix} />
       <LanguageSwitcher />

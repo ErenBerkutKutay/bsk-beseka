@@ -404,10 +404,28 @@ async function main() {
       content: { tr: "Tersine mühendislik ve OEM uyumluluk analizleri." },
     },
     {
-      slug: "arge-kalite-kontrol",
+      slug: "arge-kalite-yonetimi",
       type: "RD" as const,
-      title: { tr: "Kalite Kontrol" },
-      content: { tr: "Laboratuvar testleri ve saha validasyon süreçleri." },
+      title: { tr: "Kalite Yönetimi" },
+      content: {
+        tr: "Beseka Otomotiv'de kalite yönetim sistemi, üretimden sevkiyata kadar tüm süreçlerde sürekli iyileştirme ve müşteri memnuniyetini esas alır.",
+      },
+    },
+    {
+      slug: "arge-belgelendirme",
+      type: "RD" as const,
+      title: { tr: "Belgelendirme" },
+      content: {
+        tr: "Uluslararası kalite standartlarına uygun belgelerimiz ve sertifikalarımız aşağıda yer almaktadır.",
+      },
+    },
+    {
+      slug: "arge-omur-testleri",
+      type: "RD" as const,
+      title: { tr: "Ömür Testleri" },
+      content: {
+        tr: "Ürünlerimizin dayanıklılık ve performansını gösteren ömür testi videolarını aşağıdan izleyebilirsiniz.",
+      },
     },
     {
       slug: "iletisim-bilgiler",

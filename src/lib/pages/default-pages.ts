@@ -114,15 +114,35 @@ export const defaultContactPages: DefaultPage[] = [
   },
 ];
 
-export const defaultQualityPage = {
-  slug: "arge-kalite-kontrol",
-  type: "RD" as const,
-  title: { tr: "Kalite Kontrol" },
-  content: {
-    tr: "Laboratuvar testleri ve saha validasyon süreçleriyle her ürün OEM standartlarında kontrol edilir.",
+export const defaultQualityPages = [
+  {
+    slug: "arge-kalite-yonetimi",
+    type: "RD" as const,
+    title: { tr: "Kalite Yönetimi" },
+    content: {
+      tr: "Beseka Otomotiv'de kalite yönetim sistemi, üretimden sevkiyata kadar tüm süreçlerde sürekli iyileştirme ve müşteri memnuniyetini esas alır.",
+    },
+    sortOrder: 0,
   },
-  sortOrder: 0,
-};
+  {
+    slug: "arge-belgelendirme",
+    type: "RD" as const,
+    title: { tr: "Belgelendirme" },
+    content: {
+      tr: "Uluslararası kalite standartlarına uygun belgelerimiz ve sertifikalarımız aşağıda yer almaktadır.",
+    },
+    sortOrder: 1,
+  },
+  {
+    slug: "arge-omur-testleri",
+    type: "RD" as const,
+    title: { tr: "Ömür Testleri" },
+    content: {
+      tr: "Ürünlerimizin dayanıklılık ve performansını gösteren ömür testi videolarını aşağıdan izleyebilirsiniz.",
+    },
+    sortOrder: 2,
+  },
+] as const;
 
 export const defaultContactTeamMembers = [
   {
@@ -183,17 +203,23 @@ export async function ensureContactPages() {
   });
 }
 
-export async function ensureQualityPage() {
-  await db.page.upsert({
-    where: { slug: defaultQualityPage.slug },
-    update: {},
-    create: {
-      ...defaultQualityPage,
-      isActive: true,
-      images: [],
-    },
+export async function ensureQualityPages() {
+  for (const page of defaultQualityPages) {
+    await db.page.upsert({
+      where: { slug: page.slug },
+      update: {},
+      create: {
+        ...page,
+        isActive: true,
+        images: [],
+        metadata: { documents: [], videos: [] },
+      },
+    });
+  }
+  return db.page.findMany({
+    where: { slug: { in: defaultQualityPages.map((p) => p.slug) } },
+    orderBy: { sortOrder: "asc" },
   });
-  return db.page.findUnique({ where: { slug: defaultQualityPage.slug } });
 }
 
 export async function ensureDefaultPages(scope: "contact" | "quality" | "all") {
@@ -201,6 +227,6 @@ export async function ensureDefaultPages(scope: "contact" | "quality" | "all") {
     await ensureContactPages();
   }
   if (scope === "quality" || scope === "all") {
-    await ensureQualityPage();
+    await ensureQualityPages();
   }
 }

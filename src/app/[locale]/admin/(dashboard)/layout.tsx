@@ -20,7 +20,7 @@ const adminNav = [
   { href: "/admin/medya/indirmeler", label: "Medya — İndirme Merkezi" },
   { href: "/admin/sayfalar", label: "Sayfalar" },
   { href: "/admin/iletisim-sayfalari", label: "İletişim Sayfaları" },
-  { href: "/admin/kalite-sayfasi", label: "Kalite Sayfası" },
+  { href: "/admin/kalite-sayfasi", label: "Kalite Sayfaları" },
   { href: "/admin/kullanicilar", label: "Kullanıcılar" },
   { href: "/admin/arac-import", label: "Araç Kataloğu" },
 ];

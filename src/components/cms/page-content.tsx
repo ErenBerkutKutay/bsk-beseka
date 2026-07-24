@@ -1,13 +1,31 @@
 import Image from "next/image";
+import type { QualityPageDocument, QualityPageVideo } from "@/lib/quality/page-metadata";
+import { PageDocuments } from "@/components/cms/page-documents";
+import { PageVideos } from "@/components/cms/page-videos";
 
 type PageContentProps = {
   title: string;
   content: string;
   heroImage?: string | null;
   images?: string[];
+  documents?: QualityPageDocument[];
+  videos?: QualityPageVideo[];
+  locale?: string;
+  documentsTitle?: string;
+  videosTitle?: string;
 };
 
-export function CmsPageContent({ title, content, heroImage, images = [] }: PageContentProps) {
+export function CmsPageContent({
+  title,
+  content,
+  heroImage,
+  images = [],
+  documents = [],
+  videos = [],
+  locale = "tr",
+  documentsTitle,
+  videosTitle,
+}: PageContentProps) {
   const html = /<[a-z][\s\S]*>/i.test(content)
     ? content
     : content.replace(/\n/g, "<br/>");
@@ -33,6 +51,8 @@ export function CmsPageContent({ title, content, heroImage, images = [] }: PageC
           ))}
         </div>
       )}
+      <PageDocuments documents={documents} locale={locale} title={documentsTitle} />
+      <PageVideos videos={videos} locale={locale} title={videosTitle} />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { SiteMainNav } from "@/components/layout/site-main-nav";
 import { SocialFollowLinks } from "@/components/layout/social-follow-links";
 import { ContactMobileLinks } from "@/components/contact/contact-nav-dropdown";
 import { MediaMobileLinks } from "@/components/media/media-nav-dropdown";
+import { QualityMobileLinks } from "@/components/quality/quality-nav-dropdown";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -114,9 +115,7 @@ export function SiteHeader() {
           <MobileLink href={`${prefix}/yeni-urunler`} onClick={() => setOpen(false)}>
             {t("newProducts")}
           </MobileLink>
-          <MobileLink href={`${prefix}/arge/kalite-kontrol`} onClick={() => setOpen(false)}>
-            {t("quality")}
-          </MobileLink>
+          <QualityMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <MediaMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <ContactMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <LanguageSwitcher variant="mobile" className="mt-2 px-3" />

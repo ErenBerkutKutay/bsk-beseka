@@ -23,9 +23,9 @@ const expertise = [
   },
   {
     icon: Shield,
-    title: "Kalite Kontrol",
-    desc: "Her parça OEM standartlarında test edilir. AR-GE laboratuvarımızda saha validasyonu.",
-    href: "/arge/kalite-kontrol",
+    title: "Kalite Yönetimi",
+    desc: "Sürekli iyileştirme ve müşteri memnuniyeti odaklı kalite yönetim sistemimiz.",
+    href: "/arge/kalite-yonetimi",
   },
   {
     icon: Zap,
