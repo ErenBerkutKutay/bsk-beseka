@@ -15,20 +15,41 @@ type DefaultPage = {
   sortOrder: number;
 };
 
-/** Eski HTML tabanlı seed içerikleri — otomatik düz metne çevrilir. */
-export const legacyContactHtmlContent: Record<string, string> = {
-  "iletisim-bilgiler":
+/** Eski HTML tabanlı içerikler — otomatik düz metne çevrilir. */
+export const legacyContactHtmlContent: Record<string, string[]> = {
+  "iletisim-bilgiler": [
     "<p><strong>Telefon:</strong> +90 (224) 482 44 55</p><p><strong>E-posta:</strong> info@beseka.com</p><p>Bursa, Türkiye — Otomotiv yedek parça üretim tesisleri</p>",
-  "iletisim-nasil-gidilir":
+  ],
+  "iletisim-nasil-gidilir": [
     '<p>Beseka Otomotiv üretim tesislerimiz Bursa\'dadır. Karayolu ile Bursa yönünden gelirken navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.</p><p>Ziyaret öncesi randevu ve yönlendirme için <a href="tel:+902244824455">+90 (224) 482 44 55</a> numaralı telefondan veya <a href="mailto:info@beseka.com">info@beseka.com</a> adresinden bizimle iletişime geçebilirsiniz.</p><p><a href="https://maps.google.com/?q=Beseka+Otomotiv+Bursa" target="_blank" rel="noopener noreferrer">Haritada Aç</a></p>',
+    '<section><h3>Bursa\'dan Varış</h3><p>Beseka Otomotiv tesislerine Bursa içi ulaşım için navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.</p></section><section><h3>İstanbul\'dan Varış</h3><p>İstanbul yönünden Bursa otoyolunu takip ederek Bursa çıkışından fabrikamıza ulaşabilirsiniz. Ziyaret öncesi randevu almanızı rica ederiz.</p></section>',
+  ],
 };
+
+export function shouldRefreshContactContent(slug: string, existingTr?: string) {
+  if (!existingTr?.trim()) return false;
+
+  const knownLegacy = legacyContactHtmlContent[slug] ?? [];
+  if (knownLegacy.includes(existingTr)) return true;
+
+  if (slug === "iletisim-nasil-gidilir" && /<section|<h3|<\/p>/i.test(existingTr)) return true;
+  if (slug === "iletisim-bilgiler" && /<p><strong>Telefon:<\/strong>/i.test(existingTr)) return true;
+
+  return false;
+}
 
 export const defaultContactPageContent = {
   info: {
     tr: "Ekibimiz size daha iyi yardımcı olmak için burada. Sorularınız, teklif talepleriniz ve iş birliği önerileriniz için satış ekibimizle iletişime geçebilirsiniz.",
   },
   directions: {
-    tr: `Beseka Otomotiv üretim tesislerimiz Bursa'dadır. Karayolu ile Bursa yönünden gelirken navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.
+    tr: `Bursa'dan Varış
+
+Beseka Otomotiv tesislerine Bursa içi ulaşım için navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.
+
+İstanbul'dan Varış
+
+İstanbul yönünden Bursa otoyolunu takip ederek Bursa çıkışından fabrikamıza ulaşabilirsiniz. Ziyaret öncesi randevu almanızı rica ederiz.
 
 Ziyaret öncesi randevu ve yönlendirme için +90 (224) 482 44 55 numaralı telefondan veya info@beseka.com adresinden bizimle iletişime geçebilirsiniz.
 
@@ -119,8 +140,7 @@ async function upsertDefaultPage(page: DefaultPage) {
     existing?.content && typeof existing.content === "object"
       ? (existing.content as Record<string, string>).tr
       : undefined;
-  const legacyContent = legacyContactHtmlContent[page.slug];
-  const shouldRefreshContent = legacyContent && existingTr === legacyContent;
+  const shouldRefreshContent = shouldRefreshContactContent(page.slug, existingTr);
 
   await db.page.upsert({
     where: { slug: page.slug },

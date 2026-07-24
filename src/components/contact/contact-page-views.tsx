@@ -14,7 +14,12 @@ function formatContactContentHtml(content: string) {
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean)
-    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br/>")}</p>`)
+    .map((paragraph) => {
+      if (/Varış\s*$/u.test(paragraph) && paragraph.length < 48) {
+        return `<h3 class="mb-2 mt-5 text-lg font-bold text-brand-brown-dark first:mt-0">${paragraph}</h3>`;
+      }
+      return `<p>${paragraph.replace(/\n/g, "<br/>")}</p>`;
+    })
     .join("");
 }
 
