@@ -51,7 +51,9 @@
     "goalsTitle": "Nos objectifs",
     "newsTitle": "Nos actualités",
     "newsletterTitle": "S'abonner à la newsletter",
-    "newsletterDesc": "Restez informé des événements et des campagnes."
+    "newsletterDesc": "Restez informé des événements et des campagnes.",
+    "contactTitle": "Contact",
+    "contactMore": "Toutes les coordonnées"
   },
   "catalog": {
     "title": "Produits et catalogue",
@@ -166,6 +168,7 @@
     "aboutUs": "À propos",
     "kvkk": "Confidentialité (KVKK)",
     "support": "Assistance",
+    "legalDisclaimer": "Les codes OEM et les marques commerciales sont mentionnés uniquement à des fins de comparaison.",
     "rights": "Tous droits réservés."
   },
   "language": {

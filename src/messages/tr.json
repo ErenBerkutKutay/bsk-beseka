@@ -51,7 +51,9 @@
     "goalsTitle": "Hedeflerimiz",
     "newsTitle": "Bizden Haberler",
     "newsletterTitle": "E-Posta Bültenine Kaydolun",
-    "newsletterDesc": "Etkinlikler ve kampanyalardan haberdar olun."
+    "newsletterDesc": "Etkinlikler ve kampanyalardan haberdar olun.",
+    "contactTitle": "İletişim",
+    "contactMore": "Tüm İletişim Bilgileri"
   },
   "catalog": {
     "title": "Ürünler & Katalog",
@@ -184,6 +186,7 @@
     "aboutUs": "Hakkımızda",
     "kvkk": "KVKK",
     "support": "Destek",
+    "legalDisclaimer": "OEM kodları ve ticari markalar yalnızca karşılaştırma amaçlı belirtilmiştir.",
     "rights": "Tüm Hakları Saklıdır."
   },
   "language": {

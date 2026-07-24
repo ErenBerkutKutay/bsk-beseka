@@ -51,7 +51,9 @@
     "goalsTitle": "أهدافنا",
     "newsTitle": "أخبار منا",
     "newsletterTitle": "اشترك في النشرة البريدية",
-    "newsletterDesc": "ابق على اطلاع بالفعاليات والحملات."
+    "newsletterDesc": "ابق على اطلاع بالفعاليات والحملات.",
+    "contactTitle": "اتصل بنا",
+    "contactMore": "جميع معلومات الاتصال"
   },
   "catalog": {
     "title": "المنتجات والفهرس",
@@ -166,6 +168,7 @@
     "aboutUs": "من نحن",
     "kvkk": "الخصوصية (KVKK)",
     "support": "الدعم",
+    "legalDisclaimer": "رموز OEM والعلامات التجارية مذكورة لأغراض المقارنة فقط.",
     "rights": "جميع الحقوق محفوظة."
   },
   "language": {

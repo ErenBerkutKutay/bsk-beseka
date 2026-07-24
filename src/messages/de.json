@@ -51,7 +51,9 @@
     "goalsTitle": "Unsere Ziele",
     "newsTitle": "Neuigkeiten von uns",
     "newsletterTitle": "Newsletter abonnieren",
-    "newsletterDesc": "Bleiben Sie über Veranstaltungen und Aktionen informiert."
+    "newsletterDesc": "Bleiben Sie über Veranstaltungen und Aktionen informiert.",
+    "contactTitle": "Kontakt",
+    "contactMore": "Alle Kontaktinformationen"
   },
   "catalog": {
     "title": "Produkte & Katalog",
@@ -166,6 +168,7 @@
     "aboutUs": "Über uns",
     "kvkk": "Datenschutz (KVKK)",
     "support": "Support",
+    "legalDisclaimer": "OEM-Codes und Marken werden nur zu Vergleichszwecken angegeben.",
     "rights": "Alle Rechte vorbehalten."
   },
   "language": {

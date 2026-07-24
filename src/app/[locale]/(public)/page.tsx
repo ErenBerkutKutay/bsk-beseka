@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { HeroCategories } from "@/components/home/hero-categories";
 import { HeroSlider } from "@/components/home/hero-slider";
 import { HomeCatalogSearch } from "@/components/home/home-catalog-search";
+import { HomeContactSection } from "@/components/home/home-contact-section";
 import { HomeIntroSection } from "@/components/home/home-intro-section";
 import { HomeStatsBar } from "@/components/home/home-stats-bar";
 import { NewProductsMarquee } from "@/components/home/new-products-marquee";
@@ -147,6 +148,8 @@ export default async function HomePage({
           </form>
         </div>
       </section>
+
+      <HomeContactSection locale={locale} />
     </>
   );
 }

@@ -70,8 +70,13 @@ export function SiteFooter() {
           <p className="mt-2 text-sm text-brand-cream/70">info@beseka.com</p>
         </div>
       </div>
-      <div className="border-t border-brand-brown py-5 text-center text-sm text-brand-cream/50">
-        © {new Date().getFullYear()} Beseka Otomotiv. {tFooter("rights")}
+      <div className="border-t border-brand-brown px-4 py-5">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-sm text-brand-cream/50 md:flex-row md:gap-6 md:text-left">
+          <p className="max-w-3xl leading-relaxed">{tFooter("legalDisclaimer")}</p>
+          <p className="shrink-0">
+            © {new Date().getFullYear()} Beseka Otomotiv. {tFooter("rights")}
+          </p>
+        </div>
       </div>
     </footer>
   );
