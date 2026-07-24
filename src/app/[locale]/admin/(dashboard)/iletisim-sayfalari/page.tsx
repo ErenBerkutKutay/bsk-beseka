@@ -96,7 +96,14 @@ export default function AdminContactPagesPage() {
 
   async function loadTeam() {
     const res = await fetch("/api/admin/contact-team");
-    if (res.ok) setTeamMembers(await res.json());
+    if (!res.ok) return;
+    const data: TeamMember[] = await res.json();
+    setTeamMembers(
+      data.map((member) => ({
+        ...member,
+        role: member.role ? parseLocalizedContent(member.role) : emptyLocalizedContent(),
+      })),
+    );
   }
 
   async function load() {
@@ -432,6 +439,28 @@ export default function AdminContactPagesPage() {
                                 prev.map((item, i) => (i === index ? { ...item, name: e.target.value } : item)),
                               )
                             }
+                          />
+                        </div>
+                        <div>
+                          <Label>Görev</Label>
+                          <Input
+                            value={member.role?.tr || ""}
+                            onChange={(e) =>
+                              setTeamMembers((prev) =>
+                                prev.map((item, i) =>
+                                  i === index
+                                    ? {
+                                        ...item,
+                                        role: {
+                                          ...(item.role || emptyLocalizedContent()),
+                                          tr: e.target.value,
+                                        },
+                                      }
+                                    : item,
+                                ),
+                              )
+                            }
+                            placeholder="Örn: Satış Müdürü"
                           />
                         </div>
                         <div>
