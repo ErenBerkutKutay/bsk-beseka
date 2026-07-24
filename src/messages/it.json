@@ -16,6 +16,10 @@
     "corporate": "Azienda",
     "products": "Prodotti",
     "blog": "Blog",
+    "media": "Media",
+    "newsletterSubscription": "Iscrizione alla newsletter",
+    "news": "Notizie",
+    "downloadCenter": "Centro download",
     "production": "Produzione",
     "rd": "R&S e tecnologia",
     "contact": "Contatti",
@@ -170,6 +174,25 @@
     "support": "Supporto",
     "legalDisclaimer": "I codici OEM e i marchi commerciali sono indicati solo a scopo di confronto.",
     "rights": "Tutti i diritti riservati."
+  },
+  "media": {
+    "newsletterPageTitle": "Newsletter Subscription",
+    "newsletterFormTitle": "Join Our Mailing List!",
+    "newsletterFormDesc": "Be the first to hear about new products in our range.",
+    "newsletterSubmit": "Join List",
+    "newsletterSuccessTitle": "Registration received",
+    "newsletterSuccessDesc": "Thank you. You have been added to our newsletter list.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "companyName": "Company Name",
+    "country": "Country",
+    "email": "Email Address",
+    "kvkkText": "I have read and accept the Privacy Notice (KVKK).",
+    "newsPageTitle": "News",
+    "downloadPageTitle": "Download Center",
+    "downloadPageDesc": "Corporate identity, logos and other downloadable files.",
+    "downloadEmpty": "No downloadable files have been added yet.",
+    "downloadHint": "For latest news visit"
   },
   "language": {
     "switchLabel": "Selezione lingua"

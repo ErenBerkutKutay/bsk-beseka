@@ -65,11 +65,13 @@ export const ModelName = {
   VehicleFitment: 'VehicleFitment',
   FitmentImportLog: 'FitmentImportLog',
   BlogPost: 'BlogPost',
+  DownloadAsset: 'DownloadAsset',
   Page: 'Page',
   Media: 'Media',
   HomeBanner: 'HomeBanner',
   HomeStat: 'HomeStat',
   HomeIntro: 'HomeIntro',
+  HomeContact: 'HomeContact',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -291,6 +293,23 @@ export const BlogPostScalarFieldEnum = {
 export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]
 
 
+export const DownloadAssetScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  coverImage: 'coverImage',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DownloadAssetScalarFieldEnum = (typeof DownloadAssetScalarFieldEnum)[keyof typeof DownloadAssetScalarFieldEnum]
+
+
 export const PageScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -370,6 +389,29 @@ export const HomeIntroScalarFieldEnum = {
 } as const
 
 export type HomeIntroScalarFieldEnum = (typeof HomeIntroScalarFieldEnum)[keyof typeof HomeIntroScalarFieldEnum]
+
+
+export const HomeContactScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  eyebrow: 'eyebrow',
+  title: 'title',
+  companyName: 'companyName',
+  address: 'address',
+  phone: 'phone',
+  email: 'email',
+  image: 'image',
+  buttonLabel: 'buttonLabel',
+  buttonHref: 'buttonHref',
+  textPanelEnabled: 'textPanelEnabled',
+  textPanelColor: 'textPanelColor',
+  textPanelOpacity: 'textPanelOpacity',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeContactScalarFieldEnum = (typeof HomeContactScalarFieldEnum)[keyof typeof HomeContactScalarFieldEnum]
 
 
 export const AnalyticsSearchTermScalarFieldEnum = {

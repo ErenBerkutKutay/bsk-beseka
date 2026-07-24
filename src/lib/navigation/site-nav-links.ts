@@ -34,3 +34,11 @@ export function getContactNavFallbackLinks(t: NavTranslator) {
     { slug: "nasil-gidilir", href: "/iletisim/nasil-gidilir", label: t("howToReach") },
   ];
 }
+
+export function getMediaNavLinks(t: NavTranslator) {
+  return [
+    { slug: "bulten-aboneligi", href: "/medya/bulten-aboneligi", label: t("newsletterSubscription") },
+    { slug: "haberler", href: "/medya/haberler", label: t("news") },
+    { slug: "indirme-merkezi", href: "/medya/indirme-merkezi", label: t("downloadCenter") },
+  ];
+}

@@ -16,6 +16,10 @@
     "corporate": "Kurumsal",
     "products": "Ürünler",
     "blog": "Blog",
+    "media": "Medya",
+    "newsletterSubscription": "Bülten Aboneliği",
+    "news": "Haberler",
+    "downloadCenter": "İndirme Merkezi",
     "production": "Üretim",
     "rd": "ARGE & Teknoloji",
     "contact": "İletişim",
@@ -188,6 +192,25 @@
     "support": "Destek",
     "legalDisclaimer": "OEM kodları ve ticari markalar yalnızca karşılaştırma amaçlı belirtilmiştir.",
     "rights": "Tüm Hakları Saklıdır."
+  },
+  "media": {
+    "newsletterPageTitle": "Bülten Aboneliği",
+    "newsletterFormTitle": "E-posta Listemize Katılın!",
+    "newsletterFormDesc": "Ürün yelpazemizdeki yeni ürünlerden ilk siz haberdar olun.",
+    "newsletterSubmit": "Listeye Katıl",
+    "newsletterSuccessTitle": "Kaydınız alındı",
+    "newsletterSuccessDesc": "Teşekkürler. Bülten listemize eklendiniz.",
+    "firstName": "Adınız",
+    "lastName": "Soyadınız",
+    "companyName": "Firma Adınız",
+    "country": "Bulunduğunuz Ülke",
+    "email": "E-posta Adresiniz",
+    "kvkkText": "KVKK Aydınlatma Metni'ni okudum, kabul ediyorum.",
+    "newsPageTitle": "Haberler",
+    "downloadPageTitle": "İndirme Merkezi",
+    "downloadPageDesc": "Kurumsal kimlik, logo ve diğer indirilebilir dosyalar.",
+    "downloadEmpty": "Henüz indirilebilir dosya eklenmemiş.",
+    "downloadHint": "Güncel haberler için"
   },
   "language": {
     "switchLabel": "Dil seçimi"

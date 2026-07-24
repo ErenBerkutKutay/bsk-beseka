@@ -398,11 +398,13 @@ export const ModelName = {
   VehicleFitment: 'VehicleFitment',
   FitmentImportLog: 'FitmentImportLog',
   BlogPost: 'BlogPost',
+  DownloadAsset: 'DownloadAsset',
   Page: 'Page',
   Media: 'Media',
   HomeBanner: 'HomeBanner',
   HomeStat: 'HomeStat',
   HomeIntro: 'HomeIntro',
+  HomeContact: 'HomeContact',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactTeamMember" | "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "page" | "media" | "homeBanner" | "homeStat" | "homeIntro" | "analyticsSearchTerm" | "analyticsProductView"
+    modelProps: "contactTeamMember" | "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "downloadAsset" | "page" | "media" | "homeBanner" | "homeStat" | "homeIntro" | "homeContact" | "analyticsSearchTerm" | "analyticsProductView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1460,6 +1462,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DownloadAsset: {
+      payload: Prisma.$DownloadAssetPayload<ExtArgs>
+      fields: Prisma.DownloadAssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DownloadAssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DownloadAssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        findFirst: {
+          args: Prisma.DownloadAssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DownloadAssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        findMany: {
+          args: Prisma.DownloadAssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>[]
+        }
+        create: {
+          args: Prisma.DownloadAssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        createMany: {
+          args: Prisma.DownloadAssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DownloadAssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>[]
+        }
+        delete: {
+          args: Prisma.DownloadAssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        update: {
+          args: Prisma.DownloadAssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.DownloadAssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DownloadAssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DownloadAssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.DownloadAssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DownloadAssetPayload>
+        }
+        aggregate: {
+          args: Prisma.DownloadAssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDownloadAsset>
+        }
+        groupBy: {
+          args: Prisma.DownloadAssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DownloadAssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DownloadAssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DownloadAssetCountAggregateOutputType> | number
+        }
+      }
+    }
     Page: {
       payload: Prisma.$PagePayload<ExtArgs>
       fields: Prisma.PageFieldRefs
@@ -1827,6 +1903,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.HomeIntroCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.HomeIntroCountAggregateOutputType> | number
+        }
+      }
+    }
+    HomeContact: {
+      payload: Prisma.$HomeContactPayload<ExtArgs>
+      fields: Prisma.HomeContactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HomeContactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HomeContactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        findFirst: {
+          args: Prisma.HomeContactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HomeContactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        findMany: {
+          args: Prisma.HomeContactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>[]
+        }
+        create: {
+          args: Prisma.HomeContactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        createMany: {
+          args: Prisma.HomeContactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HomeContactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>[]
+        }
+        delete: {
+          args: Prisma.HomeContactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        update: {
+          args: Prisma.HomeContactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        deleteMany: {
+          args: Prisma.HomeContactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HomeContactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HomeContactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>[]
+        }
+        upsert: {
+          args: Prisma.HomeContactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HomeContactPayload>
+        }
+        aggregate: {
+          args: Prisma.HomeContactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHomeContact>
+        }
+        groupBy: {
+          args: Prisma.HomeContactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeContactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HomeContactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HomeContactCountAggregateOutputType> | number
         }
       }
     }
@@ -2218,6 +2368,23 @@ export const BlogPostScalarFieldEnum = {
 export type BlogPostScalarFieldEnum = (typeof BlogPostScalarFieldEnum)[keyof typeof BlogPostScalarFieldEnum]
 
 
+export const DownloadAssetScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  coverImage: 'coverImage',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DownloadAssetScalarFieldEnum = (typeof DownloadAssetScalarFieldEnum)[keyof typeof DownloadAssetScalarFieldEnum]
+
+
 export const PageScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -2297,6 +2464,29 @@ export const HomeIntroScalarFieldEnum = {
 } as const
 
 export type HomeIntroScalarFieldEnum = (typeof HomeIntroScalarFieldEnum)[keyof typeof HomeIntroScalarFieldEnum]
+
+
+export const HomeContactScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  eyebrow: 'eyebrow',
+  title: 'title',
+  companyName: 'companyName',
+  address: 'address',
+  phone: 'phone',
+  email: 'email',
+  image: 'image',
+  buttonLabel: 'buttonLabel',
+  buttonHref: 'buttonHref',
+  textPanelEnabled: 'textPanelEnabled',
+  textPanelColor: 'textPanelColor',
+  textPanelOpacity: 'textPanelOpacity',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeContactScalarFieldEnum = (typeof HomeContactScalarFieldEnum)[keyof typeof HomeContactScalarFieldEnum]
 
 
 export const AnalyticsSearchTermScalarFieldEnum = {
@@ -2629,11 +2819,13 @@ export type GlobalOmitConfig = {
   vehicleFitment?: Prisma.VehicleFitmentOmit
   fitmentImportLog?: Prisma.FitmentImportLogOmit
   blogPost?: Prisma.BlogPostOmit
+  downloadAsset?: Prisma.DownloadAssetOmit
   page?: Prisma.PageOmit
   media?: Prisma.MediaOmit
   homeBanner?: Prisma.HomeBannerOmit
   homeStat?: Prisma.HomeStatOmit
   homeIntro?: Prisma.HomeIntroOmit
+  homeContact?: Prisma.HomeContactOmit
   analyticsSearchTerm?: Prisma.AnalyticsSearchTermOmit
   analyticsProductView?: Prisma.AnalyticsProductViewOmit
 }

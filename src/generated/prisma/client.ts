@@ -112,6 +112,11 @@ export type FitmentImportLog = Prisma.FitmentImportLogModel
  */
 export type BlogPost = Prisma.BlogPostModel
 /**
+ * Model DownloadAsset
+ * 
+ */
+export type DownloadAsset = Prisma.DownloadAssetModel
+/**
  * Model Page
  * 
  */
@@ -136,6 +141,11 @@ export type HomeStat = Prisma.HomeStatModel
  * 
  */
 export type HomeIntro = Prisma.HomeIntroModel
+/**
+ * Model HomeContact
+ * 
+ */
+export type HomeContact = Prisma.HomeContactModel
 /**
  * Model AnalyticsSearchTerm
  * 

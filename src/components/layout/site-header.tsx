@@ -12,6 +12,7 @@ import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { SiteMainNav } from "@/components/layout/site-main-nav";
 import { SocialFollowLinks } from "@/components/layout/social-follow-links";
 import { ContactMobileLinks } from "@/components/contact/contact-nav-dropdown";
+import { MediaMobileLinks } from "@/components/media/media-nav-dropdown";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -116,9 +117,7 @@ export function SiteHeader() {
           <MobileLink href={`${prefix}/arge/kalite-kontrol`} onClick={() => setOpen(false)}>
             {t("quality")}
           </MobileLink>
-          <MobileLink href={`${prefix}/blog`} onClick={() => setOpen(false)}>
-            {t("blog")}
-          </MobileLink>
+          <MediaMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <ContactMobileLinks prefix={prefix} onNavigate={() => setOpen(false)} />
           <LanguageSwitcher variant="mobile" className="mt-2 px-3" />
           <a

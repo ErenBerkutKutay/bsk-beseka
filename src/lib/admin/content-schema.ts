@@ -56,6 +56,22 @@ export const adminHomeIntroSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const adminHomeContactSchema = z.object({
+  eyebrow: localizedNameSchema,
+  title: localizedNameSchema,
+  companyName: localizedNameSchema,
+  address: localizedNameSchema,
+  phone: z.string().min(1),
+  email: z.string().email(),
+  image: z.string().min(1),
+  buttonLabel: localizedNameSchema,
+  buttonHref: z.string().min(1),
+  textPanelEnabled: z.boolean().default(true),
+  textPanelColor: z.string().min(1),
+  textPanelOpacity: z.number().min(0).max(100).default(75),
+  isActive: z.boolean().default(true),
+});
+
 export type AdminCategoryInput = z.infer<typeof adminCategorySchema>;
 export type AdminBlogInput = z.infer<typeof adminBlogSchema>;
 export type AdminPageUpdateInput = z.infer<typeof adminPageUpdateSchema>;
@@ -69,6 +85,21 @@ export function buildOptionalLocalizedField(
 ): PrismaTypes.InputJsonValue | typeof Prisma.DbNull {
   return buildOptionalLocalizedJson(values ?? {}) ?? Prisma.DbNull;
 }
+
+export const adminDownloadAssetSchema = z.object({
+  title: localizedNameSchema,
+  coverImage: z.string().optional(),
+  fileUrl: z.string().min(1),
+  fileName: z.string().min(1),
+  mimeType: z.string().min(1),
+  fileSize: z.number().default(0),
+  sortOrder: z.number().default(0),
+  isActive: z.boolean().default(true),
+});
+
+export const adminDownloadAssetUpdateSchema = adminDownloadAssetSchema.extend({
+  id: z.string().min(1),
+});
 
 export function buildMetadataJson(
   metadata: Record<string, unknown> | undefined,

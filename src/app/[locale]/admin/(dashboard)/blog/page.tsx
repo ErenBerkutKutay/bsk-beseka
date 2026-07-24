@@ -110,8 +110,8 @@ export default function AdminBlogPage() {
 
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Blog</h1>
-      <p className="mb-6 text-sm text-muted">Kapak görseli ve içerik görselleri ekleyebilirsiniz</p>
+      <h1 className="mb-2 text-2xl font-bold text-brand-brown-dark">Medya — Haberler</h1>
+      <p className="mb-6 text-sm text-muted">Haber kapak görseli ve içerik görselleri ekleyebilirsiniz</p>
 
       <Card className="mb-8">
         <CardContent className="space-y-4 pt-6">

@@ -16,6 +16,10 @@
     "corporate": "الشركة",
     "products": "المنتجات",
     "blog": "المدونة",
+    "media": "الإعلام",
+    "newsletterSubscription": "الاشتراك في النشرة",
+    "news": "الأخبار",
+    "downloadCenter": "مركز التحميل",
     "production": "الإنتاج",
     "rd": "البحث والتطوير والتكنولوجيا",
     "contact": "اتصل بنا",
@@ -170,6 +174,25 @@
     "support": "الدعم",
     "legalDisclaimer": "رموز OEM والعلامات التجارية مذكورة لأغراض المقارنة فقط.",
     "rights": "جميع الحقوق محفوظة."
+  },
+  "media": {
+    "newsletterPageTitle": "Newsletter Subscription",
+    "newsletterFormTitle": "Join Our Mailing List!",
+    "newsletterFormDesc": "Be the first to hear about new products in our range.",
+    "newsletterSubmit": "Join List",
+    "newsletterSuccessTitle": "Registration received",
+    "newsletterSuccessDesc": "Thank you. You have been added to our newsletter list.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "companyName": "Company Name",
+    "country": "Country",
+    "email": "Email Address",
+    "kvkkText": "I have read and accept the Privacy Notice (KVKK).",
+    "newsPageTitle": "News",
+    "downloadPageTitle": "Download Center",
+    "downloadPageDesc": "Corporate identity, logos and other downloadable files.",
+    "downloadEmpty": "No downloadable files have been added yet.",
+    "downloadHint": "For latest news visit"
   },
   "language": {
     "switchLabel": "اختيار اللغة"

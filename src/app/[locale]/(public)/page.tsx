@@ -87,7 +87,7 @@ export default async function HomePage({
             <h2 className="text-2xl font-bold text-brand-brown-dark md:text-3xl">
               {t("newsTitle")}
             </h2>
-            <Link href={`/${locale}/blog`}>
+            <Link href={`/${locale}/medya/haberler`}>
               <Button variant="outline" size="sm">
                 Tüm Haberler
               </Button>
@@ -97,7 +97,7 @@ export default async function HomePage({
             {blogPosts.map((post, index) => (
               <Link
                 key={post.id}
-                href={`/${locale}/blog/${post.slug}`}
+                href={`/${locale}/medya/haberler/${post.slug}`}
                 className="group overflow-hidden rounded-xl border border-border bg-white transition hover:border-brand-brown/30 hover:shadow-md"
               >
                 {post.coverImage ? (
