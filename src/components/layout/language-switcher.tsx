@@ -11,6 +11,17 @@ type LanguageSwitcherProps = {
   variant?: "nav" | "mobile";
 };
 
+function LocaleFlag({ flag, className = "" }: { flag: string; className?: string }) {
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center justify-center text-[1.1em] leading-none ${className}`}
+      aria-hidden
+    >
+      {flag}
+    </span>
+  );
+}
+
 export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSwitcherProps) {
   const t = useTranslations("language");
   const locale = useLocale() as AppLocale;
@@ -38,12 +49,13 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
                 type="button"
                 onClick={() => switchLocale(option.code)}
                 aria-current={active ? "true" : undefined}
-                className={`rounded-lg px-2 py-2 text-sm font-semibold transition-colors ${
+                className={`flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-sm font-semibold transition-colors ${
                   active
                     ? "bg-brand-brown-dark text-white"
                     : "bg-brand-cream-light text-brand-brown-dark hover:bg-brand-cream"
                 }`}
               >
+                <LocaleFlag flag={option.flag} />
                 {option.label}
               </button>
             );
@@ -59,15 +71,16 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
         type="button"
         aria-label={t("switchLabel")}
         aria-haspopup="listbox"
-        className="nav-hover flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-brand-brown-dark hover:text-white"
+        className="nav-hover flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-brand-brown-dark hover:text-white"
       >
+        <LocaleFlag flag={current.flag} />
         {current.label}
         <ChevronDown className="h-4 w-4 opacity-70 transition-transform group-hover:rotate-180" />
       </button>
       <ul
         role="listbox"
         aria-label={t("switchLabel")}
-        className="invisible absolute right-0 top-full z-50 min-w-[120px] translate-y-2 rounded-xl border border-border bg-white py-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
+        className="invisible absolute right-0 top-full z-50 min-w-[148px] translate-y-2 rounded-xl border border-border bg-white py-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
       >
         {localeOptions.map((option) => {
           const active = option.code === locale;
@@ -76,12 +89,13 @@ export function LanguageSwitcher({ className = "", variant = "nav" }: LanguageSw
               <button
                 type="button"
                 onClick={() => switchLocale(option.code)}
-                className={`mx-1 block w-[calc(100%-0.5rem)] rounded-lg px-4 py-2.5 text-left text-sm font-semibold transition-colors ${
+                className={`mx-1 flex w-[calc(100%-0.5rem)] items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-colors ${
                   active
                     ? "bg-brand-brown-dark text-white"
                     : "text-brand-brown-dark hover:bg-brand-cream-light"
                 }`}
               >
+                <LocaleFlag flag={option.flag} />
                 {option.label}
               </button>
             </li>
