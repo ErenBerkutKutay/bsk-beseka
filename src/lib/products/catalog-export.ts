@@ -11,7 +11,6 @@ export type CatalogExportProduct = {
   images: string[];
   category?: { name: Record<string, string>; slug: string } | null;
   oemCodes?: { code: string }[];
-  crossCodes?: { code: string }[];
   vehicleTypes?: {
     vehicleType: {
       make: string;
@@ -44,7 +43,6 @@ function mapProductRow(product: CatalogExportProduct, origin: string, includeIma
     ? getLocalizedText(product.category.name, "tr") || product.category.slug
     : "";
   const oem = (product.oemCodes || []).map((c) => c.code).join(" | ");
-  const cross = (product.crossCodes || []).map((c) => c.code).join(" | ");
   const vehicles = buildVehicleDisplayRows(product)
     .map((v) => `${v.makeModel} (${v.yearLabel})`)
     .join(" | ");
@@ -55,7 +53,6 @@ function mapProductRow(product: CatalogExportProduct, origin: string, includeIma
     "Ürün Adı": name,
     Kategori: category,
     "OEM Kodları": oem,
-    "Cross Kodları": cross,
     "Araç Uyumu": vehicles,
     ...(includeImages ? { Görsel: image } : {}),
   };
@@ -72,7 +69,6 @@ export function buildCatalogExcelBuffer(
     { wch: 42 },
     { wch: 22 },
     { wch: 28 },
-    { wch: 24 },
     { wch: 36 },
     ...(options.includeImages ? [{ wch: 48 }] : []),
   ];
@@ -115,12 +111,12 @@ export async function buildCatalogPdfBuffer(
   if (!options.includeImages) {
     const body = products.map((product) => {
       const row = mapProductRow(product, options.origin, false);
-      return [row.Ref, row["Ürün Adı"], row.Kategori, row["OEM Kodları"], row["Cross Kodları"]];
+      return [row.Ref, row["Ürün Adı"], row.Kategori, row["OEM Kodları"]];
     });
 
     autoTable(doc, {
       startY: 28,
-      head: [["Ref", "Ürün Adı", "Kategori", "OEM", "Cross"]],
+      head: [["Ref", "Ürün Adı", "Kategori", "OEM"]],
       body,
       styles: { ...turkishPdfTableFont, fontSize: 7, cellPadding: 1.5 },
       headStyles: { ...turkishPdfTableFont, fillColor: [139, 69, 19] },
@@ -160,7 +156,7 @@ export async function buildCatalogPdfBuffer(
       doc.setFont(TURKISH_PDF_FONT, "normal");
       doc.setFontSize(8);
       const lines = doc.splitTextToSize(
-        `Kategori: ${row.Kategori || "—"}\nOEM: ${row["OEM Kodları"] || "—"}\nCross: ${row["Cross Kodları"] || "—"}`,
+        `Kategori: ${row.Kategori || "—"}\nOEM: ${row["OEM Kodları"] || "—"}`,
         150,
       );
       doc.text(lines, margin + 32, y + 12);

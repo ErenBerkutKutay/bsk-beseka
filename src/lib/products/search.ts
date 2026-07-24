@@ -222,7 +222,6 @@ const EXPORT_IMAGE_MAX = 400;
 const exportProductInclude = {
   category: true,
   oemCodes: true,
-  crossCodes: true,
   vehicleTypes: {
     where: { vehicleType: { tipNo: { gt: 0 } } },
     include: {
