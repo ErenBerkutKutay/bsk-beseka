@@ -8,6 +8,16 @@ import {
 } from "@/lib/contact/page-metadata";
 import { getLocalizedText } from "@/lib/utils";
 
+function formatContactContentHtml(content: string) {
+  if (/<[a-z][\s\S]*>/i.test(content)) return content;
+  return content
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+}
+
 type TeamMember = {
   id: string;
   name: string;
@@ -125,7 +135,7 @@ export function ContactDirectionsView({
   metadataRaw: unknown;
 }) {
   const metadata = parseContactMetadata(metadataRaw);
-  const html = /<[a-z][\s\S]*>/i.test(content) ? content : content.replace(/\n/g, "<br/>");
+  const html = formatContactContentHtml(content);
 
   return (
     <div>

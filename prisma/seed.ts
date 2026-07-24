@@ -7,6 +7,9 @@ import bcrypt from "bcryptjs";
 import { buildOEMEntries } from "../src/lib/oem/normalize";
 import { syncVehicleCatalog } from "../src/lib/vehicles/sync-vehicle-catalog";
 import { fallbackHomeIntro } from "../src/lib/beseka/home-intro";
+import {
+  defaultContactPageContent,
+} from "../src/lib/pages/default-pages";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -410,9 +413,7 @@ async function main() {
       slug: "iletisim-bilgiler",
       type: "CONTACT" as const,
       title: { tr: "İletişim Bilgileri" },
-      content: {
-        tr: "<p><strong>Telefon:</strong> +90 (224) 482 44 55</p><p><strong>E-posta:</strong> info@beseka.com</p><p>Bursa, Türkiye — Otomotiv yedek parça üretim tesisleri</p>",
-      },
+      content: defaultContactPageContent.info,
     },
     {
       slug: "iletisim-mesaj",
@@ -426,9 +427,7 @@ async function main() {
       slug: "iletisim-nasil-gidilir",
       type: "CONTACT" as const,
       title: { tr: "Beseka'ya Nasıl Gidilir" },
-      content: {
-        tr: "<p>Beseka Otomotiv üretim tesislerimiz Bursa'dadır. Karayolu ile Bursa yönünden gelirken navigasyon uygulamanızda \"Beseka Otomotiv\" araması yapabilirsiniz.</p><p>Ziyaret öncesi randevu ve yönlendirme için <a href=\"tel:+902244824455\">+90 (224) 482 44 55</a> numaralı telefondan veya <a href=\"mailto:info@beseka.com\">info@beseka.com</a> adresinden bizimle iletişime geçebilirsiniz.</p><p><a href=\"https://maps.google.com/?q=Beseka+Otomotiv+Bursa\" target=\"_blank\" rel=\"noopener noreferrer\">Haritada Aç</a></p>",
-      },
+      content: defaultContactPageContent.directions,
     },
   ];
 

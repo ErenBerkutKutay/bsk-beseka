@@ -15,14 +15,33 @@ type DefaultPage = {
   sortOrder: number;
 };
 
+/** Eski HTML tabanlı seed içerikleri — otomatik düz metne çevrilir. */
+export const legacyContactHtmlContent: Record<string, string> = {
+  "iletisim-bilgiler":
+    "<p><strong>Telefon:</strong> +90 (224) 482 44 55</p><p><strong>E-posta:</strong> info@beseka.com</p><p>Bursa, Türkiye — Otomotiv yedek parça üretim tesisleri</p>",
+  "iletisim-nasil-gidilir":
+    '<p>Beseka Otomotiv üretim tesislerimiz Bursa\'dadır. Karayolu ile Bursa yönünden gelirken navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.</p><p>Ziyaret öncesi randevu ve yönlendirme için <a href="tel:+902244824455">+90 (224) 482 44 55</a> numaralı telefondan veya <a href="mailto:info@beseka.com">info@beseka.com</a> adresinden bizimle iletişime geçebilirsiniz.</p><p><a href="https://maps.google.com/?q=Beseka+Otomotiv+Bursa" target="_blank" rel="noopener noreferrer">Haritada Aç</a></p>',
+};
+
+export const defaultContactPageContent = {
+  info: {
+    tr: "Ekibimiz size daha iyi yardımcı olmak için burada. Sorularınız, teklif talepleriniz ve iş birliği önerileriniz için satış ekibimizle iletişime geçebilirsiniz.",
+  },
+  directions: {
+    tr: `Beseka Otomotiv üretim tesislerimiz Bursa'dadır. Karayolu ile Bursa yönünden gelirken navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.
+
+Ziyaret öncesi randevu ve yönlendirme için +90 (224) 482 44 55 numaralı telefondan veya info@beseka.com adresinden bizimle iletişime geçebilirsiniz.
+
+Konumumuzu harita üzerinden görüntülemek için sayfadaki Google Maps bağlantısını kullanabilirsiniz.`,
+  },
+} as const;
+
 export const defaultContactPages: DefaultPage[] = [
   {
     slug: "iletisim-bilgiler",
     type: "CONTACT",
     title: { tr: "İletişim Bilgileri" },
-    content: {
-      tr: "Ekibimiz size daha iyi yardımcı olmak için burada.",
-    },
+    content: defaultContactPageContent.info,
     metadata: {
       template: "info",
       subtitle: { tr: "Ekibimiz size daha iyi yardımcı olmak için burada." },
@@ -60,9 +79,7 @@ export const defaultContactPages: DefaultPage[] = [
     slug: "iletisim-nasil-gidilir",
     type: "CONTACT",
     title: { tr: "Beseka'ya Nasıl Gidilir" },
-    content: {
-      tr: '<section><h3>Bursa\'dan Varış</h3><p>Beseka Otomotiv tesislerine Bursa içi ulaşım için navigasyon uygulamanızda "Beseka Otomotiv" araması yapabilirsiniz.</p></section><section><h3>İstanbul\'dan Varış</h3><p>İstanbul yönünden Bursa otoyolunu takip ederek Bursa çıkışından fabrikamıza ulaşabilirsiniz. Ziyaret öncesi randevu almanızı rica ederiz.</p></section>',
-    },
+    content: defaultContactPageContent.directions,
     metadata: {
       template: "directions",
       mapLink: DEFAULT_MAP_LINK,
@@ -97,10 +114,19 @@ export const defaultContactTeamMembers = [
 ];
 
 async function upsertDefaultPage(page: DefaultPage) {
+  const existing = await db.page.findUnique({ where: { slug: page.slug } });
+  const existingTr =
+    existing?.content && typeof existing.content === "object"
+      ? (existing.content as Record<string, string>).tr
+      : undefined;
+  const legacyContent = legacyContactHtmlContent[page.slug];
+  const shouldRefreshContent = legacyContent && existingTr === legacyContent;
+
   await db.page.upsert({
     where: { slug: page.slug },
     update: {
       metadata: page.metadata,
+      ...(shouldRefreshContent ? { content: page.content } : {}),
     },
     create: {
       slug: page.slug,

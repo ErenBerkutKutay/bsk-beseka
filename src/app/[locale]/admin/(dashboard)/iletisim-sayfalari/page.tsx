@@ -10,7 +10,6 @@ import {
   ImageUploadField,
 } from "@/components/admin/image-upload";
 import {
-  LocalizedRichContentFields,
   LocalizedTextFields,
 } from "@/components/admin/localized-text-fields";
 import {
@@ -349,13 +348,36 @@ export default function AdminContactPagesPage() {
 
                 <ImageGalleryField label="Galeri Görselleri" values={images} onChange={setImages} />
 
-                <LocalizedRichContentFields
-                  label={metadata.template === "directions" ? "Yol Tarifi Bölümleri (HTML)" : "Sayfa İçeriği"}
-                  values={content}
-                  onChange={(lang: AppLocale, value) => setContent((prev) => ({ ...prev, [lang]: value }))}
-                  rows={12}
-                  requiredLocale="tr"
-                />
+                {metadata.template === "directions" ? (
+                  <LocalizedTextFields
+                    label="Yol Tarifi Metni"
+                    values={content}
+                    onChange={(lang: AppLocale, value) => setContent((prev) => ({ ...prev, [lang]: value }))}
+                    multiline
+                    rows={10}
+                    requiredLocale="tr"
+                    placeholder="Paragraflar arasında boş satır bırakın."
+                  />
+                ) : metadata.template === "info" ? (
+                  <LocalizedTextFields
+                    label="Sayfa Açıklaması"
+                    values={content}
+                    onChange={(lang: AppLocale, value) => setContent((prev) => ({ ...prev, [lang]: value }))}
+                    multiline
+                    rows={4}
+                    requiredLocale="tr"
+                    placeholder="Hero bölümünde başlığın altında görünür."
+                  />
+                ) : (
+                  <LocalizedTextFields
+                    label="Sayfa İçeriği"
+                    values={content}
+                    onChange={(lang: AppLocale, value) => setContent((prev) => ({ ...prev, [lang]: value }))}
+                    multiline
+                    rows={6}
+                    requiredLocale="tr"
+                  />
+                )}
 
                 {(metadata.template === "info" || metadata.template === "message") && (
                   <div className="grid gap-4 md:grid-cols-2">
