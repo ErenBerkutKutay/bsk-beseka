@@ -37,18 +37,18 @@ export function NewProductsMarquee({ products }: { products: MarqueeProduct[] })
         </Link>
       </h2>
 
-      <div className="relative overflow-hidden pb-5 md:pb-6">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent md:w-24" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent md:w-24" />
+      <div className="relative w-full overflow-hidden pb-5 md:pb-6">
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-white to-transparent md:w-12" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-white to-transparent md:w-12" />
 
-      <div className="new-products-marquee-track flex w-max gap-4 px-4 md:gap-5 md:px-6">
+      <div className="new-products-marquee-track flex w-max gap-3 md:gap-4">
         {items.map((product, index) => {
           const name = getLocalizedText(product.name, locale);
           return (
             <Link
               key={`${product.id}-${index}`}
               href={`/${locale}/urunler/${product.slug}`}
-              className="card-hover flex w-[200px] shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:border-brand-brown sm:w-[220px] md:w-[240px]"
+              className="card-hover flex w-[210px] shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm hover:border-brand-brown sm:w-[230px] md:w-[250px] lg:w-[270px]"
             >
               <div className="product-image-frame relative aspect-[4/3] bg-brand-cream-light/40">
                 {product.images[0] ? (
