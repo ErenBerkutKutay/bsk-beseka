@@ -195,9 +195,6 @@ export async function searchProducts(params: ProductSearchParams) {
       include: {
         category: true,
         oemCodes: codeMatchFilter ? { where: codeMatchFilter, take: 12 } : { take: 12 },
-        crossCodes: codeMatchFilter
-          ? { where: codeMatchFilter as Prisma.CrossCodeWhereInput, take: 12 }
-          : { take: 12 },
         vehicleTypes: {
           where: { vehicleType: { tipNo: { gt: 0 } } },
           take: 8,
@@ -273,7 +270,6 @@ export async function getProductBySlug(slug: string) {
     include: {
       category: true,
       oemCodes: true,
-      crossCodes: true,
       vehicleTypes: {
         where: { vehicleType: { tipNo: { gt: 0 } } },
         include: {

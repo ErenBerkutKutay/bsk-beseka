@@ -44,17 +44,12 @@ function CopyButton({ text }: { text: string }) {
 
 function CodePills({
   oemCodes,
-  crossCodes,
   max = 3,
 }: {
   oemCodes?: { code: string }[];
-  crossCodes?: { code: string }[];
   max?: number;
 }) {
-  const codes = [
-    ...(oemCodes?.map((c) => ({ ...c, type: "OEM" })) ?? []),
-    ...(crossCodes?.map((c) => ({ ...c, type: "Cross" })) ?? []),
-  ].slice(0, max);
+  const codes = (oemCodes ?? []).slice(0, max);
 
   if (!codes.length) return <span className="text-xs text-muted">—</span>;
 
@@ -62,10 +57,9 @@ function CodePills({
     <div className="flex flex-wrap gap-1">
       {codes.map((c) => (
         <span
-          key={`${c.type}-${c.code}`}
+          key={c.code}
           className="inline-flex items-center gap-1 rounded-md bg-brand-cream/50 px-2 py-0.5 font-mono text-[11px] text-brand-brown-dark ring-1 ring-brand-cream-dark/50"
         >
-          <span className="text-[9px] font-sans font-semibold uppercase text-muted">{c.type}</span>
           {c.code}
           <CopyButton text={c.code} />
         </span>
@@ -124,7 +118,7 @@ function CatalogProductCard({
           </h3>
         </Link>
         <div className="mt-3 flex-1">
-          <CodePills oemCodes={product.oemCodes} crossCodes={product.crossCodes} />
+          <CodePills oemCodes={product.oemCodes} />
         </div>
         <div className="mt-4 flex gap-2">
           <Button variant="outline" size="sm" className="flex-1 gap-1.5" onClick={onQuickView}>
@@ -239,7 +233,7 @@ export function CatalogProductList({
                     {product.isNew && <Badge variant="new" className="ml-2">{tCommon("new")}</Badge>}
                   </div>
                   <p className="font-medium leading-snug text-brand-brown-dark">{name}</p>
-                  <CodePills oemCodes={product.oemCodes} crossCodes={product.crossCodes} max={2} />
+                  <CodePills oemCodes={product.oemCodes} max={2} />
                   <div className="flex gap-2 lg:justify-end">
                     <Button variant="outline" size="sm" onClick={() => setQuickView(product)}>{t("view")}</Button>
                     <Link href={`/${locale}/urunler/${product.slug}`}>
@@ -304,23 +298,6 @@ export function CatalogProductList({
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted">{tProduct("oemCodes")}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {quickView.oemCodes.map((c) => (
-                      <span
-                        key={c.code}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-brand-cream-light px-3 py-1.5 font-mono text-sm text-brand-brown-dark ring-1 ring-brand-cream"
-                      >
-                        {c.code}
-                        <CopyButton text={c.code} />
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {quickView.crossCodes && quickView.crossCodes.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">{tProduct("crossCodes")}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {quickView.crossCodes.map((c) => (
                       <span
                         key={c.code}
                         className="inline-flex items-center gap-1.5 rounded-lg bg-brand-cream-light px-3 py-1.5 font-mono text-sm text-brand-brown-dark ring-1 ring-brand-cream"

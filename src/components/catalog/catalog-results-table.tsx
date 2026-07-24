@@ -69,10 +69,7 @@ export function CatalogResultsTable({
       <ul className="divide-y divide-border">
         {products.map((product) => {
           const name = getLocalizedText(product.name, locale);
-          const codes = [
-            ...(product.oemCodes?.map((c) => c.code) ?? []),
-            ...(product.crossCodes?.map((c) => c.code) ?? []),
-          ];
+          const codes = product.oemCodes?.map((c) => c.code) ?? [];
           const vehicles = buildVehicleDisplayRows(product);
 
           return (
