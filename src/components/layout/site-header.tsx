@@ -9,11 +9,9 @@ import { besekaAssets } from "@/lib/beseka/assets";
 import { BESEKA_B2B_URL } from "@/lib/beseka/links";
 import { ProductSearchForm } from "@/components/catalog/product-search-form";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { SiteMainNav } from "@/components/layout/site-main-nav";
 import { SocialFollowLinks } from "@/components/layout/social-follow-links";
-import {
-  ContactMobileLinks,
-  ContactNavDropdown,
-} from "@/components/contact/contact-nav-dropdown";
+import { ContactMobileLinks } from "@/components/contact/contact-nav-dropdown";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -21,27 +19,6 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const prefix = `/${locale}`;
-
-  const corporateLinks = [
-    { href: "/kurumsal/hakkimizda", label: t("aboutUs") },
-    { href: "/kurumsal/kultur", label: t("culture") },
-    { href: "/kurumsal/vizyon-misyon", label: t("visionMission") },
-    { href: "/kurumsal/degerler", label: t("values") },
-    { href: "/kurumsal/surdurulebilirlik", label: t("sustainability") },
-  ];
-
-  const productionLinks = [
-    { href: "/uretim/kaynak", label: t("welding") },
-    { href: "/uretim/kaliphane", label: t("toolshop") },
-    { href: "/uretim/cnc", label: t("cnc") },
-    { href: "/uretim/vulkanizasyon", label: t("vulcanization") },
-    { href: "/uretim/montaj", label: t("assembly") },
-  ];
-
-  const catalogLinks = [
-    { href: "/urunler", label: t("onlineCatalog") },
-    { href: "/yeni-urunler", label: t("newProducts") },
-  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -90,10 +67,10 @@ export function SiteHeader() {
             <Image
               src={besekaAssets.logo}
               alt="Beseka Otomotiv"
-              width={160}
-              height={36}
+              width={200}
+              height={44}
               className={`block object-contain object-left transition-all ${
-                scrolled ? "h-7 w-[120px]" : "h-8 w-[132px] sm:h-9 sm:w-[148px]"
+                scrolled ? "h-9 w-[148px]" : "h-10 w-[160px] sm:h-11 sm:w-[184px]"
               }`}
               priority
             />
@@ -103,15 +80,9 @@ export function SiteHeader() {
             <ProductSearchForm key={locale} variant="header" />
           </div>
 
-          <nav className="hidden shrink-0 items-center gap-1 lg:flex">
-            <NavDropdown title={t("corporate")} links={corporateLinks} prefix={prefix} />
-            <NavDropdown title={t("catalog")} links={catalogLinks} prefix={prefix} />
-            <NavDropdown title={t("production")} links={productionLinks} prefix={prefix} />
-            <NavLink href={`${prefix}/arge/kalite-kontrol`}>{t("quality")}</NavLink>
-            <NavLink href={`${prefix}/blog`}>{t("blog")}</NavLink>
-            <ContactNavDropdown prefix={prefix} />
-            <LanguageSwitcher />
-          </nav>
+          <div className="hidden shrink-0 lg:block">
+            <SiteMainNav variant="header" />
+          </div>
 
           <button
             className="ml-auto rounded-lg p-2 text-brand-brown lg:ml-0 lg:hidden"
@@ -163,14 +134,6 @@ export function SiteHeader() {
   );
 }
 
-function NavLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link href={href} className="nav-hover rounded-lg px-3 py-2 text-sm font-medium text-brand-brown-dark hover:text-white">
-      {children}
-    </Link>
-  );
-}
-
 function MobileLink({
   href,
   children,
@@ -194,34 +157,5 @@ function MobileLink({
     >
       {children}
     </Link>
-  );
-}
-
-function NavDropdown({
-  title,
-  links,
-  prefix,
-}: {
-  title: string;
-  links: { href: string; label: string }[];
-  prefix: string;
-}) {
-  return (
-    <div className="group relative">
-      <button className="nav-hover rounded-lg px-3 py-2 text-sm font-medium text-brand-brown-dark hover:text-white">
-        {title}
-      </button>
-      <div className="invisible absolute left-0 top-full z-50 min-w-[240px] translate-y-2 rounded-xl border border-border bg-white py-2 opacity-0 shadow-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={`${prefix}${link.href}`}
-            className="nav-hover mx-1 block rounded-lg px-4 py-2.5 text-sm text-brand-brown-dark hover:text-white"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
-    </div>
   );
 }

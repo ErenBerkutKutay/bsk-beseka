@@ -456,15 +456,17 @@ export default function AdminContactPagesPage() {
                             }
                           />
                         </div>
-                        <div>
-                          <Label>Fotoğraf URL</Label>
-                          <Input
+                        <div className="md:col-span-2">
+                          <ImageUploadField
+                            label="Fotoğraf"
                             value={member.photo || ""}
-                            onChange={(e) =>
+                            onChange={(url) =>
                               setTeamMembers((prev) =>
-                                prev.map((item, i) => (i === index ? { ...item, photo: e.target.value } : item)),
+                                prev.map((item, i) => (i === index ? { ...item, photo: url } : item)),
                               )
                             }
+                            hint="Önerilen ölçü: 800 × 1000 px (4:5 dikey). Minimum 600 × 750 px. JPG, PNG veya WEBP."
+                            uploadFolder="uploads"
                           />
                         </div>
                         <div className="md:col-span-2 flex flex-wrap gap-2">

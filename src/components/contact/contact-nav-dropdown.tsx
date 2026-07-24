@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { getContactNavFallbackLinks } from "@/lib/navigation/site-nav-links";
 
 type ContactNavLink = {
   slug: string;
@@ -22,11 +23,7 @@ export function ContactNavDropdown({ prefix }: { prefix: string }) {
       .catch(() => setLinks([]));
   }, [locale]);
 
-  const fallbackLinks: ContactNavLink[] = [
-    { slug: "bilgiler", href: "/iletisim/bilgiler", label: t("contactInfo") },
-    { slug: "mesaj", href: "/iletisim/mesaj", label: t("sendMessage") },
-    { slug: "nasil-gidilir", href: "/iletisim/nasil-gidilir", label: t("howToReach") },
-  ];
+  const fallbackLinks: ContactNavLink[] = getContactNavFallbackLinks(t);
 
   const items = links.length ? links : fallbackLinks;
 
@@ -68,11 +65,7 @@ export function ContactMobileLinks({
       .catch(() => setLinks([]));
   }, [locale]);
 
-  const fallbackLinks: ContactNavLink[] = [
-    { slug: "bilgiler", href: "/iletisim/bilgiler", label: t("contactInfo") },
-    { slug: "mesaj", href: "/iletisim/mesaj", label: t("sendMessage") },
-    { slug: "nasil-gidilir", href: "/iletisim/nasil-gidilir", label: t("howToReach") },
-  ];
+  const fallbackLinks: ContactNavLink[] = getContactNavFallbackLinks(t);
 
   const items = links.length ? links : fallbackLinks;
 

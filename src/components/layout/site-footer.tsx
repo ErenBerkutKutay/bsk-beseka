@@ -1,81 +1,29 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
-import { besekaAssets } from "@/lib/beseka/assets";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { SiteFooterNav } from "@/components/layout/site-main-nav";
 
 export function SiteFooter() {
-  const tNav = useTranslations("nav");
   const tFooter = useTranslations("footer");
-  const locale = useLocale();
-  const prefix = `/${locale}`;
 
   return (
-    <footer className="mt-auto border-t-4 border-brand-brown bg-[#0a0a0a] text-white">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 md:grid-cols-4">
-        <div>
-          <Image
-            src={besekaAssets.logoDark}
-            alt="Beseka Otomotiv"
-            width={160}
-            height={36}
-            className="h-9 w-[148px] object-contain object-left"
-          />
-          <p className="mt-4 text-sm leading-relaxed text-brand-cream/70">{tFooter("tagline")}</p>
-        </div>
-        <div>
-          <h3 className="mb-4 font-semibold text-brand-cream">{tNav("corporate")}</h3>
-          <ul className="space-y-2.5 text-sm text-brand-cream/70">
-            <li>
-              <Link href={`${prefix}/kurumsal/hakkimizda`} className="transition-colors hover:text-brand-cream">
-                {tFooter("aboutUs")}
-              </Link>
-            </li>
-            <li>
-              <Link href={`${prefix}/kurumsal/kvkk`} className="transition-colors hover:text-brand-cream">
-                {tFooter("kvkk")}
-              </Link>
-            </li>
-            <li>
-              <Link href={`${prefix}/iletisim`} className="transition-colors hover:text-brand-cream">
-                {tNav("contact")}
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-4 font-semibold text-brand-cream">{tNav("products")}</h3>
-          <ul className="space-y-2.5 text-sm text-brand-cream/70">
-            <li>
-              <Link href={`${prefix}/urunler`} className="transition-colors hover:text-brand-cream">
-                {tNav("catalog")}
-              </Link>
-            </li>
-            <li>
-              <Link href={`${prefix}/yeni-urunler`} className="transition-colors hover:text-brand-cream">
-                {tNav("newProducts")}
-              </Link>
-            </li>
-            <li>
-              <Link href={`${prefix}/blog`} className="transition-colors hover:text-brand-cream">
-                {tNav("blog")}
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="mb-4 font-semibold text-brand-cream">{tFooter("support")}</h3>
-          <p className="text-sm text-brand-cream/70">7/24: +90 (224) 482 44 55</p>
-          <p className="mt-2 text-sm text-brand-cream/70">info@beseka.com</p>
+    <footer className="mt-auto border-t border-border bg-white text-brand-brown-dark">
+      <div className="border-b border-border/60 bg-zinc-100/90">
+        <div className="mx-auto max-w-7xl px-6 py-10 md:px-8">
+          <SiteFooterNav />
         </div>
       </div>
-      <div className="border-t border-brand-brown px-4 py-5">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-sm text-brand-cream/50 md:flex-row md:gap-6 md:text-left">
+
+      <div className="bg-white px-4 py-5 md:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-center text-sm text-muted lg:flex-row lg:gap-6 lg:text-left">
           <p className="max-w-3xl leading-relaxed">{tFooter("legalDisclaimer")}</p>
-          <p className="shrink-0">
-            © {new Date().getFullYear()} Beseka Otomotiv. {tFooter("rights")}
-          </p>
+          <div className="flex shrink-0 flex-col items-center gap-3 sm:flex-row sm:gap-6">
+            <LanguageSwitcher />
+            <p className="text-brand-brown-dark">
+              © {new Date().getFullYear()} Beseka Otomotiv. {tFooter("rights")}
+            </p>
+          </div>
         </div>
       </div>
     </footer>
