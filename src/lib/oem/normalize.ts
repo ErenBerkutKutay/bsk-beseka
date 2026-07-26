@@ -4,7 +4,7 @@ export function normalizeOEM(code: string): string {
 
 export function parseCodeList(input: string): string[] {
   return input
-    .split(/[\n,;]+/)
+    .split(/[\n,;&|]+/)
     .map((code) => code.trim())
     .filter(Boolean);
 }

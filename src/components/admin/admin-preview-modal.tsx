@@ -5,6 +5,7 @@ import { Eye, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CmsPageContent } from "@/components/cms/page-content";
 import { Badge } from "@/components/ui/input";
+import { parseCodeList } from "@/lib/oem/normalize";
 
 export function AdminPreviewModal({
   open,
@@ -96,8 +97,8 @@ export function ProductPreview({
   crossCodes: string;
   isNew: boolean;
 }) {
-  const oemList = oemCodes.split(/[\n,;]+/).map((s) => s.trim()).filter(Boolean);
-  const crossList = crossCodes.split(/[\n,;]+/).map((s) => s.trim()).filter(Boolean);
+  const oemList = parseCodeList(oemCodes);
+  const crossList = parseCodeList(crossCodes);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">

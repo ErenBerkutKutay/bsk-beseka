@@ -361,7 +361,7 @@ export default function ProductFormPage() {
               <Textarea
                 value={form.oemCodes}
                 onChange={(e) => setForm({ ...form, oemCodes: e.target.value })}
-                placeholder={"12 34-56.78\n77 888-99"}
+                placeholder={"12 34-56.78\n77 888-99\n93807641&512631 (satır, virgül, ; & | ile ayırın)"}
                 rows={5}
                 className="mt-1.5 font-mono text-sm"
               />
@@ -371,6 +371,7 @@ export default function ProductFormPage() {
               <Textarea
                 value={form.crossCodes}
                 onChange={(e) => setForm({ ...form, crossCodes: e.target.value })}
+                placeholder="Satır, virgül, ; & | ile ayırın"
                 rows={4}
                 className="mt-1.5 font-mono text-sm"
               />

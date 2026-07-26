@@ -111,9 +111,6 @@ function splitCsvLine(line: string, delimiter: string): string[] {
 
 function parseList(value: string): string[] {
   if (!value) return [];
-  if (value.includes("|")) {
-    return value.split("|").map((s) => s.trim()).filter(Boolean);
-  }
   return parseCodeList(value);
 }
 
