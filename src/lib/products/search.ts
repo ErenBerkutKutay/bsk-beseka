@@ -58,25 +58,6 @@ function buildCodeRelationFilter(
   return conditions;
 }
 
-function buildCodeMatchFilter(q: string): Prisma.OEMCodeWhereInput {
-  const normalized = normalizeOEM(q);
-  const or: Prisma.OEMCodeWhereInput[] = [
-    { code: { contains: q, mode: "insensitive" } },
-  ];
-
-  if (normalized) {
-    or.push(
-      { codeNormalized: normalized },
-      { codeNormalized: { startsWith: normalized } },
-    );
-    if (normalized.length >= 2) {
-      or.push({ codeNormalized: { contains: normalized } });
-    }
-  }
-
-  return { OR: or };
-}
-
 function buildUnifiedSearchConditions(q: string): Prisma.ProductWhereInput[] {
   return [
     ...buildSkuSearchConditions(q),
@@ -186,22 +167,19 @@ function buildProductSearchWhere(params: ProductSearchParams): Prisma.ProductWhe
 }
 
 export async function searchProducts(params: ProductSearchParams) {
-  const q = params.q?.trim() || "";
   const page = Math.max(1, params.page || 1);
   const limit = Math.min(50, Math.max(1, params.limit || 24));
   const skip = (page - 1) * limit;
   const where = buildProductSearchWhere(params);
-  const codeMatchFilter = q ? buildCodeMatchFilter(q) : undefined;
 
   const [products, total] = await Promise.all([
     db.product.findMany({
       where,
       include: {
         category: true,
-        oemCodes: codeMatchFilter ? { where: codeMatchFilter, take: 12 } : { take: 12 },
+        oemCodes: { orderBy: { code: "asc" } },
         vehicleTypes: {
           where: { vehicleType: { tipNo: { gt: 0 } } },
-          take: 8,
           include: {
             vehicleType: {
               select: vehicleTypeSelect,
