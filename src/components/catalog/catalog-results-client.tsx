@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { CatalogExportBar } from "@/components/catalog/catalog-export-bar";
 import {
@@ -22,7 +22,11 @@ export function CatalogResultsClient({
   totalPages: number;
 }) {
   const searchParams = useSearchParams();
-  const resetKey = searchParams.toString();
+  const resetKey = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    return params.toString();
+  }, [searchParams]);
 
   return (
     <CatalogSelectionProvider resetKey={resetKey}>

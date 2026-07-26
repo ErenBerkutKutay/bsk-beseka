@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getProductBySlug } from "@/lib/products/search";
+import { getProductBySlug, getRelatedProductsInCategory } from "@/lib/products/search";
+import { CategoryRelatedProducts } from "@/components/catalog/category-related-products";
 import { trackProductView } from "@/lib/analytics";
 import {
   buildProductVehicleDetailRows,
@@ -42,6 +43,10 @@ export default async function ProductDetailPage({
 
   if (!product) notFound();
 
+  const relatedProducts = product.categoryId
+    ? await getRelatedProductsInCategory(product.categoryId, product.id)
+    : [];
+
   void trackProductView(product.id);
 
   const name = getLocalizedText(product.name as { tr: string }, locale);
@@ -52,6 +57,7 @@ export default async function ProductDetailPage({
   const packageQuantity = product.packageQuantity ?? 1;
 
   return (
+    <>
     <div className="mx-auto w-full max-w-screen-2xl px-3 py-10 md:px-5 lg:px-6">
       <div className="flex flex-wrap items-center gap-2">
         <span className="rounded-md bg-brand-brown px-3 py-1 text-sm font-bold text-brand-cream">
@@ -195,5 +201,8 @@ export default async function ProductDetailPage({
         </div>
       )}
     </div>
+
+    <CategoryRelatedProducts products={relatedProducts as never[]} locale={locale} />
+    </>
   );
 }

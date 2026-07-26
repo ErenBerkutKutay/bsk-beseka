@@ -188,14 +188,15 @@ function drawPdfHeader(
 
 export async function buildCatalogPdfBuffer(
   products: CatalogExportProduct[],
-  options: { origin: string; settings: CatalogPdfSettingsData },
+  options: { origin: string; settings: CatalogPdfSettingsData; includeImages?: boolean },
 ): Promise<Buffer> {
   const { settings } = options;
+  const includeImages = options.includeImages !== false;
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   registerTurkishPdfFont(doc);
 
   const tableRows = buildPdfTableRows(products, options.origin);
-  const imageMap = await preloadImageMap(tableRows);
+  const imageMap = includeImages ? await preloadImageMap(tableRows) : new Map<string, string>();
   const logoUrl = toAbsoluteUrl(settings.logoUrl, options.origin);
   const headerBgUrl = settings.headerBackgroundUrl
     ? toAbsoluteUrl(settings.headerBackgroundUrl, options.origin)
@@ -280,7 +281,7 @@ export async function buildCatalogPdfBuffer(
       }
     },
     didDrawCell: (data) => {
-      if (data.section !== "body" || data.column.index !== 0) return;
+      if (!includeImages || data.section !== "body" || data.column.index !== 0) return;
 
       const productIndex = bodyRowProductIndex[data.row.index];
       const productRow = tableRows[productIndex];

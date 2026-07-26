@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileSpreadsheet, FileText, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCatalogSelection } from "@/components/catalog/catalog-selection-context";
@@ -10,13 +10,8 @@ import { useCatalogSelection } from "@/components/catalog/catalog-selection-cont
 type ExportFormat = "excel" | "pdf";
 type DialogStep = "choose" | "warn";
 
-function buildExportQuery(
-  searchParams: URLSearchParams,
-  format: ExportFormat,
-  includeImages: boolean,
-  selectedIds: string[],
-) {
-  const params = new URLSearchParams();
+function buildSearchParams(searchParams: URLSearchParams) {
+  const search: Record<string, string> = {};
   for (const key of [
     "q",
     "sku",
@@ -29,14 +24,9 @@ function buildExportQuery(
     "catalog",
   ]) {
     const value = searchParams.get(key);
-    if (value) params.set(key, value);
+    if (value) search[key] = value;
   }
-  params.set("format", format);
-  params.set("includeImages", includeImages ? "1" : "0");
-  if (selectedIds.length) {
-    params.set("ids", selectedIds.join(","));
-  }
-  return params.toString();
+  return search;
 }
 
 export function CatalogExportBar({ total }: { total: number }) {
@@ -46,6 +36,8 @@ export function CatalogExportBar({ total }: { total: number }) {
   const [loading, setLoading] = useState<ExportFormat | null>(null);
   const [pendingFormat, setPendingFormat] = useState<ExportFormat | null>(null);
   const [dialogStep, setDialogStep] = useState<DialogStep | null>(null);
+
+  const exportSearch = useMemo(() => buildSearchParams(searchParams), [searchParams]);
 
   function closeDialog() {
     setPendingFormat(null);
@@ -63,13 +55,17 @@ export function CatalogExportBar({ total }: { total: number }) {
     setLoading(format);
 
     try {
-      const query = buildExportQuery(
-        searchParams,
-        format,
-        includeImages,
-        selectedCount ? [...selectedIds] : [],
-      );
-      const res = await fetch(`/api/catalog/export?${query}`);
+      const selectedList = selectedCount ? [...selectedIds] : [];
+      const res = await fetch("/api/catalog/export", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          format,
+          includeImages,
+          ids: selectedList.length ? selectedList : undefined,
+          search: exportSearch,
+        }),
+      });
 
       if (!res.ok) {
         const data = (await res.json().catch(() => null)) as { error?: string } | null;

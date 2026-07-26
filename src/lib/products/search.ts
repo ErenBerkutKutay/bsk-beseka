@@ -146,7 +146,7 @@ const vehicleTypeSelect = {
   engineCodes: true,
 } as const;
 
-export async function searchProducts(params: ProductSearchParams) {
+function buildProductSearchWhere(params: ProductSearchParams): Prisma.ProductWhereInput {
   const q = params.q?.trim() || "";
   const sku = params.sku?.trim() || "";
   const make = params.make?.trim() || "";
@@ -157,9 +157,6 @@ export async function searchProducts(params: ProductSearchParams) {
     ? LEGACY_CATEGORY_SLUG_MAP[params.category.trim()] || params.category.trim()
     : "";
   const isNew = params.isNew === true;
-  const page = Math.max(1, params.page || 1);
-  const limit = Math.min(50, Math.max(1, params.limit || 24));
-  const skip = (page - 1) * limit;
 
   const vehicleFilter = buildVehicleFilter({
     make,
@@ -175,18 +172,25 @@ export async function searchProducts(params: ProductSearchParams) {
     void trackSearchTerm(q);
   }
 
-  const where: Prisma.ProductWhereInput = {
+  if (sku) {
+    void trackSearchTerm(sku);
+  }
+
+  return {
     isActive: true,
     ...(isNew ? { isNew: true } : {}),
     ...(sku ? { sku: { contains: sku, mode: "insensitive" } } : {}),
     ...(category ? { category: { slug: category } } : {}),
     ...(andConditions.length ? { AND: andConditions } : {}),
   };
+}
 
-  if (sku) {
-    void trackSearchTerm(sku);
-  }
-
+export async function searchProducts(params: ProductSearchParams) {
+  const q = params.q?.trim() || "";
+  const page = Math.max(1, params.page || 1);
+  const limit = Math.min(50, Math.max(1, params.limit || 24));
+  const skip = (page - 1) * limit;
+  const where = buildProductSearchWhere(params);
   const codeMatchFilter = q ? buildCodeMatchFilter(q) : undefined;
 
   const [products, total] = await Promise.all([
@@ -259,7 +263,18 @@ export async function fetchProductsForExport(
   }
 
   const limit = includeImages ? EXPORT_IMAGE_MAX : EXPORT_MAX;
-  const { products, total } = await searchProducts({ ...params, page: 1, limit });
+  const where = buildProductSearchWhere(params);
+
+  const [products, total] = await Promise.all([
+    db.product.findMany({
+      where,
+      include: exportProductInclude,
+      orderBy: { sku: "asc" },
+      take: limit,
+    }),
+    db.product.count({ where }),
+  ]);
+
   return { products, total, exported: products.length, capped: total > products.length };
 }
 
@@ -279,5 +294,30 @@ export async function getProductBySlug(slug: string) {
         orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],
       },
     },
+  });
+}
+
+export async function getRelatedProductsInCategory(
+  categoryId: string | null | undefined,
+  excludeProductId: string,
+  limit = 16,
+) {
+  if (!categoryId) return [];
+
+  return db.product.findMany({
+    where: {
+      categoryId,
+      isActive: true,
+      id: { not: excludeProductId },
+    },
+    select: {
+      id: true,
+      sku: true,
+      slug: true,
+      name: true,
+      images: true,
+    },
+    orderBy: { sku: "asc" },
+    take: limit,
   });
 }
