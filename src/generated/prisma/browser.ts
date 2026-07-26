@@ -123,6 +123,11 @@ export type HomeIntro = Prisma.HomeIntroModel
  */
 export type HomeContact = Prisma.HomeContactModel
 /**
+ * Model CatalogPdfSettings
+ * 
+ */
+export type CatalogPdfSettings = Prisma.CatalogPdfSettingsModel
+/**
  * Model AnalyticsSearchTerm
  * 
  */

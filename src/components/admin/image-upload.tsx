@@ -69,13 +69,25 @@ export function ImageUploadField({
     }
   }
 
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+    const file = event.dataTransfer.files?.[0];
+    if (file?.type.startsWith("image/")) {
+      handleFile(file);
+    }
+  }
+
   return (
     <div>
       <Label>{label}</Label>
       {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
 
       {value ? (
-        <div className="relative mt-2 overflow-hidden rounded-xl border border-border">
+        <div
+          className="relative mt-2 overflow-hidden rounded-xl border border-border"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
           <div className="relative aspect-[16/9] max-h-48 bg-brand-cream-light">
             <Image src={value} alt="" fill className="object-cover" sizes="400px" />
           </div>
@@ -90,13 +102,17 @@ export function ImageUploadField({
           </div>
         </div>
       ) : (
-        <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-brand-cream-light/40 px-4 py-8 transition hover:border-brand-brown hover:bg-brand-cream-light">
+        <label
+          className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-brand-cream-light/40 px-4 py-8 transition hover:border-brand-brown hover:bg-brand-cream-light"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
           {uploading ? (
             <Loader2 className="h-8 w-8 animate-spin text-brand-brown" />
           ) : (
             <>
               <Upload className="mb-2 h-8 w-8 text-muted" />
-              <span className="text-sm font-medium text-brand-brown-dark">Görsel yükle</span>
+              <span className="text-sm font-medium text-brand-brown-dark">Görsel yükle veya sürükleyip bırakın</span>
               <span className="mt-1 text-xs text-muted">PNG, JPG, WEBP</span>
             </>
           )}

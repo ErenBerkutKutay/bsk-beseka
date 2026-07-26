@@ -72,6 +72,16 @@ export const adminHomeContactSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
+export const adminCatalogPdfSettingsSchema = z.object({
+  logoUrl: z.string().min(1),
+  headerBackgroundUrl: z.string().nullable().optional(),
+  headerBackgroundColor: z.string().min(4),
+  headerHeightMm: z.number().min(20).max(60).default(32),
+  documentTitle: z.string().min(1),
+  tableHeaderColor: z.string().min(4),
+  isActive: z.boolean().default(true),
+});
+
 export type AdminCategoryInput = z.infer<typeof adminCategorySchema>;
 export type AdminBlogInput = z.infer<typeof adminBlogSchema>;
 export type AdminPageUpdateInput = z.infer<typeof adminPageUpdateSchema>;

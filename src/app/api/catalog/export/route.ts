@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getCatalogPdfSettings } from "@/lib/catalog/pdf-settings";
 import {
   buildCatalogExcelBuffer,
   buildCatalogPdfBuffer,
@@ -64,7 +65,8 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const buffer = await buildCatalogPdfBuffer(products as never[], { includeImages, origin });
+    const settings = await getCatalogPdfSettings();
+    const buffer = await buildCatalogPdfBuffer(products as never[], { origin, settings });
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",

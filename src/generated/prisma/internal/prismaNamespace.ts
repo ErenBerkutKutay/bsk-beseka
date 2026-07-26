@@ -405,6 +405,7 @@ export const ModelName = {
   HomeStat: 'HomeStat',
   HomeIntro: 'HomeIntro',
   HomeContact: 'HomeContact',
+  CatalogPdfSettings: 'CatalogPdfSettings',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "contactTeamMember" | "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "downloadAsset" | "page" | "media" | "homeBanner" | "homeStat" | "homeIntro" | "homeContact" | "analyticsSearchTerm" | "analyticsProductView"
+    modelProps: "contactTeamMember" | "user" | "category" | "product" | "oEMCode" | "crossCode" | "vehicleMake" | "vehicleModel" | "vehicleSubModel" | "vehicleType" | "productVehicleType" | "vehicleFitment" | "fitmentImportLog" | "blogPost" | "downloadAsset" | "page" | "media" | "homeBanner" | "homeStat" | "homeIntro" | "homeContact" | "catalogPdfSettings" | "analyticsSearchTerm" | "analyticsProductView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1980,6 +1981,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CatalogPdfSettings: {
+      payload: Prisma.$CatalogPdfSettingsPayload<ExtArgs>
+      fields: Prisma.CatalogPdfSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CatalogPdfSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CatalogPdfSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.CatalogPdfSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CatalogPdfSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.CatalogPdfSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.CatalogPdfSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.CatalogPdfSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CatalogPdfSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.CatalogPdfSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        update: {
+          args: Prisma.CatalogPdfSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.CatalogPdfSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CatalogPdfSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CatalogPdfSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.CatalogPdfSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogPdfSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.CatalogPdfSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCatalogPdfSettings>
+        }
+        groupBy: {
+          args: Prisma.CatalogPdfSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogPdfSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CatalogPdfSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogPdfSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     AnalyticsSearchTerm: {
       payload: Prisma.$AnalyticsSearchTermPayload<ExtArgs>
       fields: Prisma.AnalyticsSearchTermFieldRefs
@@ -2489,6 +2564,23 @@ export const HomeContactScalarFieldEnum = {
 export type HomeContactScalarFieldEnum = (typeof HomeContactScalarFieldEnum)[keyof typeof HomeContactScalarFieldEnum]
 
 
+export const CatalogPdfSettingsScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  logoUrl: 'logoUrl',
+  headerBackgroundUrl: 'headerBackgroundUrl',
+  headerBackgroundColor: 'headerBackgroundColor',
+  headerHeightMm: 'headerHeightMm',
+  documentTitle: 'documentTitle',
+  tableHeaderColor: 'tableHeaderColor',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CatalogPdfSettingsScalarFieldEnum = (typeof CatalogPdfSettingsScalarFieldEnum)[keyof typeof CatalogPdfSettingsScalarFieldEnum]
+
+
 export const AnalyticsSearchTermScalarFieldEnum = {
   id: 'id',
   term: 'term',
@@ -2826,6 +2918,7 @@ export type GlobalOmitConfig = {
   homeStat?: Prisma.HomeStatOmit
   homeIntro?: Prisma.HomeIntroOmit
   homeContact?: Prisma.HomeContactOmit
+  catalogPdfSettings?: Prisma.CatalogPdfSettingsOmit
   analyticsSearchTerm?: Prisma.AnalyticsSearchTermOmit
   analyticsProductView?: Prisma.AnalyticsProductViewOmit
 }

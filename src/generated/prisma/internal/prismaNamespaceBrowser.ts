@@ -72,6 +72,7 @@ export const ModelName = {
   HomeStat: 'HomeStat',
   HomeIntro: 'HomeIntro',
   HomeContact: 'HomeContact',
+  CatalogPdfSettings: 'CatalogPdfSettings',
   AnalyticsSearchTerm: 'AnalyticsSearchTerm',
   AnalyticsProductView: 'AnalyticsProductView'
 } as const
@@ -412,6 +413,23 @@ export const HomeContactScalarFieldEnum = {
 } as const
 
 export type HomeContactScalarFieldEnum = (typeof HomeContactScalarFieldEnum)[keyof typeof HomeContactScalarFieldEnum]
+
+
+export const CatalogPdfSettingsScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  logoUrl: 'logoUrl',
+  headerBackgroundUrl: 'headerBackgroundUrl',
+  headerBackgroundColor: 'headerBackgroundColor',
+  headerHeightMm: 'headerHeightMm',
+  documentTitle: 'documentTitle',
+  tableHeaderColor: 'tableHeaderColor',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CatalogPdfSettingsScalarFieldEnum = (typeof CatalogPdfSettingsScalarFieldEnum)[keyof typeof CatalogPdfSettingsScalarFieldEnum]
 
 
 export const AnalyticsSearchTermScalarFieldEnum = {

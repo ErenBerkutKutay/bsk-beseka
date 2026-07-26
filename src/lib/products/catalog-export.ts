@@ -1,8 +1,10 @@
 import * as XLSX from "xlsx";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import type { CatalogPdfSettingsData } from "@/lib/catalog/pdf-settings-defaults";
+import { parseHexColor } from "@/lib/catalog/pdf-settings-defaults";
+import { isValidVehicleTipNo } from "@/lib/catalog/fitment-display";
 import { getLocalizedText } from "@/lib/utils";
-import { buildVehicleDisplayRows } from "@/lib/catalog/fitment-display";
 import { registerTurkishPdfFont, TURKISH_PDF_FONT, turkishPdfTableFont } from "@/lib/pdf/turkish-pdf-font";
 
 export type CatalogExportProduct = {
@@ -13,6 +15,7 @@ export type CatalogExportProduct = {
   oemCodes?: { code: string }[];
   vehicleTypes?: {
     vehicleType: {
+      tipNo?: number | null;
       make: string;
       modelSeries: string;
       typeName: string;
@@ -20,6 +23,20 @@ export type CatalogExportProduct = {
       yearTo?: number | null;
     };
   }[];
+};
+
+type FitmentRow = {
+  make: string;
+  model: string;
+  yearFrom: string;
+  yearTo: string;
+};
+
+type PdfTableRow = {
+  sku: string;
+  oem: string;
+  imageUrl: string;
+  fitments: FitmentRow[];
 };
 
 function resolveSiteOrigin(requestOrigin?: string) {
@@ -43,8 +60,8 @@ function mapProductRow(product: CatalogExportProduct, origin: string, includeIma
     ? getLocalizedText(product.category.name, "tr") || product.category.slug
     : "";
   const oem = (product.oemCodes || []).map((c) => c.code).join(" | ");
-  const vehicles = buildVehicleDisplayRows(product)
-    .map((v) => `${v.makeModel} (${v.yearLabel})`)
+  const vehicles = buildFitmentRows(product)
+    .map((v) => `${v.make} / ${v.model} (${v.yearFrom} - ${v.yearTo})`)
     .join(" | ");
   const image = product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "";
 
@@ -56,6 +73,39 @@ function mapProductRow(product: CatalogExportProduct, origin: string, includeIma
     "Araç Uyumu": vehicles,
     ...(includeImages ? { Görsel: image } : {}),
   };
+}
+
+function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
+  const rows: FitmentRow[] = [];
+  const seen = new Set<number>();
+
+  for (const link of product.vehicleTypes ?? []) {
+    const vt = link.vehicleType;
+    if (!isValidVehicleTipNo(vt.tipNo) || seen.has(vt.tipNo)) continue;
+
+    seen.add(vt.tipNo);
+    rows.push({
+      make: vt.make || "—",
+      model: [vt.modelSeries, vt.typeName].filter(Boolean).join(" / ") || "—",
+      yearFrom: vt.yearFrom ? String(vt.yearFrom) : "—",
+      yearTo: vt.yearTo ? String(vt.yearTo) : "—",
+    });
+  }
+
+  if (!rows.length) {
+    rows.push({ make: "—", model: "—", yearFrom: "—", yearTo: "—" });
+  }
+
+  return rows;
+}
+
+function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
+  return products.map((product) => ({
+    sku: product.sku,
+    oem: (product.oemCodes || []).map((c) => c.code).join("\n") || "—",
+    imageUrl: product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "",
+    fitments: buildFitmentRows(product),
+  }));
 }
 
 export function buildCatalogExcelBuffer(
@@ -91,79 +141,173 @@ async function fetchImageDataUrl(url: string): Promise<string | null> {
   }
 }
 
+function imageFormatFromDataUrl(dataUrl: string): "PNG" | "JPEG" | "WEBP" {
+  if (dataUrl.includes("image/png")) return "PNG";
+  if (dataUrl.includes("image/webp")) return "WEBP";
+  return "JPEG";
+}
+
+async function preloadImageMap(rows: PdfTableRow[]): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  const urls = [...new Set(rows.map((r) => r.imageUrl).filter(Boolean))];
+
+  await Promise.all(
+    urls.map(async (url) => {
+      const dataUrl = await fetchImageDataUrl(url);
+      if (dataUrl) map.set(url, dataUrl);
+    }),
+  );
+
+  return map;
+}
+
+function drawPdfHeader(
+  doc: jsPDF,
+  settings: CatalogPdfSettingsData,
+  assets: { logo?: string | null; headerBackground?: string | null },
+) {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const headerHeight = settings.headerHeightMm;
+  const [r, g, b] = parseHexColor(settings.headerBackgroundColor);
+
+  doc.setFillColor(r, g, b);
+  doc.rect(0, 0, pageWidth, headerHeight, "F");
+
+  if (assets.headerBackground) {
+    const format = imageFormatFromDataUrl(assets.headerBackground);
+    doc.addImage(assets.headerBackground, format, 0, 0, pageWidth, headerHeight, undefined, "FAST");
+  }
+
+  if (assets.logo) {
+    const format = imageFormatFromDataUrl(assets.logo);
+    const logoHeight = Math.max(10, headerHeight - 10);
+    const logoWidth = logoHeight * 2.8;
+    doc.addImage(assets.logo, format, 8, (headerHeight - logoHeight) / 2, logoWidth, logoHeight, undefined, "FAST");
+  }
+}
+
 export async function buildCatalogPdfBuffer(
   products: CatalogExportProduct[],
-  options: { includeImages: boolean; origin: string },
+  options: { origin: string; settings: CatalogPdfSettingsData },
 ): Promise<Buffer> {
+  const { settings } = options;
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   registerTurkishPdfFont(doc);
+
+  const tableRows = buildPdfTableRows(products, options.origin);
+  const imageMap = await preloadImageMap(tableRows);
+  const logoUrl = toAbsoluteUrl(settings.logoUrl, options.origin);
+  const headerBgUrl = settings.headerBackgroundUrl
+    ? toAbsoluteUrl(settings.headerBackgroundUrl, options.origin)
+    : "";
+
+  const [logoData, headerBgData] = await Promise.all([
+    fetchImageDataUrl(logoUrl),
+    headerBgUrl ? fetchImageDataUrl(headerBgUrl) : Promise.resolve(null),
+  ]);
+
+  const headerAssets = { logo: logoData, headerBackground: headerBgData };
   const generatedAt = new Date().toLocaleString("tr-TR");
+  const contentTop = settings.headerHeightMm + 12;
+  const tableHeaderRgb = parseHexColor(settings.tableHeaderColor);
 
-  doc.setFontSize(16);
-  doc.setFont(TURKISH_PDF_FONT, "bold");
-  doc.text("Beseka Ürün Kataloğu", 14, 16);
-  doc.setFontSize(9);
-  doc.setFont(TURKISH_PDF_FONT, "normal");
-  doc.setTextColor(100);
-  doc.text(`Oluşturulma: ${generatedAt} · ${products.length} ürün`, 14, 22);
-  doc.setTextColor(0);
+  type BodyCell = string | { content: string; rowSpan?: number; styles?: Record<string, unknown> };
+  const body: BodyCell[][] = [];
+  const bodyRowProductIndex: number[] = [];
 
-  if (!options.includeImages) {
-    const body = products.map((product) => {
-      const row = mapProductRow(product, options.origin, false);
-      return [row.Ref, row["Ürün Adı"], row.Kategori, row["OEM Kodları"]];
-    });
+  tableRows.forEach((row, productIndex) => {
+    row.fitments.forEach((fitment, fitmentIndex) => {
+      bodyRowProductIndex.push(productIndex);
 
-    autoTable(doc, {
-      startY: 28,
-      head: [["Ref", "Ürün Adı", "Kategori", "OEM"]],
-      body,
-      styles: { ...turkishPdfTableFont, fontSize: 7, cellPadding: 1.5 },
-      headStyles: { ...turkishPdfTableFont, fillColor: [139, 69, 19] },
-      margin: { left: 10, right: 10 },
-    });
-  } else {
-    let y = 30;
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 14;
-
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      const row = mapProductRow(product, options.origin, true);
-      const blockHeight = 46;
-
-      if (y + blockHeight > pageHeight - 12) {
-        doc.addPage();
-        y = 16;
-      }
-
-      const imageUrl = product.images[0] ? toAbsoluteUrl(product.images[0], options.origin) : "";
-      const dataUrl = imageUrl ? await fetchImageDataUrl(imageUrl) : null;
-
-      if (dataUrl) {
-        const format = dataUrl.includes("image/png") ? "PNG" : "JPEG";
-        doc.addImage(dataUrl, format, margin, y, 28, 28);
+      if (fitmentIndex === 0) {
+        body.push([
+          { content: "", rowSpan: row.fitments.length },
+          { content: row.sku, rowSpan: row.fitments.length, styles: { fontStyle: "bold" } },
+          { content: row.oem, rowSpan: row.fitments.length },
+          fitment.make,
+          fitment.model,
+          fitment.yearFrom,
+          fitment.yearTo,
+        ]);
       } else {
-        doc.rect(margin, y, 28, 28);
+        body.push([fitment.make, fitment.model, fitment.yearFrom, fitment.yearTo]);
+      }
+    });
+  });
+
+  autoTable(doc, {
+    startY: contentTop + 10,
+    head: [["Görsel", "Beseka Kodu", "OEM", "Marka", "Model", "Başlangıç Yılı", "Bitiş Yılı"]],
+    body,
+    styles: {
+      ...turkishPdfTableFont,
+      fontSize: 7,
+      cellPadding: 2,
+      valign: "middle",
+      overflow: "linebreak",
+    },
+    headStyles: {
+      ...turkishPdfTableFont,
+      fillColor: tableHeaderRgb,
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    columnStyles: {
+      0: { cellWidth: 22, minCellHeight: 18 },
+      1: { cellWidth: 22, fontStyle: "bold" },
+      2: { cellWidth: 32 },
+      3: { cellWidth: 22 },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 18, halign: "center" },
+      6: { cellWidth: 18, halign: "center" },
+    },
+    alternateRowStyles: { fillColor: [248, 248, 248] },
+    margin: { top: contentTop + 10, left: 8, right: 8 },
+    didDrawPage: (data) => {
+      drawPdfHeader(doc, settings, headerAssets);
+
+      if (data.pageNumber === 1) {
+        doc.setFontSize(14);
+        doc.setFont(TURKISH_PDF_FONT, "bold");
+        doc.setTextColor(0);
+        doc.text(settings.documentTitle, 14, settings.headerHeightMm + 6);
+
         doc.setFontSize(8);
         doc.setFont(TURKISH_PDF_FONT, "normal");
-        doc.text(product.sku.slice(0, 8), margin + 4, y + 16);
+        doc.setTextColor(100);
+        doc.text(`Oluşturulma: ${generatedAt} · ${products.length} ürün`, 14, settings.headerHeightMm + 11);
+        doc.setTextColor(0);
       }
+    },
+    didDrawCell: (data) => {
+      if (data.section !== "body" || data.column.index !== 0) return;
 
-      doc.setFontSize(10);
-      doc.setFont(TURKISH_PDF_FONT, "bold");
-      doc.text(`${row.Ref} — ${row["Ürün Adı"].slice(0, 70)}`, margin + 32, y + 6);
-      doc.setFont(TURKISH_PDF_FONT, "normal");
-      doc.setFontSize(8);
-      const lines = doc.splitTextToSize(
-        `Kategori: ${row.Kategori || "—"}\nOEM: ${row["OEM Kodları"] || "—"}`,
-        150,
-      );
-      doc.text(lines, margin + 32, y + 12);
+      const productIndex = bodyRowProductIndex[data.row.index];
+      const productRow = tableRows[productIndex];
+      if (!productRow?.imageUrl) return;
 
-      y += blockHeight + 4;
-    }
-  }
+      const dataUrl = imageMap.get(productRow.imageUrl);
+      const size = Math.min(data.cell.width - 4, data.cell.height - 4, 18);
+
+      if (dataUrl) {
+        const format = imageFormatFromDataUrl(dataUrl);
+        doc.addImage(
+          dataUrl,
+          format,
+          data.cell.x + (data.cell.width - size) / 2,
+          data.cell.y + (data.cell.height - size) / 2,
+          size,
+          size,
+          undefined,
+          "FAST",
+        );
+      } else {
+        doc.setFontSize(6);
+        doc.setFont(TURKISH_PDF_FONT, "normal");
+        doc.text(productRow.sku.slice(0, 10), data.cell.x + 3, data.cell.y + data.cell.height / 2);
+      }
+    },
+  });
 
   return Buffer.from(doc.output("arraybuffer"));
 }

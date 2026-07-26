@@ -326,6 +326,20 @@ model HomeContact {
   updatedAt           DateTime @updatedAt
 }
 
+model CatalogPdfSettings {
+  id                   String   @id @default(cuid())
+  slug                 String   @unique @default("default")
+  logoUrl              String
+  headerBackgroundUrl  String?
+  headerBackgroundColor String  @default("#c8102e")
+  headerHeightMm       Int      @default(32)
+  documentTitle        String   @default("Beseka Ürün Kataloğu")
+  tableHeaderColor     String   @default("#3d3d3d")
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
 model AnalyticsSearchTerm {
   id     String   @id @default(cuid())
   term   String   @unique
