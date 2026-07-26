@@ -206,7 +206,7 @@ export async function searchProducts(params: ProductSearchParams) {
           orderBy: [{ vehicleType: { make: "asc" } }, { vehicleType: { modelSeries: "asc" } }],
         },
       },
-      orderBy: [{ isNew: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ sku: "asc" }],
       skip,
       take: limit,
     }),
