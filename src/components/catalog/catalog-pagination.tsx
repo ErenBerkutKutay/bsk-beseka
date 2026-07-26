@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { CATALOG_RESULTS_ID } from "@/lib/catalog/navigation";
 
 function buildPageHref(
@@ -21,6 +22,36 @@ function buildPageHref(
   return `/${locale}/urunler${query ? `?${query}` : ""}#${CATALOG_RESULTS_ID}`;
 }
 
+function getVisiblePages(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
+
+  const pages: (number | "ellipsis")[] = [1];
+
+  let start = Math.max(2, current - 1);
+  let end = Math.min(total - 1, current + 1);
+
+  if (current <= 3) {
+    start = 2;
+    end = Math.min(5, total - 1);
+  } else if (current >= total - 2) {
+    start = Math.max(2, total - 4);
+    end = total - 1;
+  }
+
+  if (start > 2) pages.push("ellipsis");
+
+  for (let page = start; page <= end; page += 1) {
+    pages.push(page);
+  }
+
+  if (end < total - 1) pages.push("ellipsis");
+
+  pages.push(total);
+  return pages;
+}
+
 export function CatalogPagination({
   page,
   totalPages,
@@ -31,24 +62,73 @@ export function CatalogPagination({
   const locale = useLocale();
   const t = useTranslations("catalog");
   const searchParams = useSearchParams();
+  const visiblePages = getVisiblePages(page, totalPages);
 
   if (totalPages <= 1) return null;
 
   return (
-    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-      <Link href={buildPageHref(locale, searchParams, page - 1)}>
-        <Button variant="outline" size="sm" disabled={page <= 1}>
+    <nav
+      className="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2"
+      aria-label={t("paginationLabel")}
+    >
+      {page <= 1 ? (
+        <Button variant="outline" size="sm" disabled>
           {t("prevPage")}
         </Button>
-      </Link>
-      <span className="px-2 text-sm text-muted">
-        {t("pageOf", { page, total: totalPages })}
-      </span>
-      <Link href={buildPageHref(locale, searchParams, page + 1)}>
-        <Button variant="outline" size="sm" disabled={page >= totalPages}>
+      ) : (
+        <Link href={buildPageHref(locale, searchParams, page - 1)}>
+          <Button variant="outline" size="sm">
+            {t("prevPage")}
+          </Button>
+        </Link>
+      )}
+
+      <div className="flex flex-wrap items-center justify-center gap-1">
+        {visiblePages.map((item, index) =>
+          item === "ellipsis" ? (
+            <span
+              key={`ellipsis-${index}`}
+              className="px-1 text-sm text-muted"
+              aria-hidden="true"
+            >
+              …
+            </span>
+          ) : item === page ? (
+            <Button
+              key={item}
+              size="sm"
+              className="min-w-9 px-2"
+              aria-current="page"
+              disabled
+            >
+              {item}
+            </Button>
+          ) : (
+            <Link key={item} href={buildPageHref(locale, searchParams, item)}>
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn("min-w-9 px-2")}
+                aria-label={t("goToPage", { page: item })}
+              >
+                {item}
+              </Button>
+            </Link>
+          ),
+        )}
+      </div>
+
+      {page >= totalPages ? (
+        <Button variant="outline" size="sm" disabled>
           {t("nextPage")}
         </Button>
-      </Link>
-    </div>
+      ) : (
+        <Link href={buildPageHref(locale, searchParams, page + 1)}>
+          <Button variant="outline" size="sm">
+            {t("nextPage")}
+          </Button>
+        </Link>
+      )}
+    </nav>
   );
 }

@@ -149,7 +149,9 @@
     "exportFailed": "Katalog oluşturulamadı. Lütfen tekrar deneyin.",
     "prevPage": "Önceki",
     "nextPage": "Sonraki",
-    "pageOf": "Sayfa {page} / {total}"
+    "pageOf": "Sayfa {page} / {total}",
+    "paginationLabel": "Sayfa navigasyonu",
+    "goToPage": "{page}. sayfaya git"
   },
   "product": {
     "oemCodes": "OEM Kodları",

@@ -149,7 +149,9 @@
     "exportFailed": "Could not create catalog. Please try again.",
     "prevPage": "Previous",
     "nextPage": "Next",
-    "pageOf": "Page {page} / {total}"
+    "pageOf": "Page {page} / {total}",
+    "paginationLabel": "Page navigation",
+    "goToPage": "Go to page {page}"
   },
   "product": {
     "oemCodes": "OEM Codes",
