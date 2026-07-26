@@ -220,8 +220,7 @@ export async function searchProducts(params: ProductSearchParams) {
   return { products, total, page, limit };
 }
 
-const EXPORT_MAX = 5000;
-const EXPORT_IMAGE_MAX = 400;
+const EXPORT_LIMIT = 1000;
 
 const exportProductInclude = {
   category: true,
@@ -262,7 +261,7 @@ export async function fetchProductsForExport(
     };
   }
 
-  const limit = includeImages ? EXPORT_IMAGE_MAX : EXPORT_MAX;
+  const limit = EXPORT_LIMIT;
   const where = buildProductSearchWhere(params);
 
   const [products, total] = await Promise.all([

@@ -150,13 +150,17 @@ function imageFormatFromDataUrl(dataUrl: string): "PNG" | "JPEG" | "WEBP" {
 async function preloadImageMap(rows: PdfTableRow[]): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   const urls = [...new Set(rows.map((r) => r.imageUrl).filter(Boolean))];
+  const batchSize = 25;
 
-  await Promise.all(
-    urls.map(async (url) => {
-      const dataUrl = await fetchImageDataUrl(url);
-      if (dataUrl) map.set(url, dataUrl);
-    }),
-  );
+  for (let index = 0; index < urls.length; index += batchSize) {
+    const batch = urls.slice(index, index + batchSize);
+    await Promise.all(
+      batch.map(async (url) => {
+        const dataUrl = await fetchImageDataUrl(url);
+        if (dataUrl) map.set(url, dataUrl);
+      }),
+    );
+  }
 
   return map;
 }

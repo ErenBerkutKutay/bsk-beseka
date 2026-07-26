@@ -8,7 +8,7 @@ import {
 } from "@/lib/products/catalog-export";
 import { fetchProductsForExport, type ProductSearchParams } from "@/lib/products/search";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 type ExportRequestBody = {
   format?: "excel" | "pdf";
