@@ -106,9 +106,15 @@ export function ProductPreview({
         Ürün detay sayfası önizlemesi
       </p>
       <div className="grid gap-8 md:grid-cols-2">
-        <div className="product-image-frame relative aspect-square overflow-hidden rounded-2xl shadow-md">
+        <div className="product-image-frame relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:max-w-[220px]">
           {images[0] ? (
-            <Image src={images[0]} alt="" fill className="product-image" sizes="400px" />
+            <Image
+              src={images[0]}
+              alt=""
+              fill
+              className="product-image object-contain p-8 sm:p-10"
+              sizes="220px"
+            />
           ) : (
             <div className="flex h-full items-center justify-center font-mono text-2xl text-muted">
               {sku || "Ref"}

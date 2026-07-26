@@ -32,9 +32,15 @@ export default async function ProductDetailPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <div className="grid gap-10 lg:grid-cols-2">
-        <div className="product-image-frame relative aspect-square overflow-hidden rounded-2xl shadow-md">
+        <div className="product-image-frame relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:max-w-[220px] md:max-w-[260px]">
           {product.images[0] ? (
-            <Image src={product.images[0]} alt={name} fill className="product-image" />
+            <Image
+              src={product.images[0]}
+              alt={name}
+              fill
+              className="product-image object-contain p-8 sm:p-10 md:p-12"
+              sizes="260px"
+            />
           ) : (
             <div className="flex h-full items-center justify-center text-muted">
               Görsel yok
