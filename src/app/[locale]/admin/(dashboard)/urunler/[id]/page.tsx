@@ -47,6 +47,7 @@ export default function ProductFormPage() {
     categoryId: "",
     weightKg: "",
     gtip: "",
+    packageQuantity: "1",
     images: "",
     isNew: false,
     isFeatured: false,
@@ -76,6 +77,7 @@ export default function ProductFormPage() {
             categoryId: product.categoryId,
             weightKg: product.weightKg != null ? String(product.weightKg) : "",
             gtip: product.gtip || "",
+            packageQuantity: product.packageQuantity != null ? String(product.packageQuantity) : "1",
             images: product.images.join("\n"),
             isNew: product.isNew,
             isFeatured: product.isFeatured,
@@ -173,6 +175,7 @@ export default function ProductFormPage() {
       categoryId: form.categoryId,
       weightKg: form.weightKg,
       gtip: form.gtip,
+      packageQuantity: form.packageQuantity,
       images: imageUrls,
       isNew: form.isNew,
       isFeatured: form.isFeatured,
@@ -303,7 +306,7 @@ export default function ProductFormPage() {
               rows={4}
             />
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-3">
               <div>
                 <Label>Ağırlık (kg)</Label>
                 <Input
@@ -322,6 +325,18 @@ export default function ProductFormPage() {
                   onChange={(e) => setForm({ ...form, gtip: e.target.value })}
                   placeholder="8708.99.00"
                   className="mt-1.5 font-mono"
+                />
+              </div>
+              <div>
+                <Label>Paket Adeti</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={form.packageQuantity}
+                  onChange={(e) => setForm({ ...form, packageQuantity: e.target.value })}
+                  placeholder="1"
+                  className="mt-1.5"
                 />
               </div>
             </div>
@@ -479,6 +494,7 @@ export default function ProductFormPage() {
           description={form.description.tr}
           weightKg={form.weightKg}
           gtip={form.gtip}
+          packageQuantity={form.packageQuantity}
           images={imageUrls}
           oemCodes={form.oemCodes}
           crossCodes={form.crossCodes}

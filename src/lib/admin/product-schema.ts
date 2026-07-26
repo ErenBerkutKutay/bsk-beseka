@@ -16,6 +16,7 @@ export const adminProductSchema = z.object({
   images: z.array(z.string()).default([]),
   weightKg: z.union([z.number(), z.string(), z.null()]).optional(),
   gtip: z.string().optional(),
+  packageQuantity: z.union([z.number(), z.string()]).optional(),
   isNew: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
@@ -36,6 +37,13 @@ export function parseWeightKg(value: unknown): number | null {
 export function parseGtip(value: string | undefined): string | null {
   const normalized = (value || "").replace(/[\s.]/g, "");
   return normalized || null;
+}
+
+export function parsePackageQuantity(value: unknown): number {
+  if (value === null || value === undefined || value === "") return 1;
+  const num = typeof value === "number" ? value : parseInt(String(value), 10);
+  if (!Number.isFinite(num) || num < 1) return 1;
+  return Math.floor(num);
 }
 
 export function buildProductSlug(sku: string, nameTr: string) {
@@ -59,6 +67,7 @@ export function productWriteData(
   images: string[];
   weightKg: number | null;
   gtip: string | null;
+  packageQuantity: number;
   isNew: boolean;
   isFeatured: boolean;
   isActive: boolean;
@@ -75,6 +84,7 @@ export function productWriteData(
     images: data.images,
     weightKg: parseWeightKg(data.weightKg),
     gtip: parseGtip(data.gtip),
+    packageQuantity: parsePackageQuantity(data.packageQuantity),
     isNew: data.isNew,
     isFeatured: data.isFeatured,
     isActive: data.isActive,

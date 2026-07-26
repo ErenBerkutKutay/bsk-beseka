@@ -166,6 +166,9 @@
     "power": "Güç",
     "engineCodes": "Motor Kodları",
     "weight": "Ağırlık",
+    "packageQuantity": "Paket Adeti",
+    "productInfo": "Ürün Bilgileri",
+    "vehicleInfo": "Araç Bilgileri",
     "year": "Yıl",
     "engine": "Motor"
   },

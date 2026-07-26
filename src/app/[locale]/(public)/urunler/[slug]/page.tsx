@@ -3,9 +3,29 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getProductBySlug } from "@/lib/products/search";
 import { trackProductView } from "@/lib/analytics";
-import { formatYearRange } from "@/lib/catalog/fitment-display";
+import {
+  buildProductVehicleDetailRows,
+  formatYearRange,
+} from "@/lib/catalog/fitment-display";
 import { Badge } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
+
+function InfoBlock({
+  label,
+  value,
+  mono = false,
+}: {
+  label: string;
+  value: string;
+  mono?: boolean;
+}) {
+  return (
+    <div>
+      <dt className="text-xs font-semibold uppercase tracking-wide text-muted">{label}</dt>
+      <dd className={`mt-1 font-medium text-brand-brown-dark ${mono ? "font-mono" : ""}`}>{value}</dd>
+    </div>
+  );
+}
 
 export default async function ProductDetailPage({
   params,
@@ -28,11 +48,22 @@ export default async function ProductDetailPage({
   const description = product.description
     ? getLocalizedText(product.description as { tr: string }, locale)
     : "";
+  const vehicleRows = buildProductVehicleDetailRows(product);
+  const packageQuantity = product.packageQuantity ?? 1;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10">
-      <div className="grid gap-10 lg:grid-cols-2">
-        <div className="product-image-frame relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:max-w-[220px] md:max-w-[260px]">
+    <div className="mx-auto w-full max-w-screen-2xl px-3 py-10 md:px-5 lg:px-6">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-md bg-brand-brown px-3 py-1 text-sm font-bold text-brand-cream">
+          {product.sku}
+        </span>
+        {product.isNew && <Badge variant="new">Yeni</Badge>}
+      </div>
+      <h1 className="mt-3 text-3xl font-bold text-brand-brown-dark">{name}</h1>
+      {description && <p className="mt-4 max-w-4xl leading-relaxed text-muted">{description}</p>}
+
+      <div className="mt-8 grid w-full grid-cols-1 gap-4 lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1.25fr)_auto] lg:items-start lg:gap-x-4 xl:gap-x-8">
+        <div className="product-image-frame relative aspect-square w-[180px] shrink-0 overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:w-[220px] lg:w-[240px] lg:justify-self-start">
           {product.images[0] ? (
             <Image
               src={product.images[0]}
@@ -42,60 +73,72 @@ export default async function ProductDetailPage({
               sizes="260px"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-muted">
-              Görsel yok
-            </div>
+            <div className="flex h-full items-center justify-center text-muted">Görsel yok</div>
           )}
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-md bg-brand-brown px-3 py-1 text-sm font-bold text-brand-cream">
-              {product.sku}
-            </span>
-            {product.isNew && <Badge variant="new">Yeni</Badge>}
-          </div>
-          <h1 className="mt-3 text-3xl font-bold text-brand-brown-dark">{name}</h1>
-          {description && <p className="mt-4 leading-relaxed text-muted">{description}</p>}
 
-          {(product.weightKg != null || product.gtip) && (
-            <dl className="mt-6 grid gap-4 rounded-xl border border-border bg-brand-cream-light/40 p-4 text-sm sm:grid-cols-2">
-              {product.weightKg != null && (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-                    {t("weight")}
-                  </dt>
-                  <dd className="mt-1 font-medium text-brand-brown-dark">
-                    {Number(product.weightKg).toLocaleString(locale, {
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 3,
-                    })}{" "}
-                    kg
-                  </dd>
-                </div>
-              )}
-              {product.gtip && (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">GTIP</dt>
-                  <dd className="mt-1 font-mono font-medium text-brand-brown-dark">{product.gtip}</dd>
-                </div>
-              )}
-            </dl>
+        <section className="min-w-0 rounded-xl border border-border bg-brand-cream-light/40 p-4 lg:max-w-sm">
+          <h2 className="text-sm font-bold text-brand-brown-dark">{t("productInfo")}</h2>
+          <dl className="mt-4 space-y-4 text-sm">
+            {product.weightKg != null && (
+              <InfoBlock
+                label={t("weight")}
+                value={`${Number(product.weightKg).toLocaleString(locale, {
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 3,
+                })} kg`}
+              />
+            )}
+            {product.gtip && <InfoBlock label="GTIP" value={product.gtip} mono />}
+            <InfoBlock label={t("packageQuantity")} value={String(packageQuantity)} />
+          </dl>
+        </section>
+
+        <section className="min-w-0 rounded-xl border border-border bg-white p-4">
+          <h2 className="text-sm font-bold text-brand-brown-dark">{t("vehicleInfo")}</h2>
+          {vehicleRows.length ? (
+            <div className="mt-4 overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
+                    <th className="pb-2 pr-3 font-semibold">{t("make")}</th>
+                    <th className="pb-2 pr-3 font-semibold">{t("model")}</th>
+                    <th className="pb-2 font-semibold">{t("year")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vehicleRows.map((row) => (
+                    <tr key={row.key} className="border-b border-border/70 last:border-0">
+                      <td className="py-2 pr-3 align-top">{row.make}</td>
+                      <td className="py-2 pr-3 align-top">{row.model}</td>
+                      <td className="py-2 align-top">{row.yearLabel}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-muted">—</p>
           )}
+        </section>
 
-          <div className="mt-8">
-            <h2 className="font-bold text-brand-brown-dark">{t("oemCodes")}</h2>
-            <div className="mt-2 flex flex-wrap gap-2">
+        <section className="w-full shrink-0 rounded-xl border border-border bg-white p-4 sm:w-auto sm:min-w-[180px] lg:justify-self-end">
+          <h2 className="text-sm font-bold text-brand-brown-dark">{t("oemCodes")}</h2>
+          {product.oemCodes.length ? (
+            <ul className="mt-4 space-y-2">
               {product.oemCodes.map((code) => (
-                <span
+                <li
                   key={code.id}
-                  className="rounded-md bg-brand-cream-light px-3 py-1 font-mono text-sm text-brand-brown-dark ring-1 ring-brand-cream"
+                  className="border-b border-border/70 py-2 font-mono text-sm text-brand-brown-dark last:border-0"
                 >
                   {code.code}
-                </span>
+                </li>
               ))}
-            </div>
-          </div>
-        </div>
+            </ul>
+          ) : (
+            <p className="mt-4 text-sm text-muted">—</p>
+          )}
+        </section>
       </div>
 
       {product.vehicleTypes.some((link) => link.vehicleType.tipNo > 0) && (

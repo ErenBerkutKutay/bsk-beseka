@@ -12,6 +12,44 @@ export function formatYearRange(yearFrom?: number | null, yearTo?: number | null
   return "—";
 }
 
+export type ProductVehicleDetailRow = {
+  key: string;
+  make: string;
+  model: string;
+  yearLabel: string;
+};
+
+export function buildProductVehicleDetailRows(product: {
+  vehicleTypes?: {
+    vehicleType: {
+      tipNo?: number | null;
+      make: string;
+      modelSeries: string;
+      typeName: string;
+      yearFrom?: number | null;
+      yearTo?: number | null;
+    };
+  }[];
+}): ProductVehicleDetailRow[] {
+  const rows: ProductVehicleDetailRow[] = [];
+  const seen = new Set<number>();
+
+  for (const link of product.vehicleTypes ?? []) {
+    const vt = link.vehicleType;
+    if (!isValidVehicleTipNo(vt.tipNo) || seen.has(vt.tipNo)) continue;
+
+    seen.add(vt.tipNo);
+    rows.push({
+      key: `v-${vt.tipNo}`,
+      make: vt.make || "—",
+      model: [vt.modelSeries, vt.typeName].filter(Boolean).join(" / ") || "—",
+      yearLabel: formatYearRange(vt.yearFrom, vt.yearTo),
+    });
+  }
+
+  return rows;
+}
+
 export function isValidVehicleTipNo(tipNo?: number | null): tipNo is number {
   return typeof tipNo === "number" && Number.isFinite(tipNo) && tipNo > 0;
 }

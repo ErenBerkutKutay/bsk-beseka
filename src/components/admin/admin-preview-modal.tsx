@@ -82,6 +82,7 @@ export function ProductPreview({
   description,
   weightKg,
   gtip,
+  packageQuantity,
   images,
   oemCodes,
   crossCodes,
@@ -92,6 +93,7 @@ export function ProductPreview({
   description?: string;
   weightKg?: string;
   gtip?: string;
+  packageQuantity?: string;
   images: string[];
   oemCodes: string;
   crossCodes: string;
@@ -99,87 +101,82 @@ export function ProductPreview({
 }) {
   const oemList = parseCodeList(oemCodes);
   const crossList = parseCodeList(crossCodes);
+  const packageQty = packageQuantity?.trim() || "1";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 py-8">
       <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">
         Ürün detay sayfası önizlemesi
       </p>
-      <div className="grid gap-8 md:grid-cols-2">
-        <div className="product-image-frame relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:max-w-[220px]">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-md bg-brand-brown px-3 py-1 font-mono text-sm font-bold text-brand-cream">
+          {sku || "—"}
+        </span>
+        {isNew && <Badge variant="new">Yeni</Badge>}
+      </div>
+      <h1 className="mt-3 text-2xl font-bold text-brand-brown-dark">{name || "Ürün adı"}</h1>
+      {description && <p className="mt-4 text-muted">{description}</p>}
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-[180px_1fr_auto] md:items-start">
+        <div className="product-image-frame relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md">
           {images[0] ? (
-            <Image
-              src={images[0]}
-              alt=""
-              fill
-              className="product-image object-contain p-8 sm:p-10"
-              sizes="220px"
-            />
+            <Image src={images[0]} alt="" fill className="product-image object-contain p-8" sizes="180px" />
           ) : (
             <div className="flex h-full items-center justify-center font-mono text-2xl text-muted">
               {sku || "Ref"}
             </div>
           )}
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-md bg-brand-brown px-3 py-1 font-mono text-sm font-bold text-brand-cream">
-              {sku || "—"}
-            </span>
-            {isNew && <Badge variant="new">Yeni</Badge>}
+
+        <div className="rounded-xl border border-border bg-white p-4 text-sm">
+          <h2 className="text-sm font-bold text-brand-brown-dark">Ürün Bilgileri</h2>
+          <div className="mt-3 space-y-3">
+            {weightKg && (
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Ağırlık</dt>
+                <dd className="mt-1 font-medium text-brand-brown-dark">{weightKg} kg</dd>
+              </div>
+            )}
+            {gtip && (
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-muted">GTIP</dt>
+                <dd className="mt-1 font-mono font-medium text-brand-brown-dark">{gtip}</dd>
+              </div>
+            )}
+            <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Paket Adeti</dt>
+              <dd className="mt-1 font-medium text-brand-brown-dark">{packageQty}</dd>
+            </div>
           </div>
-          <h1 className="mt-3 text-2xl font-bold text-brand-brown-dark">
-            {name || "Ürün adı"}
-          </h1>
-          {description && <p className="mt-4 text-muted">{description}</p>}
-          {(weightKg || gtip) && (
-            <dl className="mt-6 grid gap-3 rounded-xl border border-border bg-white p-4 text-sm sm:grid-cols-2">
-              {weightKg && (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">Ağırlık</dt>
-                  <dd className="mt-1 font-medium text-brand-brown-dark">{weightKg} kg</dd>
-                </div>
-              )}
-              {gtip && (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted">GTIP</dt>
-                  <dd className="mt-1 font-mono font-medium text-brand-brown-dark">{gtip}</dd>
-                </div>
-              )}
-            </dl>
-          )}
-          {oemList.length > 0 && (
-            <div className="mt-6">
-              <h2 className="text-sm font-bold text-brand-brown-dark">OEM Kodları</h2>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {oemList.map((code) => (
-                  <span
-                    key={code}
-                    className="rounded-md bg-brand-cream-light px-3 py-1 font-mono text-sm ring-1 ring-brand-cream"
-                  >
-                    {code}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-          {crossList.length > 0 && (
-            <div className="mt-4">
-              <h2 className="text-sm font-bold text-brand-brown-dark">Cross Kodları</h2>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {crossList.map((code) => (
-                  <span
-                    key={code}
-                    className="rounded-md bg-brand-cream-light px-3 py-1 font-mono text-sm ring-1 ring-brand-cream"
-                  >
-                    {code}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
+
+        {oemList.length > 0 && (
+          <div className="rounded-xl border border-border bg-white p-4 md:min-w-[160px]">
+            <h2 className="text-sm font-bold text-brand-brown-dark">OEM Kodları</h2>
+            <ul className="mt-3 space-y-2">
+              {oemList.map((code) => (
+                <li key={code} className="border-b border-border/70 py-2 font-mono text-sm last:border-0">
+                  {code}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
+
+      {crossList.length > 0 && (
+        <div className="mt-4 rounded-xl border border-border bg-white p-4">
+          <h2 className="text-sm font-bold text-brand-brown-dark">Cross Kodları</h2>
+          <ul className="mt-2 space-y-2">
+            {crossList.map((code) => (
+              <li key={code} className="font-mono text-sm">
+                {code}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {images.length > 1 && (
         <div className="mt-6 flex gap-2 overflow-x-auto">
           {images.slice(1).map((src) => (

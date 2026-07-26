@@ -148,6 +148,9 @@
     "power": "Leistung",
     "engineCodes": "Motorkennungen",
     "weight": "Gewicht",
+    "packageQuantity": "Packungsmenge",
+    "productInfo": "Produktinformationen",
+    "vehicleInfo": "Fahrzeuginformationen",
     "year": "Jahr",
     "engine": "Motor"
   },

@@ -148,6 +148,9 @@
     "power": "القدرة",
     "engineCodes": "رموز المحرك",
     "weight": "الوزن",
+    "packageQuantity": "عدد العبوة",
+    "productInfo": "معلومات المنتج",
+    "vehicleInfo": "معلومات المركبة",
     "year": "السنة",
     "engine": "المحرك"
   },

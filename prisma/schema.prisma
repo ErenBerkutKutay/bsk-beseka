@@ -71,6 +71,7 @@ model Product {
   images      String[]
   weightKg    Decimal?         @db.Decimal(10, 3)
   gtip        String?
+  packageQuantity Int          @default(1)
   isNew       Boolean          @default(false)
   newUntil    DateTime?
   isFeatured  Boolean          @default(false)

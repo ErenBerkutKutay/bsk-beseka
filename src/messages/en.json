@@ -166,6 +166,9 @@
     "power": "Power",
     "engineCodes": "Engine Codes",
     "weight": "Weight",
+    "packageQuantity": "Package Quantity",
+    "productInfo": "Product Information",
+    "vehicleInfo": "Vehicle Information",
     "year": "Year",
     "engine": "Engine"
   },
