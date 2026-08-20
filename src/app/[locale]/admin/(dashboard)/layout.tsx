@@ -10,6 +10,7 @@ const adminNav = [
   { href: "/admin/urunler", label: "Ürünler" },
   { href: "/admin/urunler/toplu", label: "Toplu Ürün Yükle" },
   { href: "/admin/urunler/gorseller", label: "Toplu Ürün Görseli" },
+  { href: "/admin/urunler/arac-cross", label: "Toplu Araç Crosslama" },
   { href: "/admin/kategoriler", label: "Kategoriler" },
   { href: "/admin/kategoriler/gorseller", label: "Toplu Grup Görseli" },
   { href: "/admin/bannerlar", label: "Bannerlar" },
