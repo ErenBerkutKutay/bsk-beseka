@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, Phone, Search, X } from "lucide-react";
+import { Menu, Phone, Search, X, FileSpreadsheet, Sparkles } from "lucide-react";
 import { besekaAssets } from "@/lib/beseka/assets";
 import { BESEKA_B2B_URL } from "@/lib/beseka/links";
 import { ProductSearchForm } from "@/components/catalog/product-search-form";
@@ -49,6 +49,13 @@ export function SiteHeader() {
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <SocialFollowLinks className="hidden lg:flex" />
             <SocialFollowLinks className="lg:hidden" showLabel={false} iconClassName="h-3.5 w-3.5" />
+            <Link
+              href={`${prefix}/rfq`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-amber-400 to-amber-500 px-3 py-0.5 text-xs font-bold tracking-wide text-zinc-950 shadow-xs transition hover:brightness-110 active:scale-95"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>RFQ / Toplu Eşleme</span>
+            </Link>
             <a
               href={BESEKA_B2B_URL}
               className="rounded bg-brand-cream px-2.5 py-0.5 text-xs font-bold tracking-wide text-brand-brown-dark transition hover:bg-white"
@@ -78,7 +85,7 @@ export function SiteHeader() {
             />
           </Link>
 
-          <div className="hidden min-w-0 flex-1 md:ml-4 md:block lg:ml-6 lg:max-w-lg xl:max-w-xl">
+          <div className="hidden min-w-0 flex-1 md:ml-4 md:block lg:ml-6 lg:max-w-md xl:max-w-lg">
             <ProductSearchForm key={locale} variant="header" />
           </div>
 
@@ -102,6 +109,19 @@ export function SiteHeader() {
         }`}
       >
         <div className="flex flex-col gap-1 px-4 py-4">
+          <Link
+            href={`${prefix}/rfq`}
+            onClick={() => setOpen(false)}
+            className="mb-2 flex items-center justify-between rounded-xl bg-linear-to-r from-brand-brown to-brand-brown-mid px-3.5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-brown-dark"
+          >
+            <span className="flex items-center gap-2">
+              <FileSpreadsheet className="h-4 w-4 text-brand-cream" />
+              Toplu RFQ / OEM Eşleme
+            </span>
+            <span className="rounded bg-white/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+              YENİ
+            </span>
+          </Link>
           <div className="mb-3 md:hidden">
             <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-brown">
               <Search className="h-3.5 w-3.5" />
