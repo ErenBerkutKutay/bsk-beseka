@@ -74,6 +74,8 @@ export type ProductCountAggregateOutputType = {
   slug: number
   name: number
   description: number
+  description2: number
+  description3: number
   categoryId: number
   images: number
   weightKg: number
@@ -137,6 +139,8 @@ export type ProductCountAggregateInputType = {
   slug?: true
   name?: true
   description?: true
+  description2?: true
+  description3?: true
   categoryId?: true
   images?: true
   weightKg?: true
@@ -243,6 +247,8 @@ export type ProductGroupByOutputType = {
   slug: string
   name: runtime.JsonValue
   description: runtime.JsonValue | null
+  description2: runtime.JsonValue | null
+  description3: runtime.JsonValue | null
   categoryId: string | null
   images: string[]
   weightKg: runtime.Decimal | null
@@ -285,6 +291,8 @@ export type ProductWhereInput = {
   slug?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.JsonFilter<"Product">
   description?: Prisma.JsonNullableFilter<"Product">
+  description2?: Prisma.JsonNullableFilter<"Product">
+  description3?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
   weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -310,6 +318,8 @@ export type ProductOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  description2?: Prisma.SortOrderInput | Prisma.SortOrder
+  description3?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -338,6 +348,8 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProductWhereInput | Prisma.ProductWhereInput[]
   name?: Prisma.JsonFilter<"Product">
   description?: Prisma.JsonNullableFilter<"Product">
+  description2?: Prisma.JsonNullableFilter<"Product">
+  description3?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
   weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -363,6 +375,8 @@ export type ProductOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  description2?: Prisma.SortOrderInput | Prisma.SortOrder
+  description3?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -390,6 +404,8 @@ export type ProductScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"Product"> | string
   name?: Prisma.JsonWithAggregatesFilter<"Product">
   description?: Prisma.JsonNullableWithAggregatesFilter<"Product">
+  description2?: Prisma.JsonNullableWithAggregatesFilter<"Product">
+  description3?: Prisma.JsonNullableWithAggregatesFilter<"Product">
   categoryId?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
   weightKg?: Prisma.DecimalNullableWithAggregatesFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -409,6 +425,8 @@ export type ProductCreateInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -433,6 +451,8 @@ export type ProductUncheckedCreateInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -457,6 +477,8 @@ export type ProductUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -481,6 +503,8 @@ export type ProductUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -505,6 +529,8 @@ export type ProductCreateManyInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -524,6 +550,8 @@ export type ProductUpdateManyMutationInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -542,6 +570,8 @@ export type ProductUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -579,6 +609,8 @@ export type ProductCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  description2?: Prisma.SortOrder
+  description3?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
   images?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -778,6 +810,8 @@ export type ProductCreateWithoutCategoryInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -801,6 +835,8 @@ export type ProductUncheckedCreateWithoutCategoryInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -853,6 +889,8 @@ export type ProductScalarWhereInput = {
   slug?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.JsonFilter<"Product">
   description?: Prisma.JsonNullableFilter<"Product">
+  description2?: Prisma.JsonNullableFilter<"Product">
+  description3?: Prisma.JsonNullableFilter<"Product">
   categoryId?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
   weightKg?: Prisma.DecimalNullableFilter<"Product"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -872,6 +910,8 @@ export type ProductCreateWithoutOemCodesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -895,6 +935,8 @@ export type ProductUncheckedCreateWithoutOemCodesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -934,6 +976,8 @@ export type ProductUpdateWithoutOemCodesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -957,6 +1001,8 @@ export type ProductUncheckedUpdateWithoutOemCodesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -980,6 +1026,8 @@ export type ProductCreateWithoutCrossCodesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -1003,6 +1051,8 @@ export type ProductUncheckedCreateWithoutCrossCodesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1042,6 +1092,8 @@ export type ProductUpdateWithoutCrossCodesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1065,6 +1117,8 @@ export type ProductUncheckedUpdateWithoutCrossCodesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1088,6 +1142,8 @@ export type ProductCreateWithoutVehicleTypesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -1111,6 +1167,8 @@ export type ProductUncheckedCreateWithoutVehicleTypesInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1150,6 +1208,8 @@ export type ProductUpdateWithoutVehicleTypesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1173,6 +1233,8 @@ export type ProductUncheckedUpdateWithoutVehicleTypesInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1196,6 +1258,8 @@ export type ProductCreateWithoutFitmentsInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -1219,6 +1283,8 @@ export type ProductUncheckedCreateWithoutFitmentsInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1258,6 +1324,8 @@ export type ProductUpdateWithoutFitmentsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1281,6 +1349,8 @@ export type ProductUncheckedUpdateWithoutFitmentsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1304,6 +1374,8 @@ export type ProductCreateWithoutViewStatsInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -1327,6 +1399,8 @@ export type ProductUncheckedCreateWithoutViewStatsInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1366,6 +1440,8 @@ export type ProductUpdateWithoutViewStatsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1389,6 +1465,8 @@ export type ProductUncheckedUpdateWithoutViewStatsInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1412,6 +1490,8 @@ export type ProductCreateManyCategoryInput = {
   slug: string
   name: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductCreateimagesInput | string[]
   weightKg?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: string | null
@@ -1430,6 +1510,8 @@ export type ProductUpdateWithoutCategoryInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1453,6 +1535,8 @@ export type ProductUncheckedUpdateWithoutCategoryInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1476,6 +1560,8 @@ export type ProductUncheckedUpdateManyWithoutCategoryInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   description?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description2?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  description3?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   images?: Prisma.ProductUpdateimagesInput | string[]
   weightKg?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gtip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1552,6 +1638,8 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   slug?: boolean
   name?: boolean
   description?: boolean
+  description2?: boolean
+  description3?: boolean
   categoryId?: boolean
   images?: boolean
   weightKg?: boolean
@@ -1578,6 +1666,8 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   slug?: boolean
   name?: boolean
   description?: boolean
+  description2?: boolean
+  description3?: boolean
   categoryId?: boolean
   images?: boolean
   weightKg?: boolean
@@ -1598,6 +1688,8 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   slug?: boolean
   name?: boolean
   description?: boolean
+  description2?: boolean
+  description3?: boolean
   categoryId?: boolean
   images?: boolean
   weightKg?: boolean
@@ -1618,6 +1710,8 @@ export type ProductSelectScalar = {
   slug?: boolean
   name?: boolean
   description?: boolean
+  description2?: boolean
+  description3?: boolean
   categoryId?: boolean
   images?: boolean
   weightKg?: boolean
@@ -1631,7 +1725,7 @@ export type ProductSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "slug" | "name" | "description" | "categoryId" | "images" | "weightKg" | "gtip" | "packageQuantity" | "isNew" | "newUntil" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sku" | "slug" | "name" | "description" | "description2" | "description3" | "categoryId" | "images" | "weightKg" | "gtip" | "packageQuantity" | "isNew" | "newUntil" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.Product$categoryArgs<ExtArgs>
   oemCodes?: boolean | Prisma.Product$oemCodesArgs<ExtArgs>
@@ -1664,6 +1758,8 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     slug: string
     name: runtime.JsonValue
     description: runtime.JsonValue | null
+    description2: runtime.JsonValue | null
+    description3: runtime.JsonValue | null
     categoryId: string | null
     images: string[]
     weightKg: runtime.Decimal | null
@@ -2109,6 +2205,8 @@ export interface ProductFieldRefs {
   readonly slug: Prisma.FieldRef<"Product", 'String'>
   readonly name: Prisma.FieldRef<"Product", 'Json'>
   readonly description: Prisma.FieldRef<"Product", 'Json'>
+  readonly description2: Prisma.FieldRef<"Product", 'Json'>
+  readonly description3: Prisma.FieldRef<"Product", 'Json'>
   readonly categoryId: Prisma.FieldRef<"Product", 'String'>
   readonly images: Prisma.FieldRef<"Product", 'String[]'>
   readonly weightKg: Prisma.FieldRef<"Product", 'Decimal'>

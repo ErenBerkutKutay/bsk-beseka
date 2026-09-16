@@ -10,6 +10,8 @@ import { registerTurkishPdfFont, TURKISH_PDF_FONT, turkishPdfTableFont } from "@
 export type CatalogExportProduct = {
   sku: string;
   name: Record<string, string>;
+  description2?: Record<string, string> | null;
+  description3?: Record<string, string> | null;
   images: string[];
   category?: { name: Record<string, string>; slug: string } | null;
   oemCodes?: { code: string }[];
@@ -80,6 +82,38 @@ function formatMakeModelLine(fitment: FitmentRow): string {
   return truncateChars(`${fitment.make} / ${fitment.model}`, PDF_MAKE_MODEL_MAX_CHARS);
 }
 
+function parseManualLines(content: Record<string, string> | null | undefined): string[] {
+  const raw = getLocalizedText(content ?? undefined, "tr");
+  if (!raw.trim()) return [];
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function buildManualVehicleDisplay(
+  makeModelLines: string[],
+  yearLines: string[],
+): { makeModel: string; modelYears: string } {
+  if (!makeModelLines.length) {
+    return { makeModel: "—", modelYears: "—" };
+  }
+
+  const shownMake = makeModelLines
+    .slice(0, PDF_LIST_LIMIT)
+    .map((line) => truncateChars(line, PDF_MAKE_MODEL_MAX_CHARS));
+  const shownYears = shownMake.map((_, index) => yearLines[index] || "—");
+
+  let makeModel = shownMake.join("\n");
+  let modelYears = shownYears.join("\n");
+
+  if (makeModelLines.length > PDF_LIST_LIMIT) {
+    makeModel += "\nDAHA FAZLA BİLGİ";
+  }
+
+  return { makeModel, modelYears };
+}
+
 function resolveSiteOrigin(requestOrigin?: string) {
   return (
     requestOrigin ||
@@ -147,24 +181,35 @@ function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
 function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
   return products.map((product) => {
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
-    const fitments = collectFitmentRows(product);
-    const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
-    const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
-    const makeModelLines = shownFitments.map(formatMakeModelLine);
-    const yearLines = shownFitments.map((f) =>
-      f.yearFrom === "—" && f.yearTo === "—" ? "—" : `${f.yearFrom} - ${f.yearTo}`,
-    );
+    const manualMakeModel = parseManualLines(product.description2);
+    const manualYears = parseManualLines(product.description3);
 
-    let makeModel = makeModelLines.length ? makeModelLines.join("\n") : "—";
-    if (hiddenFitments > 0) {
-      makeModel += "\nDAHA FAZLA BİLGİ";
+    let makeModel: string;
+    let modelYears: string;
+
+    if (manualMakeModel.length) {
+      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakeModel, manualYears));
+    } else {
+      const fitments = collectFitmentRows(product);
+      const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
+      const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
+      const makeModelLines = shownFitments.map(formatMakeModelLine);
+      const yearLines = shownFitments.map((f) =>
+        f.yearFrom === "—" && f.yearTo === "—" ? "—" : `${f.yearFrom} - ${f.yearTo}`,
+      );
+
+      makeModel = makeModelLines.length ? makeModelLines.join("\n") : "—";
+      if (hiddenFitments > 0) {
+        makeModel += "\nDAHA FAZLA BİLGİ";
+      }
+      modelYears = yearLines.length ? yearLines.join("\n") : "—";
     }
 
     return {
       sku: product.sku,
       oem: formatLimitedLines(oemCodes),
       makeModel,
-      modelYears: yearLines.length ? yearLines.join("\n") : "—",
+      modelYears,
       imageUrl: product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "",
     };
   });

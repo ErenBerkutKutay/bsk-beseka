@@ -64,9 +64,11 @@ model Product {
   id          String           @id @default(cuid())
   sku         String           @unique
   slug        String           @unique
-  name        Json
-  description Json?
-  categoryId  String?
+  name         Json
+  description  Json?
+  description2 Json?
+  description3 Json?
+  categoryId   String?
   category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images      String[]
   weightKg    Decimal?         @db.Decimal(10, 3)
