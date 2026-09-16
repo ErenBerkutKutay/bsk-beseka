@@ -32,12 +32,35 @@ type FitmentRow = {
   yearTo: string;
 };
 
+const PDF_LIST_LIMIT = 5;
+
 type PdfTableRow = {
   sku: string;
   oem: string;
+  makeModel: string;
+  modelYears: string;
   imageUrl: string;
-  fitments: FitmentRow[];
 };
+
+function tintHexColor(hex: string, amount: number): [number, number, number] {
+  const [r, g, b] = parseHexColor(hex);
+  const mix = Math.min(1, Math.max(0, amount));
+  return [
+    Math.round(r * mix + 255 * (1 - mix)),
+    Math.round(g * mix + 255 * (1 - mix)),
+    Math.round(b * mix + 255 * (1 - mix)),
+  ];
+}
+
+function formatLimitedLines(lines: string[]): string {
+  if (!lines.length) return "—";
+  const shown = lines.slice(0, PDF_LIST_LIMIT);
+  let text = shown.join("\n");
+  if (lines.length > PDF_LIST_LIMIT) {
+    text += "\nDAHA FAZLA BİLGİ";
+  }
+  return text;
+}
 
 function resolveSiteOrigin(requestOrigin?: string) {
   return (
@@ -75,7 +98,7 @@ function mapProductRow(product: CatalogExportProduct, origin: string, includeIma
   };
 }
 
-function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
+function collectFitmentRows(product: CatalogExportProduct): FitmentRow[] {
   const rows: FitmentRow[] = [];
   const seen = new Set<number>();
 
@@ -92,20 +115,41 @@ function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
     });
   }
 
+  return rows;
+}
+
+function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
+  const rows = collectFitmentRows(product);
   if (!rows.length) {
     rows.push({ make: "—", model: "—", yearFrom: "—", yearTo: "—" });
   }
-
   return rows;
 }
 
 function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
-  return products.map((product) => ({
-    sku: product.sku,
-    oem: (product.oemCodes || []).map((c) => c.code).join("\n") || "—",
-    imageUrl: product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "",
-    fitments: buildFitmentRows(product),
-  }));
+  return products.map((product) => {
+    const oemCodes = (product.oemCodes || []).map((c) => c.code);
+    const fitments = collectFitmentRows(product);
+    const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
+    const hiddenFitments = fitments.length - shownFitments.length;
+    const makeModelLines = shownFitments.map((f) => `${f.make} / ${f.model}`);
+    const yearLines = shownFitments.map((f) =>
+      f.yearFrom === "—" && f.yearTo === "—" ? "—" : `${f.yearFrom} - ${f.yearTo}`,
+    );
+
+    let makeModel = makeModelLines.length ? makeModelLines.join("\n") : "—";
+    if (hiddenFitments > 0) {
+      makeModel += "\nDAHA FAZLA BİLGİ";
+    }
+
+    return {
+      sku: product.sku,
+      oem: formatLimitedLines(oemCodes),
+      makeModel,
+      modelYears: yearLines.length ? yearLines.join("\n") : "—",
+      imageUrl: product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "",
+    };
+  });
 }
 
 export function buildCatalogExcelBuffer(
@@ -215,41 +259,24 @@ export async function buildCatalogPdfBuffer(
   const generatedAt = new Date().toLocaleString("tr-TR");
   const contentTop = settings.headerHeightMm + 12;
   const tableHeaderRgb = parseHexColor(settings.tableHeaderColor);
+  const productCodeRgb = parseHexColor(settings.headerBackgroundColor);
+  const productCodeBgRgb = tintHexColor(settings.headerBackgroundColor, 0.12);
+  const productRowAltRgb: [number, number, number] = [248, 248, 248];
 
-  type BodyCell = string | { content: string; rowSpan?: number; styles?: Record<string, unknown> };
-  const body: BodyCell[][] = [];
-  const bodyRowProductIndex: number[] = [];
-
-  tableRows.forEach((row, productIndex) => {
-    row.fitments.forEach((fitment, fitmentIndex) => {
-      bodyRowProductIndex.push(productIndex);
-
-      if (fitmentIndex === 0) {
-        body.push([
-          { content: "", rowSpan: row.fitments.length },
-          { content: row.sku, rowSpan: row.fitments.length, styles: { fontStyle: "bold" } },
-          { content: row.oem, rowSpan: row.fitments.length },
-          fitment.make,
-          fitment.model,
-          fitment.yearFrom,
-          fitment.yearTo,
-        ]);
-      } else {
-        body.push([fitment.make, fitment.model, fitment.yearFrom, fitment.yearTo]);
-      }
-    });
-  });
+  const body = tableRows.map((row) => ["", row.sku, row.oem, row.makeModel, row.modelYears]);
 
   autoTable(doc, {
     startY: contentTop + 10,
-    head: [["Görsel", "Beseka Kodu", "OEM", "Marka", "Model", "Başlangıç Yılı", "Bitiş Yılı"]],
+    head: [["Görsel", "Beseka Kodu", "OEM", "Marka / Model", "Model Yılı"]],
     body,
     styles: {
       ...turkishPdfTableFont,
       fontSize: 7,
-      cellPadding: 2,
+      cellPadding: 2.5,
       valign: "middle",
       overflow: "linebreak",
+      lineColor: [210, 210, 210],
+      lineWidth: 0.2,
     },
     headStyles: {
       ...turkishPdfTableFont,
@@ -258,16 +285,36 @@ export async function buildCatalogPdfBuffer(
       fontStyle: "bold",
     },
     columnStyles: {
-      0: { cellWidth: 22, minCellHeight: 18 },
-      1: { cellWidth: 22, fontStyle: "bold" },
-      2: { cellWidth: 32 },
-      3: { cellWidth: 22 },
-      4: { cellWidth: 38 },
-      5: { cellWidth: 18, halign: "center" },
-      6: { cellWidth: 18, halign: "center" },
+      0: { cellWidth: 24, minCellHeight: 22 },
+      1: { cellWidth: 24, fontStyle: "bold", halign: "center" },
+      2: { cellWidth: 38 },
+      3: { cellWidth: 58 },
+      4: { cellWidth: 28, halign: "center" },
     },
-    alternateRowStyles: { fillColor: [248, 248, 248] },
     margin: { top: contentTop + 10, left: 8, right: 8 },
+    didParseCell: (data) => {
+      if (data.section !== "body") return;
+
+      const rowIndex = data.row.index;
+      const isAltRow = rowIndex % 2 === 1;
+      const baseFill: [number, number, number] = isAltRow ? productRowAltRgb : [255, 255, 255];
+
+      if (data.column.index === 1) {
+        data.cell.styles.fillColor = productCodeBgRgb;
+        data.cell.styles.textColor = productCodeRgb;
+        data.cell.styles.fontStyle = "bold";
+        data.cell.styles.fontSize = 8;
+      } else {
+        data.cell.styles.fillColor = baseFill;
+      }
+
+      data.cell.styles.lineWidth = {
+        top: 0.2,
+        right: 0.2,
+        bottom: 0.6,
+        left: 0.2,
+      };
+    },
     didDrawPage: (data) => {
       drawPdfHeader(doc, settings, headerAssets);
 
@@ -285,31 +332,47 @@ export async function buildCatalogPdfBuffer(
       }
     },
     didDrawCell: (data) => {
-      if (!includeImages || data.section !== "body" || data.column.index !== 0) return;
+      if (data.section !== "body") return;
 
-      const productIndex = bodyRowProductIndex[data.row.index];
-      const productRow = tableRows[productIndex];
-      if (!productRow?.imageUrl) return;
+      if (includeImages && data.column.index === 0) {
+        const productRow = tableRows[data.row.index];
+        if (!productRow?.imageUrl) return;
 
-      const dataUrl = imageMap.get(productRow.imageUrl);
-      const size = Math.min(data.cell.width - 4, data.cell.height - 4, 18);
+        const dataUrl = imageMap.get(productRow.imageUrl);
+        const size = Math.min(data.cell.width - 4, data.cell.height - 4, 20);
 
-      if (dataUrl) {
-        const format = imageFormatFromDataUrl(dataUrl);
-        doc.addImage(
-          dataUrl,
-          format,
-          data.cell.x + (data.cell.width - size) / 2,
-          data.cell.y + (data.cell.height - size) / 2,
-          size,
-          size,
-          undefined,
-          "FAST",
+        if (dataUrl) {
+          const format = imageFormatFromDataUrl(dataUrl);
+          doc.addImage(
+            dataUrl,
+            format,
+            data.cell.x + (data.cell.width - size) / 2,
+            data.cell.y + (data.cell.height - size) / 2,
+            size,
+            size,
+            undefined,
+            "FAST",
+          );
+        } else {
+          doc.setFontSize(6);
+          doc.setFont(TURKISH_PDF_FONT, "normal");
+          doc.setTextColor(120);
+          doc.text(productRow.sku.slice(0, 10), data.cell.x + 3, data.cell.y + data.cell.height / 2);
+          doc.setTextColor(0);
+        }
+        return;
+      }
+
+      if (data.column.index === 1) {
+        doc.setDrawColor(...productCodeRgb);
+        doc.setLineWidth(0.35);
+        doc.line(data.cell.x, data.cell.y, data.cell.x, data.cell.y + data.cell.height);
+        doc.line(
+          data.cell.x + data.cell.width,
+          data.cell.y,
+          data.cell.x + data.cell.width,
+          data.cell.y + data.cell.height,
         );
-      } else {
-        doc.setFontSize(6);
-        doc.setFont(TURKISH_PDF_FONT, "normal");
-        doc.text(productRow.sku.slice(0, 10), data.cell.x + 3, data.cell.y + data.cell.height / 2);
       }
     },
   });

@@ -122,6 +122,31 @@ export default function VehicleCatalogImportPage() {
     loadMeta();
   }
 
+  async function handleDeleteEntireCatalog() {
+    if (
+      !confirm(
+        "Sistemdeki TÜM araç kataloğu kayıtları kalıcı olarak silinecektir.\n\nBu işlemi onaylıyor musunuz?",
+      )
+    ) {
+      return;
+    }
+
+    setPurging(true);
+    try {
+      const res = await fetch("/api/admin/vehicles/import", { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Silme başarısız");
+      } else {
+        alert(`${(data.deleted || 0).toLocaleString("tr-TR")} adet araç kataloğu kaydı başarıyla temizlendi.`);
+        setResult(null);
+        loadMeta();
+      }
+    } finally {
+      setPurging(false);
+    }
+  }
+
   async function handleClearAllLogs() {
     if (!confirm("Tüm import geçmişi silinsin mi? Bu işlem geri alınamaz.")) return;
 
@@ -209,22 +234,38 @@ export default function VehicleCatalogImportPage() {
             durdurulur ve mükerrer Id listesi gösterilir. Tam katalog güncellemesi için
             &quot;Eski Kataloğu Temizle&quot; butonunu kullanın.
           </p>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={purging || loading}
-            onClick={handlePurgeOldCatalog}
-            className="w-full border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
-          >
-            {purging ? (
-              <>
+          <div className="flex flex-col gap-2.5 sm:flex-row">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={purging || loading}
+              onClick={handlePurgeOldCatalog}
+              className="flex-1 border-amber-200 text-amber-800 hover:bg-amber-50 hover:text-amber-900"
+            >
+              {purging ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Kayıtlar işleniyor...
+                </>
+              ) : (
+                "Eski Kataloğu Temizle (data.xlsx dışındakiler)"
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={purging || loading || !stats?.totalTypes}
+              onClick={handleDeleteEntireCatalog}
+              className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-1.5"
+            >
+              {purging ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Eski kayıtlar temizleniyor...
-              </>
-            ) : (
-              "Eski Kataloğu Temizle (data.xlsx dışındakiler)"
-            )}
-          </Button>
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+              Tüm Kataloğu Sıfırla (Tüm Verileri Sil)
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

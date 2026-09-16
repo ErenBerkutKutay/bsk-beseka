@@ -47,7 +47,8 @@
     "followUs": "Bizi Takip Edin",
     "searchProducts": "Ürün Ara",
     "menu": "Menü",
-    "searchPlaceholder": "Ürün, Ref veya OEM ara..."
+    "searchPlaceholder": "Ürün, Ref veya OEM ara...",
+    "rfq": "Toplu RFQ / OEM Eşleme"
   },
   "home": {
     "heroTitle": "Güçlü, Genç ve Yenilikçi Ekip",

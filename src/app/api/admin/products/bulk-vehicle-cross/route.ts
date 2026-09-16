@@ -1,10 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import {
+  clearAllProductVehicleCrossLinks,
+  getProductVehicleCrossLinkCount,
   importBulkVehicleCross,
   previewBulkVehicleCross,
 } from "@/lib/products/bulk-vehicle-cross-import";
 import { parseBulkVehicleCrossCsv } from "@/lib/products/bulk-vehicle-cross-parse";
+
+export async function GET() {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const count = await getProductVehicleCrossLinkCount();
+  return NextResponse.json({ count });
+}
+
+export async function DELETE() {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const result = await clearAllProductVehicleCrossLinks();
+  return NextResponse.json(result);
+}
 
 export async function POST(request: NextRequest) {
   const session = await auth();

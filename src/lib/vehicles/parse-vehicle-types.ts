@@ -52,19 +52,21 @@ function cleanText(value: unknown): string | null {
 }
 
 function readTipNo(row: Record<string, unknown>): number | null {
-  return parseIntOrNull(row["Id"] ?? row["Tip no."]);
+  return parseIntOrNull(
+    row["Id"] ?? row["Tip no."] ?? row["Tip no"] ?? row["Tip No."] ?? row["Tip No"] ?? row["tip_no"],
+  );
 }
 
 function readMake(row: Record<string, unknown>): string | null {
-  return cleanText(row["Marka"] ?? row["Üretici"]);
+  return cleanText(row["Marka"] ?? row["Üretici"] ?? row["uretici"]);
 }
 
 function readModel(row: Record<string, unknown>): string | null {
-  return cleanText(row["Model"] ?? row["Model Serisi"]);
+  return cleanText(row["Model"] ?? row["Model Serisi"] ?? row["model_serisi"]);
 }
 
 function readTypeName(row: Record<string, unknown>): string | null {
-  return cleanText(row["Motor Bilgisi"] ?? row["Tip"]);
+  return cleanText(row["Motor Bilgisi"] ?? row["Tip"] ?? row["tip"]);
 }
 
 export function parseVehicleTypeRow(row: Record<string, unknown>): ParsedVehicleType | null {
@@ -84,15 +86,19 @@ export function parseVehicleTypeRow(row: Record<string, unknown>): ParsedVehicle
     modelSeries,
     typeName,
     modelSeriesNo: cleanText(row["Model Seri No"]),
-    yearFrom: excelSerialToYear(row["Başlangıç Tarihi"] ?? row["Model Yışı Başlangıcı"]),
-    yearTo: excelSerialToYear(row["Bitiş Tarihi"] ?? row["Model Yılı Bitişi"]),
+    yearFrom: excelSerialToYear(
+      row["Başlangıç Tarihi"] ?? row["Model Yışı Başlangıcı"] ?? row["Model Yılı Başlangıcı"],
+    ),
+    yearTo: excelSerialToYear(
+      row["Bitiş Tarihi"] ?? row["Model Yılı Bitişi"] ?? row["Model Yışı Bitişi"],
+    ),
     bodyType: cleanText(row["Gövde Tipi"]),
     driveType: cleanText(row["Tahrik Tipi"]),
-    engineVolumeL: parseDecimalOrNull(row["Motor Hacmi(l)"]),
-    engineVolumeCcm: parseIntOrNull(row["Motor Hacmi(ccm tekn.)"]),
+    engineVolumeL: parseDecimalOrNull(row["Motor Hacmi(l)"] ?? row["Motor Hacmi (l)"]),
+    engineVolumeCcm: parseIntOrNull(row["Motor Hacmi(ccm tekn.)"] ?? row["Motor Hacmi (ccm tekn.)"]),
     fuelType: cleanText(row["Yakıt Tipi"]),
-    kw: parseIntOrNull(row["kW"]),
-    hp: parseIntOrNull(row["HP"]),
+    kw: parseIntOrNull(row["kW"] ?? row["Kw"] ?? row["KW"]),
+    hp: parseIntOrNull(row["HP"] ?? row["Hp"] ?? row["hp"]),
     engineCodes: cleanText(row["Motor Kodları"]),
     motorNumbers: cleanText(row["Motor Numaraları"]),
     manufacturerNo: cleanText(row["Üretici No"]),

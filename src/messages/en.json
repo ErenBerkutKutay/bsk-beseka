@@ -47,7 +47,8 @@
     "followUs": "Follow Us",
     "searchProducts": "Search Products",
     "menu": "Menu",
-    "searchPlaceholder": "Search product, Ref or OEM..."
+    "searchPlaceholder": "Search product, Ref or OEM...",
+    "rfq": "Bulk RFQ / Cross-Match"
   },
   "home": {
     "heroTitle": "Strong, Young and Innovative Team",

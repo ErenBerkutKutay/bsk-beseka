@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { db } from "@/lib/db";
 import { getVehicleCatalogStats, importVehicleTypesFromBuffer } from "@/lib/vehicles/import-vehicle-types";
 import { syncVehicleCatalog } from "@/lib/vehicles/sync-vehicle-catalog";
 
@@ -11,6 +12,16 @@ export async function GET() {
 
   const stats = await getVehicleCatalogStats();
   return NextResponse.json(stats);
+}
+
+export async function DELETE() {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const result = await db.vehicleType.deleteMany({});
+  return NextResponse.json({ deleted: result.count });
 }
 
 export async function POST(request: NextRequest) {

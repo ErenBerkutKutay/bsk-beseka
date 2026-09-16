@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ArrowLeft,
   CheckCircle2,
   Download,
   FileSpreadsheet,
   Loader2,
+  Trash2,
   Upload,
   XCircle,
 } from "lucide-react";
@@ -39,6 +40,55 @@ export default function BulkVehicleCrossPage() {
   const [preview, setPreview] = useState<BulkVehicleCrossImportResult | null>(null);
   const [result, setResult] = useState<BulkVehicleCrossImportResult | null>(null);
   const [loading, setLoading] = useState<"preview" | "import" | null>(null);
+  const [totalCount, setTotalCount] = useState<number | null>(null);
+  const [clearing, setClearing] = useState(false);
+
+  const fetchCount = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/products/bulk-vehicle-cross");
+      if (res.ok) {
+        const data = await res.json();
+        setTotalCount(data.count ?? 0);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchCount();
+  }, [fetchCount]);
+
+  async function handleClearAll() {
+    const formattedCount = totalCount !== null ? totalCount.toLocaleString("tr-TR") : "tüm";
+    if (
+      !confirm(
+        `Sistemdeki TÜM araç cross bağlantıları (${formattedCount} kayıt) silinecek.\n\nBu işlem geri alınamaz! Devam etmek istediğinizden emin misiniz?`,
+      )
+    ) {
+      return;
+    }
+
+    setClearing(true);
+    try {
+      const res = await fetch("/api/admin/products/bulk-vehicle-cross", {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Temizleme işlemi başarısız oldu.");
+      } else {
+        alert(`${data.deleted?.toLocaleString("tr-TR") || 0} adet araç cross bağlantısı başarıyla temizlendi.`);
+        void fetchCount();
+        setPreview(null);
+        setResult(null);
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Temizleme sırasında hata oluştu.");
+    } finally {
+      setClearing(false);
+    }
+  }
 
   function downloadCsvTemplate() {
     const blob = new Blob([BULK_VEHICLE_CROSS_CSV_TEMPLATE], { type: "text/csv;charset=utf-8" });
@@ -146,6 +196,7 @@ export default function BulkVehicleCrossPage() {
     }
 
     setResult(data);
+    void fetchCount();
     setLoading(null);
   }
 
@@ -163,12 +214,39 @@ export default function BulkVehicleCrossPage() {
         Ürünlere dön
       </Link>
 
-      <h1 className="text-2xl font-bold text-brand-brown-dark">Toplu Araç Crosslama</h1>
-      <p className="mt-2 max-w-3xl text-sm text-muted">
-        Excel veya CSV ile ürün Ref kodlarını araç Id değerleriyle eşleştirin. A sütunu Beseka Ref,
-        B sütunu araç Id olmalıdır. Aynı Ref alt alta tekrar edebilir; her satır bir Id ekler.
-        Kayıtlı olmayan Ref veya katalogda olmayan Id atlanır.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-brown-dark">Toplu Araç Crosslama</h1>
+          <p className="mt-1 max-w-3xl text-sm text-muted">
+            Excel veya CSV ile ürün Ref kodlarını araç Id değerleriyle eşleştirin. A sütunu Beseka Ref,
+            B sütunu araç Id olmalıdır.
+          </p>
+        </div>
+
+        {totalCount !== null && (
+          <div className="flex items-center gap-3 rounded-xl border border-brand-cream-dark/60 bg-white p-3 shadow-sm">
+            <div className="text-right">
+              <span className="block text-xs font-medium text-muted">Mevcut Cross Bağlantısı</span>
+              <span className="text-lg font-bold font-mono text-brand-brown-dark">
+                {totalCount.toLocaleString("tr-TR")} kayıt
+              </span>
+            </div>
+            {totalCount > 0 && (
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                disabled={clearing || loading !== null}
+                onClick={handleClearAll}
+                className="gap-1.5 bg-red-600 hover:bg-red-700 text-white"
+              >
+                {clearing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                Tümünü Temizle
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
 
       <Card className="mt-6 border-brand-cream-dark/50 bg-brand-cream-light/30">
         <CardContent className="pt-6 text-sm text-muted">

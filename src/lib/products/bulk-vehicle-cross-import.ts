@@ -195,6 +195,19 @@ export async function importBulkVehicleCross(
   return summarize(updatedPreview, parseErrors, rows.length);
 }
 
+export async function getProductVehicleCrossLinkCount(): Promise<number> {
+  return db.productVehicleType.count();
+}
+
+export async function clearAllProductVehicleCrossLinks(): Promise<{ deleted: number }> {
+  const deleted = await db.productVehicleType.count();
+  if (deleted === 0) {
+    return { deleted: 0 };
+  }
+  await db.productVehicleType.deleteMany({});
+  return { deleted };
+}
+
 function summarize(
   rows: BulkVehicleCrossPreviewRow[],
   parseErrors: BulkVehicleCrossParseError[],

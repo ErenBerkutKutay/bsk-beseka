@@ -24,6 +24,7 @@ export function getCatalogNavLinks(t: NavTranslator) {
   return [
     { href: "/urunler", label: t("onlineCatalog") },
     { href: "/yeni-urunler", label: t("newProducts") },
+    { href: "/rfq", label: t("rfq") },
   ];
 }
 
