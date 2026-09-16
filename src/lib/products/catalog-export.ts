@@ -33,6 +33,15 @@ type FitmentRow = {
 };
 
 const PDF_LIST_LIMIT = 5;
+const PDF_MAKE_MODEL_MAX_CHARS = 50;
+
+const PDF_COLUMN_WIDTHS = {
+  image: 24,
+  sku: 24,
+  oem: 38,
+  makeModel: 58,
+  modelYear: 28,
+} as const;
 
 type PdfTableRow = {
   sku: string;
@@ -52,6 +61,11 @@ function tintHexColor(hex: string, amount: number): [number, number, number] {
   ];
 }
 
+function truncateChars(text: string, max: number): string {
+  if (text.length <= max) return text;
+  return text.slice(0, max);
+}
+
 function formatLimitedLines(lines: string[]): string {
   if (!lines.length) return "—";
   const shown = lines.slice(0, PDF_LIST_LIMIT);
@@ -60,6 +74,10 @@ function formatLimitedLines(lines: string[]): string {
     text += "\nDAHA FAZLA BİLGİ";
   }
   return text;
+}
+
+function formatMakeModelLine(fitment: FitmentRow): string {
+  return truncateChars(`${fitment.make} / ${fitment.model}`, PDF_MAKE_MODEL_MAX_CHARS);
 }
 
 function resolveSiteOrigin(requestOrigin?: string) {
@@ -131,8 +149,8 @@ function buildPdfTableRows(products: CatalogExportProduct[], origin: string): Pd
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
     const fitments = collectFitmentRows(product);
     const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
-    const hiddenFitments = fitments.length - shownFitments.length;
-    const makeModelLines = shownFitments.map((f) => `${f.make} / ${f.model}`);
+    const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
+    const makeModelLines = shownFitments.map(formatMakeModelLine);
     const yearLines = shownFitments.map((f) =>
       f.yearFrom === "—" && f.yearTo === "—" ? "—" : `${f.yearFrom} - ${f.yearTo}`,
     );
@@ -262,6 +280,9 @@ export async function buildCatalogPdfBuffer(
   const productCodeRgb = parseHexColor(settings.headerBackgroundColor);
   const productCodeBgRgb = tintHexColor(settings.headerBackgroundColor, 0.12);
   const productRowAltRgb: [number, number, number] = [248, 248, 248];
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const tableWidth = Object.values(PDF_COLUMN_WIDTHS).reduce((sum, width) => sum + width, 0);
+  const sideMargin = Math.max(8, (pageWidth - tableWidth) / 2);
 
   const body = tableRows.map((row) => ["", row.sku, row.oem, row.makeModel, row.modelYears]);
 
@@ -269,6 +290,7 @@ export async function buildCatalogPdfBuffer(
     startY: contentTop + 10,
     head: [["Görsel", "Beseka Kodu", "OEM", "Marka / Model", "Model Yılı"]],
     body,
+    tableWidth,
     styles: {
       ...turkishPdfTableFont,
       fontSize: 7,
@@ -285,14 +307,19 @@ export async function buildCatalogPdfBuffer(
       fontStyle: "bold",
     },
     columnStyles: {
-      0: { cellWidth: 24, minCellHeight: 22 },
-      1: { cellWidth: 24, fontStyle: "bold", halign: "center" },
-      2: { cellWidth: 38 },
-      3: { cellWidth: 58 },
-      4: { cellWidth: 28, halign: "center" },
+      0: { cellWidth: PDF_COLUMN_WIDTHS.image, minCellHeight: 22 },
+      1: { cellWidth: PDF_COLUMN_WIDTHS.sku, fontStyle: "bold", halign: "center" },
+      2: { cellWidth: PDF_COLUMN_WIDTHS.oem },
+      3: { cellWidth: PDF_COLUMN_WIDTHS.makeModel, halign: "right", overflow: "hidden" },
+      4: { cellWidth: PDF_COLUMN_WIDTHS.modelYear, halign: "center" },
     },
-    margin: { top: contentTop + 10, left: 8, right: 8 },
+    margin: { top: contentTop + 10, left: sideMargin, right: sideMargin },
     didParseCell: (data) => {
+      if (data.section === "head" && data.column.index === 3) {
+        data.cell.styles.halign = "right";
+        return;
+      }
+
       if (data.section !== "body") return;
 
       const rowIndex = data.row.index;
@@ -322,12 +349,17 @@ export async function buildCatalogPdfBuffer(
         doc.setFontSize(14);
         doc.setFont(TURKISH_PDF_FONT, "bold");
         doc.setTextColor(0);
-        doc.text(settings.documentTitle, 14, settings.headerHeightMm + 6);
+        doc.text(settings.documentTitle, pageWidth / 2, settings.headerHeightMm + 6, { align: "center" });
 
         doc.setFontSize(8);
         doc.setFont(TURKISH_PDF_FONT, "normal");
         doc.setTextColor(100);
-        doc.text(`Oluşturulma: ${generatedAt} · ${products.length} ürün`, 14, settings.headerHeightMm + 11);
+        doc.text(
+          `Oluşturulma: ${generatedAt} · ${products.length} ürün`,
+          pageWidth / 2,
+          settings.headerHeightMm + 11,
+          { align: "center" },
+        );
         doc.setTextColor(0);
       }
     },
