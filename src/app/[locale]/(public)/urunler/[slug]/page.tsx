@@ -5,8 +5,9 @@ import { getProductBySlug, getRelatedProductsInCategory } from "@/lib/products/s
 import { CategoryRelatedProducts } from "@/components/catalog/category-related-products";
 import { trackProductView } from "@/lib/analytics";
 import {
-  buildProductVehicleDetailRows,
+  buildProductVehicleRows,
   formatYearRange,
+  hasManualVehicleDescriptions,
 } from "@/lib/catalog/fitment-display";
 import { Badge } from "@/components/ui/input";
 import { getLocalizedText } from "@/lib/utils";
@@ -50,7 +51,8 @@ export default async function ProductDetailPage({
   void trackProductView(product.id);
 
   const name = getLocalizedText(product.name as { tr: string }, locale);
-  const vehicleRows = buildProductVehicleDetailRows(product);
+  const { rows: vehicleRows } = buildProductVehicleRows(product as never, locale);
+  const showCrossCatalog = !hasManualVehicleDescriptions(product as never, locale);
   const packageQuantity = product.packageQuantity ?? 1;
 
   return (
@@ -143,7 +145,7 @@ export default async function ProductDetailPage({
         </section>
       </div>
 
-      {product.vehicleTypes.some((link) => link.vehicleType.tipNo > 0) && (
+      {showCrossCatalog && product.vehicleTypes.some((link) => link.vehicleType.tipNo > 0) && (
         <div className="mt-12">
           <h2 className="mb-4 text-xl font-bold text-brand-brown-dark">{t("compatibleVehicles")}</h2>
           <div className="overflow-x-auto rounded-xl border border-border shadow-sm">

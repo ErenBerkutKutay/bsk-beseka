@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Check, Search, SearchX } from "lucide-react";
 import { Badge } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { buildVehicleDisplayRows } from "@/lib/catalog/fitment-display";
+import { buildProductVehicleRows } from "@/lib/catalog/fitment-display";
 import { getLocalizedText, cn } from "@/lib/utils";
 import { useCatalogSelection } from "@/components/catalog/catalog-selection-context";
 
@@ -15,6 +15,9 @@ export type CatalogResultProduct = {
   sku: string;
   slug: string;
   name: Record<string, string>;
+  description?: Record<string, string> | null;
+  description2?: Record<string, string> | null;
+  description3?: Record<string, string> | null;
   images: string[];
   isNew: boolean;
   oemCodes?: { code: string }[];
@@ -57,11 +60,12 @@ export function CatalogResultsTable({
 
   return (
     <div className="catalog-results-table overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-      <div className="hidden gap-3 bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px]">
+      <div className="hidden gap-3 bg-brand-brown px-4 py-3 text-[11px] font-bold uppercase tracking-wide text-white lg:grid lg:grid-cols-[100px_minmax(120px,0.95fr)_minmax(140px,1fr)_minmax(90px,0.75fr)_minmax(130px,1fr)_minmax(90px,0.7fr)_120px] xl:grid-cols-[110px_minmax(160px,1fr)_minmax(170px,1.05fr)_minmax(100px,0.8fr)_minmax(160px,1.1fr)_minmax(100px,0.75fr)_130px]">
         <span>{t("colProduct")}</span>
         <span>{t("colBesekaRef")}</span>
         <span>{t("colOemOtherRef")}</span>
-        <span>{t("colMakeModel")}</span>
+        <span>{t("colMake")}</span>
+        <span>{t("colModel")}</span>
         <span>{t("colModelYear")}</span>
         <span className="text-center">{t("listColAction")}</span>
       </div>
@@ -70,12 +74,12 @@ export function CatalogResultsTable({
         {products.map((product) => {
           const name = getLocalizedText(product.name, locale);
           const codes = product.oemCodes?.map((c) => c.code) ?? [];
-          const vehicles = buildVehicleDisplayRows(product);
+          const { rows: vehicles } = buildProductVehicleRows(product, locale);
 
           return (
             <li
               key={product.id}
-              className="grid gap-4 px-4 py-4 lg:grid lg:grid-cols-[100px_minmax(140px,1fr)_minmax(160px,1.2fr)_minmax(180px,1.5fr)_120px_130px] xl:grid-cols-[110px_minmax(180px,1.15fr)_minmax(200px,1.25fr)_minmax(240px,1.6fr)_130px_140px] lg:items-start lg:gap-3"
+              className="grid gap-4 px-4 py-4 lg:grid lg:grid-cols-[100px_minmax(120px,0.95fr)_minmax(140px,1fr)_minmax(90px,0.75fr)_minmax(130px,1fr)_minmax(90px,0.7fr)_120px] xl:grid-cols-[110px_minmax(160px,1fr)_minmax(170px,1.05fr)_minmax(100px,0.8fr)_minmax(160px,1.1fr)_minmax(100px,0.75fr)_130px] lg:items-start lg:gap-3"
             >
               <div className="product-image-frame relative mx-auto h-20 w-20 shrink-0 overflow-hidden rounded border border-border bg-white lg:mx-0">
                 {product.images[0] ? (
@@ -120,8 +124,8 @@ export function CatalogResultsTable({
               <div className="max-h-28 overflow-y-auto text-xs leading-relaxed text-brand-brown-dark">
                 {vehicles.length ? (
                   vehicles.map((row) => (
-                    <div key={row.key} className="border-b border-border/60 py-1 last:border-0">
-                      {row.makeModel}
+                    <div key={`${row.key}-make`} className="border-b border-border/60 py-1 last:border-0">
+                      {row.make}
                     </div>
                   ))
                 ) : (
@@ -132,7 +136,19 @@ export function CatalogResultsTable({
               <div className="max-h-28 overflow-y-auto text-xs leading-relaxed text-brand-brown-dark">
                 {vehicles.length ? (
                   vehicles.map((row) => (
-                    <div key={`${row.key}-y`} className="border-b border-border/60 py-1 last:border-0">
+                    <div key={`${row.key}-model`} className="border-b border-border/60 py-1 last:border-0">
+                      {row.model}
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-muted">—</span>
+                )}
+              </div>
+
+              <div className="max-h-28 overflow-y-auto text-xs leading-relaxed text-brand-brown-dark">
+                {vehicles.length ? (
+                  vehicles.map((row) => (
+                    <div key={`${row.key}-year`} className="border-b border-border/60 py-1 last:border-0">
                       {row.yearLabel}
                     </div>
                   ))

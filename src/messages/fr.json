@@ -125,6 +125,8 @@
     "colBesekaRef": "BESEKA REF",
     "colOemOtherRef": "OEM & AUTRES REF.",
     "colMakeModel": "MARQUE / MODÈLE",
+    "colMake": "MARQUE",
+    "colModel": "MODÈLE",
     "colModelYear": "ANNÉE MODÈLE",
     "showDetail": "VOIR DÉTAIL",
     "resultsDisclaimer": "Les codes OEM sont fournis à titre de comparaison uniquement. Vérifiez la ref Beseka pour la compatibilité.",

@@ -125,6 +125,8 @@
     "colBesekaRef": "BESEKA REF",
     "colOemOtherRef": "OEM & مراجع أخرى",
     "colMakeModel": "العلامة / الطراز",
+    "colMake": "العلامة",
+    "colModel": "الطراز",
     "colModelYear": "سنة الطراز",
     "showDetail": "عرض التفاصيل",
     "resultsDisclaimer": "رموز OEM للمقارنة فقط. يرجى التحقق من ref Beseka للتوافق.",

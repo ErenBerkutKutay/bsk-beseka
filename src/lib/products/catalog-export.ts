@@ -3,7 +3,10 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { CatalogPdfSettingsData } from "@/lib/catalog/pdf-settings-defaults";
 import { parseHexColor } from "@/lib/catalog/pdf-settings-defaults";
-import { isValidVehicleTipNo } from "@/lib/catalog/fitment-display";
+import {
+  buildProductVehicleRows,
+  isValidVehicleTipNo,
+} from "@/lib/catalog/fitment-display";
 import { getLocalizedText } from "@/lib/utils";
 import { registerTurkishPdfFont, TURKISH_PDF_FONT, turkishPdfTableFont } from "@/lib/pdf/turkish-pdf-font";
 
@@ -39,17 +42,19 @@ const PDF_LIST_LIMIT = 5;
 const PDF_MAKE_MODEL_MAX_CHARS = 50;
 
 const PDF_COLUMN_WIDTHS = {
-  image: 24,
-  sku: 24,
-  oem: 38,
-  makeModel: 58,
-  modelYear: 28,
+  image: 22,
+  sku: 22,
+  oem: 32,
+  make: 22,
+  model: 40,
+  modelYear: 22,
 } as const;
 
 type PdfTableRow = {
   sku: string;
   oem: string;
-  makeModel: string;
+  makes: string;
+  models: string;
   modelYears: string;
   imageUrl: string;
 };
@@ -64,11 +69,6 @@ function tintHexColor(hex: string, amount: number): [number, number, number] {
   ];
 }
 
-function truncateChars(text: string, max: number): string {
-  if (text.length <= max) return text;
-  return text.slice(0, max);
-}
-
 function formatLimitedLines(lines: string[]): string {
   if (!lines.length) return "—";
   const shown = lines.slice(0, PDF_LIST_LIMIT);
@@ -77,60 +77,6 @@ function formatLimitedLines(lines: string[]): string {
     text += "\nDAHA FAZLA BİLGİ";
   }
   return text;
-}
-
-function formatMakeModelLine(fitment: FitmentRow): string {
-  return truncateChars(`${fitment.make} / ${fitment.model}`, PDF_MAKE_MODEL_MAX_CHARS);
-}
-
-function parseManualLines(content: Record<string, string> | null | undefined): string[] {
-  const raw = getLocalizedText(content ?? undefined, "tr");
-  if (!raw.trim()) return [];
-  return raw
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
-
-function combineMakeModelLines(makeLines: string[], modelLines: string[]): string[] {
-  const count = Math.max(makeLines.length, modelLines.length);
-  if (!count) return [];
-
-  return Array.from({ length: count }, (_, index) => {
-    const make = makeLines[index] || "—";
-    const model = modelLines[index] || "—";
-    return truncateChars(`${make} / ${model}`, PDF_MAKE_MODEL_MAX_CHARS);
-  });
-}
-
-function buildManualVehicleDisplay(
-  makeLines: string[],
-  modelLines: string[],
-  yearLines: string[] = [],
-): { makeModel: string; modelYears: string } {
-  const lineCount = Math.max(makeLines.length, modelLines.length, yearLines.length);
-  if (!lineCount) {
-    return { makeModel: "—", modelYears: "—" };
-  }
-
-  const combined = Array.from({ length: lineCount }, (_, index) => {
-    const make = makeLines[index] || "—";
-    const model = modelLines[index] || "—";
-    return truncateChars(`${make} / ${model}`, PDF_MAKE_MODEL_MAX_CHARS);
-  });
-
-  const shownCount = Math.min(PDF_LIST_LIMIT, lineCount);
-  const shownCombined = combined.slice(0, shownCount);
-  const shownYears = Array.from({ length: shownCount }, (_, index) => yearLines[index] || "—");
-
-  let makeModel = shownCombined.join("\n");
-  const modelYears = shownYears.join("\n");
-
-  if (lineCount > PDF_LIST_LIMIT) {
-    makeModel += "\nDAHA FAZLA BİLGİ";
-  }
-
-  return { makeModel, modelYears };
 }
 
 function resolveSiteOrigin(requestOrigin?: string) {
@@ -200,35 +146,24 @@ function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
 function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
   return products.map((product) => {
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
-    const manualMakes = parseManualLines(product.description);
-    const manualModels = parseManualLines(product.description2);
-    const manualYears = parseManualLines(product.description3);
+    const { rows, hasMore } = buildProductVehicleRows(product, "tr", {
+      limit: PDF_LIST_LIMIT,
+      truncateModelChars: PDF_MAKE_MODEL_MAX_CHARS,
+    });
 
-    let makeModel: string;
-    let modelYears: string;
+    let makes = rows.length ? rows.map((row) => row.make).join("\n") : "—";
+    let models = rows.length ? rows.map((row) => row.model).join("\n") : "—";
+    const modelYears = rows.length ? rows.map((row) => row.yearLabel).join("\n") : "—";
 
-    if (manualMakes.length || manualModels.length || manualYears.length) {
-      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakes, manualModels, manualYears));
-    } else {
-      const fitments = collectFitmentRows(product);
-      const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
-      const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
-      const makeModelLines = shownFitments.map(formatMakeModelLine);
-      const yearLines = shownFitments.map((f) =>
-        f.yearFrom === "—" && f.yearTo === "—" ? "—" : `${f.yearFrom} - ${f.yearTo}`,
-      );
-
-      makeModel = makeModelLines.length ? makeModelLines.join("\n") : "—";
-      if (hiddenFitments > 0) {
-        makeModel += "\nDAHA FAZLA BİLGİ";
-      }
-      modelYears = yearLines.length ? yearLines.join("\n") : "—";
+    if (hasMore) {
+      makes += "\nDAHA FAZLA BİLGİ";
     }
 
     return {
       sku: product.sku,
       oem: formatLimitedLines(oemCodes),
-      makeModel,
+      makes,
+      models,
       modelYears,
       imageUrl: product.images[0] ? toAbsoluteUrl(product.images[0], origin) : "",
     };
@@ -349,11 +284,11 @@ export async function buildCatalogPdfBuffer(
   const tableWidth = Object.values(PDF_COLUMN_WIDTHS).reduce((sum, width) => sum + width, 0);
   const sideMargin = Math.max(8, (pageWidth - tableWidth) / 2);
 
-  const body = tableRows.map((row) => ["", row.sku, row.oem, row.makeModel, row.modelYears]);
+  const body = tableRows.map((row) => ["", row.sku, row.oem, row.makes, row.models, row.modelYears]);
 
   autoTable(doc, {
     startY: contentTop + 10,
-    head: [["Görsel", "Beseka Kodu", "OEM", "Marka / Model", "Model Yılı"]],
+    head: [["Görsel", "Beseka Kodu", "OEM", "Marka", "Model", "Model Yılı"]],
     body,
     tableWidth,
     styles: {
@@ -375,12 +310,13 @@ export async function buildCatalogPdfBuffer(
       0: { cellWidth: PDF_COLUMN_WIDTHS.image, minCellHeight: 22 },
       1: { cellWidth: PDF_COLUMN_WIDTHS.sku, fontStyle: "bold", halign: "center" },
       2: { cellWidth: PDF_COLUMN_WIDTHS.oem },
-      3: { cellWidth: PDF_COLUMN_WIDTHS.makeModel, halign: "right", overflow: "hidden" },
-      4: { cellWidth: PDF_COLUMN_WIDTHS.modelYear, halign: "center" },
+      3: { cellWidth: PDF_COLUMN_WIDTHS.make },
+      4: { cellWidth: PDF_COLUMN_WIDTHS.model, halign: "right", overflow: "hidden" },
+      5: { cellWidth: PDF_COLUMN_WIDTHS.modelYear, halign: "center" },
     },
     margin: { top: contentTop + 10, left: sideMargin, right: sideMargin },
     didParseCell: (data) => {
-      if (data.section === "head" && data.column.index === 3) {
+      if (data.section === "head" && data.column.index === 4) {
         data.cell.styles.halign = "right";
         return;
       }
@@ -470,6 +406,13 @@ export async function buildCatalogPdfBuffer(
           data.cell.x + data.cell.width,
           data.cell.y + data.cell.height,
         );
+        return;
+      }
+
+      if (data.column.index === 4) {
+        doc.setDrawColor(...productCodeRgb);
+        doc.setLineWidth(0.2);
+        doc.line(data.cell.x, data.cell.y, data.cell.x, data.cell.y + data.cell.height);
       }
     },
   });

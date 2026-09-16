@@ -126,6 +126,8 @@
     "colBesekaRef": "BESEKA REF",
     "colOemOtherRef": "OEM & DİĞER REF.",
     "colMakeModel": "MARKA / MODEL",
+    "colMake": "MARKA",
+    "colModel": "MODEL",
     "colModelYear": "MODEL YILI",
     "showDetail": "DETAY GÖSTER",
     "resultsDisclaimer": "OEM kodları sadece karşılaştırma amaçlıdır. Ürün uyumluluğu için lütfen Beseka Ref kodunu kontrol edin.",

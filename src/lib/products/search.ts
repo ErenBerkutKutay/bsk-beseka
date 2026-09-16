@@ -12,6 +12,12 @@ function buildProductTextSearchConditions(q: string): Prisma.ProductWhereInput[]
     {
       description: { path: [locale], string_contains: q, mode: "insensitive" as const },
     },
+    {
+      description2: { path: [locale], string_contains: q, mode: "insensitive" as const },
+    },
+    {
+      description3: { path: [locale], string_contains: q, mode: "insensitive" as const },
+    },
   ]);
 }
 
