@@ -45,6 +45,7 @@ export default function ProductFormPage() {
     name: emptyLocalizedContent(),
     description: emptyLocalizedContent(),
     description2: emptyLocalizedContent(),
+    description3: emptyLocalizedContent(),
     categoryId: "",
     weightKg: "",
     gtip: "",
@@ -76,6 +77,7 @@ export default function ProductFormPage() {
             name: parseLocalizedContent(product.name),
             description: parseLocalizedContent(product.description),
             description2: parseLocalizedContent(product.description2),
+            description3: parseLocalizedContent(product.description3),
             categoryId: product.categoryId,
             weightKg: product.weightKg != null ? String(product.weightKg) : "",
             gtip: product.gtip || "",
@@ -175,6 +177,7 @@ export default function ProductFormPage() {
       name: form.name,
       description: form.description,
       description2: form.description2,
+      description3: form.description3,
       categoryId: form.categoryId,
       weightKg: form.weightKg,
       gtip: form.gtip,
@@ -297,7 +300,7 @@ export default function ProductFormPage() {
             />
 
             <LocalizedTextFields
-              label="Açıklama (Marka)"
+              label="Açıklama 1 (Marka)"
               values={form.description}
               onChange={(locale: AppLocale, value) =>
                 setForm((prev) => ({
@@ -322,6 +325,20 @@ export default function ProductFormPage() {
               multiline
               rows={5}
               placeholder="Her satıra bir model (ör. EGEA Hatchback 1.4)"
+            />
+
+            <LocalizedTextFields
+              label="Açıklama 3 (Model Yılı)"
+              values={form.description3}
+              onChange={(locale: AppLocale, value) =>
+                setForm((prev) => ({
+                  ...prev,
+                  description3: { ...prev.description3, [locale]: value },
+                }))
+              }
+              multiline
+              rows={5}
+              placeholder="Her satıra bir yıl aralığı (ör. 2015 - 2020)"
             />
 
             <div className="grid gap-4 md:grid-cols-3">

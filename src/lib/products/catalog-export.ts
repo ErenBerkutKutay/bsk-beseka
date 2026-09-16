@@ -12,6 +12,7 @@ export type CatalogExportProduct = {
   name: Record<string, string>;
   description?: Record<string, string> | null;
   description2?: Record<string, string> | null;
+  description3?: Record<string, string> | null;
   images: string[];
   category?: { name: Record<string, string>; slug: string } | null;
   oemCodes?: { code: string }[];
@@ -105,24 +106,27 @@ function combineMakeModelLines(makeLines: string[], modelLines: string[]): strin
 function buildManualVehicleDisplay(
   makeLines: string[],
   modelLines: string[],
-  fitmentYears: FitmentRow[] = [],
+  yearLines: string[] = [],
 ): { makeModel: string; modelYears: string } {
-  const combined = combineMakeModelLines(makeLines, modelLines);
-  if (!combined.length) {
+  const lineCount = Math.max(makeLines.length, modelLines.length, yearLines.length);
+  if (!lineCount) {
     return { makeModel: "—", modelYears: "—" };
   }
 
-  const shown = combined.slice(0, PDF_LIST_LIMIT);
-  const yearLines = shown.map((_, index) => {
-    const fitment = fitmentYears[index];
-    if (!fitment || (fitment.yearFrom === "—" && fitment.yearTo === "—")) return "—";
-    return `${fitment.yearFrom} - ${fitment.yearTo}`;
+  const combined = Array.from({ length: lineCount }, (_, index) => {
+    const make = makeLines[index] || "—";
+    const model = modelLines[index] || "—";
+    return truncateChars(`${make} / ${model}`, PDF_MAKE_MODEL_MAX_CHARS);
   });
 
-  let makeModel = shown.join("\n");
-  const modelYears = yearLines.join("\n");
+  const shownCount = Math.min(PDF_LIST_LIMIT, lineCount);
+  const shownCombined = combined.slice(0, shownCount);
+  const shownYears = Array.from({ length: shownCount }, (_, index) => yearLines[index] || "—");
 
-  if (combined.length > PDF_LIST_LIMIT) {
+  let makeModel = shownCombined.join("\n");
+  const modelYears = shownYears.join("\n");
+
+  if (lineCount > PDF_LIST_LIMIT) {
     makeModel += "\nDAHA FAZLA BİLGİ";
   }
 
@@ -198,14 +202,15 @@ function buildPdfTableRows(products: CatalogExportProduct[], origin: string): Pd
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
     const manualMakes = parseManualLines(product.description);
     const manualModels = parseManualLines(product.description2);
-    const fitments = collectFitmentRows(product);
+    const manualYears = parseManualLines(product.description3);
 
     let makeModel: string;
     let modelYears: string;
 
-    if (manualMakes.length || manualModels.length) {
-      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakes, manualModels, fitments));
+    if (manualMakes.length || manualModels.length || manualYears.length) {
+      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakes, manualModels, manualYears));
     } else {
+      const fitments = collectFitmentRows(product);
       const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
       const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
       const makeModelLines = shownFitments.map(formatMakeModelLine);

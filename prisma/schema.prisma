@@ -67,6 +67,7 @@ model Product {
   name         Json
   description  Json?
   description2 Json?
+  description3 Json?
   categoryId   String?
   category    Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images      String[]
