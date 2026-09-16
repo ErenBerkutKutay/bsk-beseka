@@ -45,7 +45,6 @@ export default function ProductFormPage() {
     name: emptyLocalizedContent(),
     description: emptyLocalizedContent(),
     description2: emptyLocalizedContent(),
-    description3: emptyLocalizedContent(),
     categoryId: "",
     weightKg: "",
     gtip: "",
@@ -77,7 +76,6 @@ export default function ProductFormPage() {
             name: parseLocalizedContent(product.name),
             description: parseLocalizedContent(product.description),
             description2: parseLocalizedContent(product.description2),
-            description3: parseLocalizedContent(product.description3),
             categoryId: product.categoryId,
             weightKg: product.weightKg != null ? String(product.weightKg) : "",
             gtip: product.gtip || "",
@@ -177,7 +175,6 @@ export default function ProductFormPage() {
       name: form.name,
       description: form.description,
       description2: form.description2,
-      description3: form.description3,
       categoryId: form.categoryId,
       weightKg: form.weightKg,
       gtip: form.gtip,
@@ -300,7 +297,7 @@ export default function ProductFormPage() {
             />
 
             <LocalizedTextFields
-              label="Açıklama"
+              label="Açıklama (Marka)"
               values={form.description}
               onChange={(locale: AppLocale, value) =>
                 setForm((prev) => ({
@@ -309,30 +306,17 @@ export default function ProductFormPage() {
                 }))
               }
               multiline
-              rows={4}
-            />
-
-            <LocalizedTextFields
-              label="Açıklama 2 (Marka)"
-              values={form.description2}
-              onChange={(locale: AppLocale, value) =>
-                setForm((prev) => ({
-                  ...prev,
-                  description2: { ...prev.description2, [locale]: value },
-                }))
-              }
-              multiline
               rows={5}
               placeholder="Her satıra bir marka (ör. FIAT)"
             />
 
             <LocalizedTextFields
-              label="Açıklama 3 (Model)"
-              values={form.description3}
+              label="Açıklama 2 (Model)"
+              values={form.description2}
               onChange={(locale: AppLocale, value) =>
                 setForm((prev) => ({
                   ...prev,
-                  description3: { ...prev.description3, [locale]: value },
+                  description2: { ...prev.description2, [locale]: value },
                 }))
               }
               multiline
@@ -525,7 +509,6 @@ export default function ProductFormPage() {
         <ProductPreview
           sku={form.sku}
           name={form.name.tr}
-          description={form.description.tr}
           weightKg={form.weightKg}
           gtip={form.gtip}
           packageQuantity={form.packageQuantity}

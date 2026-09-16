@@ -10,8 +10,8 @@ import { registerTurkishPdfFont, TURKISH_PDF_FONT, turkishPdfTableFont } from "@
 export type CatalogExportProduct = {
   sku: string;
   name: Record<string, string>;
+  description?: Record<string, string> | null;
   description2?: Record<string, string> | null;
-  description3?: Record<string, string> | null;
   images: string[];
   category?: { name: Record<string, string>; slug: string } | null;
   oemCodes?: { code: string }[];
@@ -196,8 +196,8 @@ function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
 function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
   return products.map((product) => {
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
-    const manualMakes = parseManualLines(product.description2);
-    const manualModels = parseManualLines(product.description3);
+    const manualMakes = parseManualLines(product.description);
+    const manualModels = parseManualLines(product.description2);
     const fitments = collectFitmentRows(product);
 
     let makeModel: string;

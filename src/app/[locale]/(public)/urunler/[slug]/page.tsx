@@ -50,9 +50,6 @@ export default async function ProductDetailPage({
   void trackProductView(product.id);
 
   const name = getLocalizedText(product.name as { tr: string }, locale);
-  const description = product.description
-    ? getLocalizedText(product.description as { tr: string }, locale)
-    : "";
   const vehicleRows = buildProductVehicleDetailRows(product);
   const packageQuantity = product.packageQuantity ?? 1;
 
@@ -66,7 +63,6 @@ export default async function ProductDetailPage({
         {product.isNew && <Badge variant="new">Yeni</Badge>}
       </div>
       <h1 className="mt-3 text-3xl font-bold text-brand-brown-dark">{name}</h1>
-      {description && <p className="mt-4 max-w-4xl leading-relaxed text-muted">{description}</p>}
 
       <div className="mt-8 grid w-full grid-cols-1 gap-4 lg:grid-cols-[auto_minmax(0,1fr)_minmax(0,1.25fr)_auto] lg:items-start lg:gap-x-4 xl:gap-x-8">
         <div className="product-image-frame relative aspect-square w-[180px] shrink-0 overflow-hidden rounded-2xl bg-brand-cream-light/30 shadow-md sm:w-[220px] lg:w-[240px] lg:justify-self-start">
