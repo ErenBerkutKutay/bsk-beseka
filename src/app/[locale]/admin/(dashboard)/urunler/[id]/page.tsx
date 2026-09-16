@@ -313,7 +313,7 @@ export default function ProductFormPage() {
             />
 
             <LocalizedTextFields
-              label="Açıklama 2 (Marka / Model)"
+              label="Açıklama 2 (Marka)"
               values={form.description2}
               onChange={(locale: AppLocale, value) =>
                 setForm((prev) => ({
@@ -323,11 +323,11 @@ export default function ProductFormPage() {
               }
               multiline
               rows={5}
-              placeholder="Her satıra bir marka / model (PDF için, max 5 satır)"
+              placeholder="Her satıra bir marka (ör. FIAT)"
             />
 
             <LocalizedTextFields
-              label="Açıklama 3 (Model Yılı)"
+              label="Açıklama 3 (Model)"
               values={form.description3}
               onChange={(locale: AppLocale, value) =>
                 setForm((prev) => ({
@@ -337,7 +337,7 @@ export default function ProductFormPage() {
               }
               multiline
               rows={5}
-              placeholder="Her satıra bir yıl aralığı (ör. 2015 - 2020)"
+              placeholder="Her satıra bir model (ör. EGEA Hatchback 1.4)"
             />
 
             <div className="grid gap-4 md:grid-cols-3">

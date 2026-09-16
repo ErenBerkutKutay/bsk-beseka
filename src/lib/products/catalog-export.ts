@@ -91,23 +91,38 @@ function parseManualLines(content: Record<string, string> | null | undefined): s
     .filter(Boolean);
 }
 
+function combineMakeModelLines(makeLines: string[], modelLines: string[]): string[] {
+  const count = Math.max(makeLines.length, modelLines.length);
+  if (!count) return [];
+
+  return Array.from({ length: count }, (_, index) => {
+    const make = makeLines[index] || "—";
+    const model = modelLines[index] || "—";
+    return truncateChars(`${make} / ${model}`, PDF_MAKE_MODEL_MAX_CHARS);
+  });
+}
+
 function buildManualVehicleDisplay(
-  makeModelLines: string[],
-  yearLines: string[],
+  makeLines: string[],
+  modelLines: string[],
+  fitmentYears: FitmentRow[] = [],
 ): { makeModel: string; modelYears: string } {
-  if (!makeModelLines.length) {
+  const combined = combineMakeModelLines(makeLines, modelLines);
+  if (!combined.length) {
     return { makeModel: "—", modelYears: "—" };
   }
 
-  const shownMake = makeModelLines
-    .slice(0, PDF_LIST_LIMIT)
-    .map((line) => truncateChars(line, PDF_MAKE_MODEL_MAX_CHARS));
-  const shownYears = shownMake.map((_, index) => yearLines[index] || "—");
+  const shown = combined.slice(0, PDF_LIST_LIMIT);
+  const yearLines = shown.map((_, index) => {
+    const fitment = fitmentYears[index];
+    if (!fitment || (fitment.yearFrom === "—" && fitment.yearTo === "—")) return "—";
+    return `${fitment.yearFrom} - ${fitment.yearTo}`;
+  });
 
-  let makeModel = shownMake.join("\n");
-  let modelYears = shownYears.join("\n");
+  let makeModel = shown.join("\n");
+  const modelYears = yearLines.join("\n");
 
-  if (makeModelLines.length > PDF_LIST_LIMIT) {
+  if (combined.length > PDF_LIST_LIMIT) {
     makeModel += "\nDAHA FAZLA BİLGİ";
   }
 
@@ -181,16 +196,16 @@ function buildFitmentRows(product: CatalogExportProduct): FitmentRow[] {
 function buildPdfTableRows(products: CatalogExportProduct[], origin: string): PdfTableRow[] {
   return products.map((product) => {
     const oemCodes = (product.oemCodes || []).map((c) => c.code);
-    const manualMakeModel = parseManualLines(product.description2);
-    const manualYears = parseManualLines(product.description3);
+    const manualMakes = parseManualLines(product.description2);
+    const manualModels = parseManualLines(product.description3);
+    const fitments = collectFitmentRows(product);
 
     let makeModel: string;
     let modelYears: string;
 
-    if (manualMakeModel.length) {
-      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakeModel, manualYears));
+    if (manualMakes.length || manualModels.length) {
+      ({ makeModel, modelYears } = buildManualVehicleDisplay(manualMakes, manualModels, fitments));
     } else {
-      const fitments = collectFitmentRows(product);
       const shownFitments = fitments.slice(0, PDF_LIST_LIMIT);
       const hiddenFitments = Math.max(0, fitments.length - PDF_LIST_LIMIT);
       const makeModelLines = shownFitments.map(formatMakeModelLine);
